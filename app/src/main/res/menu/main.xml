@@ -2,8 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_contacts"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/action_contacts"
+        android:icon="@android:drawable/sym_action_chat"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_notifications"
+        android:orderInCategory="100"
+        android:title="@string/action_notification"
+        android:icon="@android:drawable/ic_popup_reminder"
+        app:showAsAction="always"
+        android:visible="false"/>
+    <item
+        android:id="@+id/action_add_pods"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/action_add_pods"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

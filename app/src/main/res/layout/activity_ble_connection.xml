@@ -7,4 +7,12 @@
     android:keepScreenOn="true"
     tools:context=".PodsConnectionActivity">
 
+    <TextView
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/connectivity_status"
+        android:layout_width="match_parent"
+        android:text="helo"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+
 </android.support.design.widget.CoordinatorLayout>

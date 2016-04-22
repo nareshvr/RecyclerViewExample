@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class PodsConnectionActivity extends AppCompatActivity {
     private List<CharSequence> displayDeviceNames = new ArrayList<>();
 
     private AlertDialog devicesListAlert;
+    private TextView connectivityStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class PodsConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ble_connection);
 
         rootView = findViewById(R.id.root_view);
+        connectivityStatus = (TextView) findViewById(R.id.connectivity_status);
 
         checkBluetoothPermission();
     }
@@ -158,7 +161,7 @@ public class PodsConnectionActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ServiceBroadcastActions.BLE_SCAN_STARTED:
-                    Snackbar.make(rootView, "Scan started", Snackbar.LENGTH_LONG).show();
+                    connectivityStatus.setText(R.string.scanning_pods);
                     break;
                 case ServiceBroadcastActions.BLE_SCAN_STOPPED:
                     Snackbar.make(rootView, "Scan stopped", Snackbar.LENGTH_LONG).show();
@@ -166,12 +169,14 @@ public class PodsConnectionActivity extends AppCompatActivity {
                     break;
                 case ServiceBroadcastActions.BLE_DEVICE_FOUND:
                     BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
-                    String deviceName = device.getName().trim();
-                    if (!TextUtils.isEmpty(deviceName)) {
-                        deviceName = deviceName.trim();
-                        if (!deviceName.endsWith("MS")) {
-                            return;
-                        }
+                    String deviceName = device.getName();
+
+                    if (TextUtils.isEmpty(deviceName)) {
+                        return;
+                    }
+                    deviceName = deviceName.trim();
+                    if (!deviceName.endsWith("MS")) {
+                        return;
                     }
                     String toBeAdded = deviceName + "\n" + device.getAddress();
 
@@ -224,6 +229,7 @@ public class PodsConnectionActivity extends AppCompatActivity {
                         Intent connectDeviceIntent = new Intent(ActionsToService.CONNECT_TO_DEVICE);
                         connectDeviceIntent.putExtra(BundleKeys.BLE_DEVICE, device);
                         LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(connectDeviceIntent);
+                        connectivityStatus.setText(R.string.connecting_to_pods);
                     }
                 });
 

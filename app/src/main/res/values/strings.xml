@@ -9,4 +9,6 @@
     <string name="permission_reason_bluetooth">Grant Bluetooth access permission to scan pods</string>
     <string name="permission_reason_location">Grant Location access permission to scan pods</string>
     <string name="alert_title_pods_found">Pods Found</string>
+    <string name="scanning_pods">Scanning pods</string>
+    <string name="connecting_to_pods">Connecting to Pods</string>
 </resources>

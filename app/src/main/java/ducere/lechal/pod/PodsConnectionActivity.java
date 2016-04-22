@@ -199,6 +199,7 @@ public class PodsConnectionActivity extends AppCompatActivity {
                     break;
                 case ServiceBroadcastActions.PODS_CONNECTED:
                     Snackbar.make(rootView, "Connected to Pods", Snackbar.LENGTH_LONG).show();
+                    finish();
                     startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
                     break;
                 case ServiceBroadcastActions.PODS_DIS_CONNECTED:

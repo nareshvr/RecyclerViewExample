@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lechal New Design</string>
+    <string name="app_name">LECHAL</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -11,4 +11,11 @@
     <string name="alert_title_pods_found">Pods Found</string>
     <string name="scanning_pods">Scanning pods</string>
     <string name="connecting_to_pods">Connecting to Pods</string>
+    <string name="action_contacts">Contacts</string>
+    <string name="action_notification">Notifications</string>
+    <string name="action_add_pods">Add</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

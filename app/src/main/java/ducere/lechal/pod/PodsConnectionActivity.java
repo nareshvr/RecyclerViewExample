@@ -4,6 +4,7 @@ import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -14,8 +15,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.PodsConnectivityService;
@@ -26,8 +35,13 @@ import ducere.lechal.pod.constants.BundleKeys;
 public class PodsConnectionActivity extends AppCompatActivity {
 
     private View rootView;
-    Handler handler = new Handler();
-    boolean isPermissionsGranted = false;
+    private Handler handler = new Handler();
+    private boolean isPermissionsGranted = false;
+
+    private Map<String, BluetoothDevice> foundDevices = new HashMap<>();
+    private List<CharSequence> displayDeviceNames = new ArrayList<>();
+
+    private AlertDialog devicesListAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +136,8 @@ public class PodsConnectionActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                foundDevices.clear();
+                displayDeviceNames.clear();
                 LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
             }
         }, 2000);
@@ -132,6 +148,9 @@ public class PodsConnectionActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(serviceActionsReceiver);
+        if (devicesListAlert != null) {
+            devicesListAlert.dismiss();
+        }
     }
 
     BroadcastReceiver serviceActionsReceiver = new BroadcastReceiver() {
@@ -143,13 +162,27 @@ public class PodsConnectionActivity extends AppCompatActivity {
                     break;
                 case ServiceBroadcastActions.BLE_SCAN_STOPPED:
                     Snackbar.make(rootView, "Scan stopped", Snackbar.LENGTH_LONG).show();
+                    showListOfDevices();
                     break;
                 case ServiceBroadcastActions.BLE_DEVICE_FOUND:
-                    final BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
-                    Snackbar.make(rootView, "Device found" + device.getAddress(), Snackbar.LENGTH_LONG).show();
+                    BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
+                    String deviceName = device.getName().trim();
+                    if (!TextUtils.isEmpty(deviceName)) {
+                        deviceName = deviceName.trim();
+                        if (!deviceName.endsWith("MS")) {
+                            return;
+                        }
+                    }
+                    String toBeAdded = deviceName + "\n" + device.getAddress();
+
+                    if (!displayDeviceNames.contains(toBeAdded)) {
+                        displayDeviceNames.add(toBeAdded);
+                    }
+                    foundDevices.put(device.getAddress(), device);
+//                    Snackbar.make(rootView, "Device found" + device.getAddress(), Snackbar.LENGTH_LONG).show();
 
                     /*D0:93:80:00:10:76*/
-                    if (device.getAddress().equalsIgnoreCase("D0:93:80:B0:03:50")) { // TODO Add custom filters needed
+                    /*if (device.getAddress().equalsIgnoreCase("D0:93:80:B0:03:50")) { // TODO Add custom filters needed
                         LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(new Intent(ActionsToService.SCAN_STOP));
 
                         handler.postDelayed(new Runnable() {
@@ -162,10 +195,11 @@ public class PodsConnectionActivity extends AppCompatActivity {
                         }, 2000);
 
                     }
-
+*/
                     break;
                 case ServiceBroadcastActions.PODS_CONNECTED:
                     Snackbar.make(rootView, "Connected to Pods", Snackbar.LENGTH_LONG).show();
+                    startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
                     break;
                 case ServiceBroadcastActions.PODS_DIS_CONNECTED:
                     Snackbar.make(rootView, "Pods disconnected", Snackbar.LENGTH_LONG).show();
@@ -173,4 +207,26 @@ public class PodsConnectionActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void showListOfDevices() {
+        CharSequence[] list = new CharSequence[displayDeviceNames.size()];
+        displayDeviceNames.toArray(list);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.alert_title_pods_found))
+                .setItems(list, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        devicesListAlert.dismiss();
+                        CharSequence charSequence = displayDeviceNames.get(which);
+                        String macID = charSequence.toString().split("\n")[1];
+                        BluetoothDevice device = foundDevices.get(macID);
+                        Intent connectDeviceIntent = new Intent(ActionsToService.CONNECT_TO_DEVICE);
+                        connectDeviceIntent.putExtra(BundleKeys.BLE_DEVICE, device);
+                        LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(connectDeviceIntent);
+                    }
+                });
+
+        devicesListAlert = builder.create();
+        devicesListAlert.show();
+    }
 }

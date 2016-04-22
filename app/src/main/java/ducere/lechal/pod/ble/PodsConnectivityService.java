@@ -127,8 +127,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     sendRBT();
                     break;
                 case ActionsToService.SCAN_PODS:
-                    stopBleScan();
-
                     startScanOnThread();
                     break;
                 case ActionsToService.SCAN_STOP:

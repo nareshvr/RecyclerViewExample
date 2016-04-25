@@ -17,4 +17,34 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.Lato_Black">
+        <item name="typeface">Late-Black.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_BlackItalic">
+        <item name="typeface">Lato-BlackItalic.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_Bold">
+        <item name="typeface">Lato-Bold.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_BoldItalic">
+        <item name="typeface">Lato-BoldItalic.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_Hairline">
+        <item name="typeface">Lato-Hairline.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_HairlineItalic">
+        <item name="typeface">Lato-HairlineItalic.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_Italic">
+        <item name="typeface">Lato-Italic.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_Light">
+        <item name="typeface">Lato-Light.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_LightItalic">
+        <item name="typeface">Lato-LightItalic.ttf</item>
+    </style>
+    <style name="AppTheme.Lato_Regular">
+        <item name="typeface">Lato-Regular.ttf</item>
+    </style>
 </resources>

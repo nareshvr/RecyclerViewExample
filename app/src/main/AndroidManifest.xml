@@ -2,11 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ducere.lechal.pod">
 
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- enables WiFi, if disabled, for the duration of a location request -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- used to obtain cell tower ID -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +33,30 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.here.android.maps.appid"
+            android:value="BPfNeHYytv3NRsUZ6rHh" />
+        <meta-data
+            android:name="com.here.android.maps.apptoken"
+            android:value="YuMWwLfjpA4Jq74s6IcjIg" />
+        <meta-data
+            android:name="com.here.android.maps.license.key"
+            android:value="B5ghRXDOlrhRz6whkz3UGt2u7yAS6RNTywnlU30DnGEMWPRNFP7XCktxwZ4FPbDTswZIqxOW2yiWDdCoHOJiYcz1TrpvlOXRIbOAemTlX70dwVto8XwmLuGblcfcRR8KTGpqivSnM0PjWe3eWsylX/mNzo7169lVDpReHSff+DlW8IAqF+1xoQxBD5fv2GeSBjIdPmF/MLY4RrKlvx2kNB4zF2uLC5Jdml6eQT89WnPFhy6kCg0e7Nwaopwdkw2KmcP8hpAMdDydCW2wtOVbbnbUVzAPLcia1DZkWP60lC2TwWRKkuyrH0Cg1iqwF8kjpF10wNiHWjSQylDl+tO453ivX7rpgneLPrkFVrHVLez/e98OKaMQo/iTPf6dDJI23G/es1b9SXfu8Pkzky7z+OtQRBqk6kXZqGDZNsfLoUKZMcMJ2s/GUwHDjEGT5xFptKgOaX2o6BGkRsS4mK3ngcUyTIHesGSG+0pofjP2XIc7Q5geCjuNcOgRnGKyMEc0CuMrJUbxosO1ThxazA8Hs10E/GphMLJAiItEa5B9Y8elaYg5lzxpLvzKIhX4hd8bzk5cB133MNIZxgDb5fbK1krxHMOaE6ctsCgAu+JD8CA6UZ/gXiFexjQFK2X1Dkjo79UBK1sVoyLrQSeROTPvcRjq9thak7b58Y5cgu9YQMo=" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:exported="true"
+            android:label="HereMapService"
+            android:process="global.Here.Map.Service.v2">
+            <intent-filter>
+                <action android:name="com.here.android.mpa.service.MapService" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

@@ -13,4 +13,5 @@ public interface ServiceBroadcastActions {
     String BLE_DEVICE_FOUND = pkg + "deviceFound";
     String PODS_CONNECTED = pkg + "podsConnected";
     String PODS_DIS_CONNECTED = pkg + "podsDisConnected";
+    String LOCATION_UPDATED = pkg + "locationUpdated";
 }

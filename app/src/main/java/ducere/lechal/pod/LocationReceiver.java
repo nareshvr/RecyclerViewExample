@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.LocationResult;
 
+import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.BundleKeys;
 
 public class LocationReceiver extends BroadcastReceiver {
@@ -20,9 +22,10 @@ public class LocationReceiver extends BroadcastReceiver {
                 return;
             }
             Location location = locationResult.getLastLocation();
-            Intent locationIntent = new Intent();
-            intent.putExtra(BundleKeys.LOCATION, location);
-            context.sendBroadcast(locationIntent);
+
+            Intent locationIntent = new Intent(ServiceBroadcastActions.LOCATION_UPDATED);
+            locationIntent.putExtra(BundleKeys.LOCATION, location);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(locationIntent);
         }
     }
 }

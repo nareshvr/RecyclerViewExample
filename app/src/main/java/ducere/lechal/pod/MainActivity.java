@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons0();
         viewPager.setOnPageChangeListener(this);
+
     }
 
     @Override

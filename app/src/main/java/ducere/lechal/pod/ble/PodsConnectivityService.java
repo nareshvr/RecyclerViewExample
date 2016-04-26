@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.UUID;
 
 import ducere.lechal.pod.constants.BundleKeys;
+import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.podsdata.FitnessData;
 
 /**
@@ -192,6 +193,16 @@ public class PodsConnectivityService extends Service implements PodCommands {
         intent.putExtra(BundleKeys.BLE_RSSI, rssi);
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        if (device.getAddress().equalsIgnoreCase(SharedPrefUtil.getPodsMacid(this))) {
+            // found device previously connected
+            Intent connectDeviceIntent = new Intent(ActionsToService.CONNECT_TO_DEVICE);
+            connectDeviceIntent.putExtra(BundleKeys.BLE_DEVICE, device);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(connectDeviceIntent);
+
+            // stop scan
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(ActionsToService.SCAN_STOP));
+        }
     }
 
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {

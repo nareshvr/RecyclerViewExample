@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#26A7DF</color>
+   <color name="colorPrimary">#26A7DF</color>
     <color name="colorPrimaryDark">#26A7DF</color>
     <color name="colorAccent">#26A7DF</color>
     <color name="white">#ffffff</color>
@@ -8,4 +8,5 @@
     <color name="black_tabs">#88000000</color>
     <color name="transparent">#00000000</color>
     <color name="home_transparent">#AA000000</color>
+
 </resources>

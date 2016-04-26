@@ -43,9 +43,7 @@
         <meta-data
             android:name="com.here.android.maps.license.key"
             android:value="B5ghRXDOlrhRz6whkz3UGt2u7yAS6RNTywnlU30DnGEMWPRNFP7XCktxwZ4FPbDTswZIqxOW2yiWDdCoHOJiYcz1TrpvlOXRIbOAemTlX70dwVto8XwmLuGblcfcRR8KTGpqivSnM0PjWe3eWsylX/mNzo7169lVDpReHSff+DlW8IAqF+1xoQxBD5fv2GeSBjIdPmF/MLY4RrKlvx2kNB4zF2uLC5Jdml6eQT89WnPFhy6kCg0e7Nwaopwdkw2KmcP8hpAMdDydCW2wtOVbbnbUVzAPLcia1DZkWP60lC2TwWRKkuyrH0Cg1iqwF8kjpF10wNiHWjSQylDl+tO453ivX7rpgneLPrkFVrHVLez/e98OKaMQo/iTPf6dDJI23G/es1b9SXfu8Pkzky7z+OtQRBqk6kXZqGDZNsfLoUKZMcMJ2s/GUwHDjEGT5xFptKgOaX2o6BGkRsS4mK3ngcUyTIHesGSG+0pofjP2XIc7Q5geCjuNcOgRnGKyMEc0CuMrJUbxosO1ThxazA8Hs10E/GphMLJAiItEa5B9Y8elaYg5lzxpLvzKIhX4hd8bzk5cB133MNIZxgDb5fbK1krxHMOaE6ctsCgAu+JD8CA6UZ/gXiFexjQFK2X1Dkjo79UBK1sVoyLrQSeROTPvcRjq9thak7b58Y5cgu9YQMo=" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+
 
         <service
             android:name="com.here.android.mpa.service.MapService"

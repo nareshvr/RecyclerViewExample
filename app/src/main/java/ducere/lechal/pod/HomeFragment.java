@@ -134,9 +134,6 @@ public class HomeFragment extends Fragment {
 
 
 
-
-
-
                 }
             catch (InflateException e) {
 

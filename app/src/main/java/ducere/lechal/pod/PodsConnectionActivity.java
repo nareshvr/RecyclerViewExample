@@ -157,11 +157,6 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         googleApiClient.disconnect();
@@ -178,19 +173,24 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
             requestLocationUpdates();
 
             startService(new Intent(this, PodsConnectivityService.class));
-
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     foundDevices.clear();
                     displayDeviceNames.clear();
                     LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
+                    String podsMacid = SharedPrefUtil.getPodsMacid(PodsConnectionActivity.this);
+                    if (!TextUtils.isEmpty(podsMacid)) {
+                        // Pods already connected, Let the auto connect do the work
+                        startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                        finish();
+                    }
                 }
             }, 2000);
         }
     }
 
-    BroadcastReceiver serviceActionsReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver serviceActionsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {

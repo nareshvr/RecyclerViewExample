@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ducere.lechal.pod">
 
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,7 +15,6 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- enables WiFi, if disabled, for the duration of a location request -->
@@ -33,7 +31,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.here.android.maps.appid"
             android:value="BPfNeHYytv3NRsUZ6rHh" />
@@ -43,7 +40,6 @@
         <meta-data
             android:name="com.here.android.maps.license.key"
             android:value="B5ghRXDOlrhRz6whkz3UGt2u7yAS6RNTywnlU30DnGEMWPRNFP7XCktxwZ4FPbDTswZIqxOW2yiWDdCoHOJiYcz1TrpvlOXRIbOAemTlX70dwVto8XwmLuGblcfcRR8KTGpqivSnM0PjWe3eWsylX/mNzo7169lVDpReHSff+DlW8IAqF+1xoQxBD5fv2GeSBjIdPmF/MLY4RrKlvx2kNB4zF2uLC5Jdml6eQT89WnPFhy6kCg0e7Nwaopwdkw2KmcP8hpAMdDydCW2wtOVbbnbUVzAPLcia1DZkWP60lC2TwWRKkuyrH0Cg1iqwF8kjpF10wNiHWjSQylDl+tO453ivX7rpgneLPrkFVrHVLez/e98OKaMQo/iTPf6dDJI23G/es1b9SXfu8Pkzky7z+OtQRBqk6kXZqGDZNsfLoUKZMcMJ2s/GUwHDjEGT5xFptKgOaX2o6BGkRsS4mK3ngcUyTIHesGSG+0pofjP2XIc7Q5geCjuNcOgRnGKyMEc0CuMrJUbxosO1ThxazA8Hs10E/GphMLJAiItEa5B9Y8elaYg5lzxpLvzKIhX4hd8bzk5cB133MNIZxgDb5fbK1krxHMOaE6ctsCgAu+JD8CA6UZ/gXiFexjQFK2X1Dkjo79UBK1sVoyLrQSeROTPvcRjq9thak7b58Y5cgu9YQMo=" />
-
 
         <service
             android:name="com.here.android.mpa.service.MapService"
@@ -59,17 +55,15 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".PodsConnectionActivity"
-            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PodsConnectionActivity"
+            android:screenOrientation="portrait"></activity>
 
         <service
             android:name=".ble.PodsConnectivityService"
@@ -81,9 +75,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".LocationReceiver" />
 
+        <activity android:name=".SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

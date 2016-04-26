@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ducere.lechal.pod.SearchActivity">
+<LinearLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/edittext_bg_home_drawable">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/ic_back_white"
+            android:background="@drawable/edittext_search_icon_drawable"/>
+
+        <np.EditText
+            android:id="@+id/etSearch"
+            style="@style/AppTheme.Lato_Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter destination"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:background="@color/transparent"
+            android:textColorHint="@color/white"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="12dp"/>
+    </LinearLayout>
+</LinearLayout>
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+        <LinearLayout
+            android:id="@+id/llSearchResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+        </ScrollView>
+
+</LinearLayout>

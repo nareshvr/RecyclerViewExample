@@ -11,152 +11,199 @@
         class="com.here.android.mpa.mapping.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
+
         android:id="@+id/rlTransparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="false"
         android:background="@color/home_transparent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/edittext_bg_home_drawable">
 
-                 <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_search"
-                    android:background="@drawable/edittext_search_icon_drawable"/>
-
-            <np.TextView
-                style="@style/AppTheme.Lato_Bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Enter destination"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp"/>
-        </LinearLayout>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_alignParentBottom="true">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/llCurrentLoc">
-            <np.TextView
-                style="@style/AppTheme.Lato_Bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvW3w"
-                android:layout_marginBottom="6dp"
-                android:text="apple.orange.banana"
-                android:textColor="@color/white"
-                android:textSize="15sp"/>
-            <np.TextView
-                style="@style/AppTheme.Lato_Light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvLocName"
-                android:text="Ducere Tech,"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/white"
-                android:textSize="36sp"/>
-            <np.TextView
-                style="@style/AppTheme.Lato_Bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvLocAddress"
-                android:singleLine="true"
-                android:text="West Marredpally"
-                android:textColor="@color/white"
-                android:textSize="36sp"/>
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/white"
-            android:id="@+id/viewLine"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_below="@+id/llCurrentLoc"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="48dp"
-            android:layout_below="@+id/viewLine">
+            android:layout_margin="16dp"
+            android:layout_alignParentBottom="true">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:gravity="center_vertical">
-                <np.TextView
-                    style="@style/AppTheme.Lato_Bold"
-                    android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/llCurrentLoc"
+                android:layout_marginRight="60dp">
+                <ImageView
+                    android:id="@+id/ivSwitchCurrentLoc"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="5dp"
+                    android:visibility="gone"
+                    android:background="@drawable/tab_settings_1"
+                    android:layout_gravity="center"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Daily stepcount"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"/>
-                <ProgressBar
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:progress="50"/>
+                    android:orientation="vertical">
+                    <np.TextView
+                        style="@style/AppTheme.Lato_Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvW3w"
+                        android:layout_marginBottom="6dp"
+                        android:text="loading what3words.."
+                        android:textColor="@color/white"
+                        android:textSize="13sp"/>
+                    <np.TextView
+                        style="@style/AppTheme.Lato_Light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvLocName"
+                        android:text="..."
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"/>
+                    <np.TextView
+                        style="@style/AppTheme.Lato_Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvLocAddress"
+                        android:text="..."
+                        android:textColor="@color/white"
+                        android:textSize="32sp"/>
+                </LinearLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/white"
+                android:id="@+id/viewLine"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_below="@+id/llCurrentLoc"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <np.TextView
-                    style="@style/AppTheme.Lato_Bold"
-                    android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="48dp"
+                android:layout_below="@+id/viewLine">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1200"
-                    android:textColor="@color/white"
-                    android:textSize="36sp"/>
-                <np.TextView
-                    style="@style/AppTheme.Lato_Light"
-                    android:layout_width="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center_vertical">
+                    <np.TextView
+                        style="@style/AppTheme.Lato_Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Daily stepcount"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"/>
+                    <ProgressBar
+                        android:layout_width="150dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:progress="50"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" steps"
-                    android:textColor="@color/white"
-                    android:textSize="36sp"/>
-            </LinearLayout>
+                    android:orientation="horizontal">
+                    <np.TextView
+                        style="@style/AppTheme.Lato_Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1200"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"/>
+                    <np.TextView
+                        style="@style/AppTheme.Lato_Light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" steps"
+                        android:textColor="@color/white"
+                        android:textSize="32sp"/>
+                </LinearLayout>
 
-        </LinearLayout>
-        <com.github.clans.fab.FloatingActionMenu
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            fab:menu_fab_size="normal"
-            android:layout_alignParentRight="true"
-            android:layout_above="@+id/viewLine"
-            fab:menu_colorNormal="@color/colorPrimary"
-            fab:menu_colorPressed="@color/colorPrimary"
-            fab:menu_colorRipple="#99FFFFFF"
-            android:layout_marginBottom="-50dp"
-            >
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/menu_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_cast_dark"
-                fab:fab_size="mini"
-                fab:fab_label="Menu item 1" />
+            </LinearLayout>
+            <com.github.clans.fab.FloatingActionMenu
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                fab:menu_fab_size="normal"
+                android:layout_alignParentRight="true"
+                android:layout_above="@+id/viewLine"
+                fab:menu_colorNormal="@color/colorPrimary"
+                fab:menu_colorPressed="@color/colorPrimary"
+                fab:menu_colorRipple="#99FFFFFF"
+                android:layout_marginBottom="-50dp"
+                >
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/menu_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_menu_camera"
+                    fab:fab_size="mini"
+                    fab:fab_label="Menu item 1" />
             </com.github.clans.fab.FloatingActionMenu>
+        </RelativeLayout>
+
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/llSearchBg"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:background="@color/black">
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llSearch"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="false"
+        android:background="@drawable/edittext_bg_home_drawable">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:src="@drawable/ic_search"
+            android:background="@drawable/edittext_search_icon_drawable"/>
+
+        <np.TextView
+            android:id="@+id/tvEditLocation"
+            style="@style/AppTheme.Lato_Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter destination"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="12dp"/>
+        <ImageView
+            android:id="@+id/ivMockLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:visibility="gone"
+            android:src="@drawable/tab_settings_1"/>
+    </LinearLayout>
+
+</RelativeLayout>
+
+
+
+
 </RelativeLayout>

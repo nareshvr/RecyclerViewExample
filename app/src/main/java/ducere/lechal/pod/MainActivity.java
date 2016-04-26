@@ -28,14 +28,15 @@ import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,CustomViewPager.OnPageChangeListener,OnFragmentInteractionListener{
 
-    TabLayout tabLayout;
+    public static TabLayout tabLayout;
     CustomViewPager viewPager;
+    public static Toolbar toolbar;
     MenuItem item_contacts,item_notifications,item_add_pods;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

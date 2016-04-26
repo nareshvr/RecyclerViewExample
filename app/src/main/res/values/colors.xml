@@ -5,6 +5,7 @@
     <color name="colorAccent">#26A7DF</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="black_tabs">#88000000</color>
     <color name="transparent">#00000000</color>
     <color name="home_transparent">#AA000000</color>
 </resources>

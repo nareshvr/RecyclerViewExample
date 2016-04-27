@@ -513,7 +513,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                         break;
                     case BluetoothAdapter.STATE_ON:
                         Log.i(PodsConnectivityService.class.getName(), "Bluetooth turned ON");
-                        startBleScan();
+                        LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
 //                        setButtonText("Turning Bluetooth on...");

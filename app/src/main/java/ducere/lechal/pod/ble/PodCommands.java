@@ -20,4 +20,8 @@ public interface PodCommands {
     void enableMSNotification(boolean isEnabled);
 
     void enableQTRNotification(boolean isEnabled);
+
+    void setIntensity(String intensity);
+
+    void setFootwearType(String footwearType);
 }

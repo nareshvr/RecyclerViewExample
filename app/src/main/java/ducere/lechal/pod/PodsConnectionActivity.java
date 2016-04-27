@@ -39,6 +39,8 @@ import ducere.lechal.pod.ble.PodsConnectivityService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.ActivityRequestCodes;
 import ducere.lechal.pod.constants.BundleKeys;
+import ducere.lechal.pod.constants.LocationConstants;
+import ducere.lechal.pod.constants.SharedPrefUtil;
 
 public class PodsConnectionActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -300,8 +302,8 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(LocationConstants.LOCATION_UPDATE_INTERVAL);
+        locationRequest.setFastestInterval(LocationConstants.LOCATION_UPDATE_FASTEST_INTERVAL);
         return locationRequest;
     }
 }

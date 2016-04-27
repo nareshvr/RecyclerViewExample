@@ -50,7 +50,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
     // Scan only for ten seconds
     private static final long SCAN_PERIOD = 10000;
 
-    private boolean isScanning = false;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner bluetoothLeScanner;
     private BluetoothGatt bluetoothGatt;
@@ -105,6 +104,8 @@ public class PodsConnectivityService extends Service implements PodCommands {
         filter.addAction(ActionsToService.SCAN_PODS);
         filter.addAction(ActionsToService.SCAN_STOP);
         filter.addAction(ActionsToService.CONNECT_TO_DEVICE);
+        filter.addAction(ActionsToService.INTENSITY);
+        filter.addAction(ActionsToService.FOOTWEAR_TYPE);
         // Add more commands
         LocalBroadcastManager.getInstance(PodsConnectivityService.this).registerReceiver(broadcastReceiverForCommands, filter);
     }
@@ -137,6 +138,13 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
                     Log.i(PodsConnectivityService.class.getName(), "Connect to " + device.getAddress());
                     bluetoothGatt = device.connectGatt(PodsConnectivityService.this, true, gattCallback);
+                    break;
+                case ActionsToService.INTENSITY:
+                    pattern = intent.getStringExtra(ActionsToService.INTENSITY);
+                    setIntensity(pattern);
+                    break;
+                case ActionsToService.FOOTWEAR_TYPE:
+                    pattern = intent.getStringExtra(ActionsToService.FOOTWEAR_TYPE);
                     break;
             }
         }
@@ -395,6 +403,24 @@ public class PodsConnectivityService extends Service implements PodCommands {
         enableDescriptor(characteristic);
     }
 
+    @Override
+    public void setIntensity(String intensity) {
+        BluetoothGattCharacteristic vibCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_VIBRATE));
+        if (vibCharacteristic != null) {
+            vibCharacteristic.setValue(intensity);
+            bluetoothGatt.writeCharacteristic(vibCharacteristic);
+        }
+    }
+
+    @Override
+    public void setFootwearType(String footwearType) {
+        BluetoothGattCharacteristic characteristic = miscellaneousService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_WRITE));
+        if (characteristic != null) {
+            characteristic.setValue(footwearType);
+            bluetoothGatt.writeCharacteristic(characteristic);
+        }
+    }
+
     private void readServices() {
         Log.i(PodsConnectivityService.class.getName(), "Discovered Services : " + bluetoothGattServices.size());
         for (BluetoothGattService bluetoothGattService : bluetoothGattServices) {
@@ -411,8 +437,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
     }
 
     private void startBleScan() {
-        isScanning = true;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             ScanSettings.Builder scanSettingsBuilder = new ScanSettings.Builder();
@@ -437,7 +461,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
     }
 
     private void stopBleScan() {
-        isScanning = false;
         // stop only when it's turned ON
         if (bluetoothAdapter != null && bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -501,8 +524,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
     };
 
     public static float byteToFloat(byte[] data) {
-        float f = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-        return f;
+        return ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
 }

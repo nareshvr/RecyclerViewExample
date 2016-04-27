@@ -12,4 +12,6 @@ public interface ActionsToService {
     String SCAN_PODS = pkg + "scanPods";
     String SCAN_STOP = pkg + "scanStop";
     String CONNECT_TO_DEVICE = pkg + "connectToDevice";
+    String INTENSITY = pkg + "intensity";
+    String FOOTWEAR_TYPE = pkg + "footwearType";
 }

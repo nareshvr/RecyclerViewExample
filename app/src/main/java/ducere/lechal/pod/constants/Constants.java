@@ -2,17 +2,10 @@ package ducere.lechal.pod.constants;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
-
-import java.util.concurrent.TimeUnit;
 
 import ducere.lechal.pod.ble.ActionsToService;
 

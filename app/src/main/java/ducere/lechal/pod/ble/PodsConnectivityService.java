@@ -1,7 +1,6 @@
 package ducere.lechal.pod.ble;
 
 import android.annotation.SuppressLint;
-
 import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -40,6 +39,7 @@ import java.util.UUID;
 
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.constants.BundleKeys;
+import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.podsdata.FitnessData;
 
@@ -64,6 +64,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
     private List<BluetoothGattService> bluetoothGattServices;
 
     private Handler handler;
+
+    private String msBattery = "";
+    private String qtrBattery = "";
 
     /**
      * this method will not be called if service is already running
@@ -243,6 +246,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 // TODO broadcast gatt disconnected state to the app
                 Log.i(PodsConnectivityService.class.getName(), "Disconnected from GATT server.");
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(Constants.NOTIFICATION_ID);
             }
         }
 
@@ -290,6 +296,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
             }, 10000);*/
 
             showConnectedPodsNotification(78, getRemainingBattery());
+
         }
 
         @Override
@@ -308,7 +315,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.i(PodsConnectivityService.class.getName(), "Characteristic changed");
+//            Log.i(PodsConnectivityService.class.getName(), "Characteristic changed");
             handleCharacteristic(characteristic);
         }
     };
@@ -358,7 +365,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 }
                 break;
             case PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_MS_NOTIFY:
-                Log.i(PodsConnectivityService.class.getName(), "Found MS notify: " + characteristic.getUuid());
+//                Log.i(PodsConnectivityService.class.getName(), "Found MS notify: " + characteristic.getUuid());
                 data = characteristic.getValue();
                 String msMsg = new String(data);
                 if (!TextUtils.isEmpty(msMsg)) {
@@ -380,7 +387,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 }, BATTERY_PING_FREQUENCY);
                 break;
             case PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_QTR_NOTIFY:
-                Log.i(PodsConnectivityService.class.getName(), "Found QTR Notify: " + characteristic.getUuid());
+//                Log.i(PodsConnectivityService.class.getName(), "Found QTR Notify: " + characteristic.getUuid());
                 data = characteristic.getValue();
                 String qtrMsg = new String(data);
                 if (!TextUtils.isEmpty(qtrMsg)) {
@@ -536,6 +543,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 
     @Override
     public void onDestroy() {

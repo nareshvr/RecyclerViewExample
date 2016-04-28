@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@mipmap/bg"
     android:keepScreenOn="true"
     tools:context=".PodsConnectionActivity">
 
@@ -41,8 +41,22 @@
         android:textColor="@android:color/white" />
 
 
+    <ImageView
+        android:id="@+id/splash_red"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/splash_red" />
+
+    <ImageView
+        android:id="@+id/splash_walk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/splash_walk" />
+
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinate"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </RelativeLayout>

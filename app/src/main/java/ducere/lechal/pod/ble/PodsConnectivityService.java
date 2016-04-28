@@ -327,7 +327,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
             info = "Goal " + goalCompletedPercent + "%";
         }
         if (remainingBatteryPercent != -1) {
-            info = info.concat("Battery " + remainingBatteryPercent + "%");
+            info = info.concat(" Battery " + remainingBatteryPercent + "%").trim();
         }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

@@ -11,8 +11,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,6 +26,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -65,10 +69,14 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
 
     private BluetoothAdapter bluetoothAdapter;
 
+    private String podsMacID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connection);
+
+        podsMacID = SharedPrefUtil.getPodsMacid(PodsConnectionActivity.this);
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
@@ -79,8 +87,6 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         progress.setVisibility(View.INVISIBLE);
         connectivityStatus = (TextView) findViewById(R.id.connectivity_status);
 
-        checkLocationPermission();
-
         // Create an instance of GoogleAPIClient.
         if (googleApiClient == null) {
             googleApiClient = new GoogleApiClient.Builder(this)
@@ -89,6 +95,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                     .addApi(LocationServices.API)
                     .build();
         }
+
     }
 
     private void checkBluetoothPermission() {
@@ -110,7 +117,15 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Snackbar.make(coordinate, getString(R.string.permission_reason_location), Snackbar.LENGTH_LONG).show();
+                View.OnClickListener onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        startActivity(intent);
+                    }
+                };
+                Snackbar.make(coordinate, getString(R.string.permission_reason_location), Snackbar.LENGTH_INDEFINITE).setAction("Settings", onClickListener).show();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -175,6 +190,12 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        checkLocationPermission();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         googleApiClient.disconnect();
@@ -192,19 +213,12 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         if (isPermissionsGranted && isGoogleApiClientConnected) {
             requestLocationUpdates();
 
-            final String podsMacID = SharedPrefUtil.getPodsMacid(PodsConnectionActivity.this);
             // If pods not connected at least once. Check bluetooth enabled
             if (TextUtils.isEmpty(podsMacID)) {
                 // not connected at least once
                 if (bluetoothAdapter.isEnabled()) {
                     // bluetooth turned on
-                    startService(new Intent(this, PodsConnectivityService.class));
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendScanPodsAction();
-                        }
-                    }, 2000);
+                    startAnimation();
                 } else {
                     // bluetooth not turned on
                     Snackbar snackbar = Snackbar.make(coordinate, "Bluetooth is turned OFF", Snackbar.LENGTH_INDEFINITE);
@@ -218,22 +232,45 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                 }
             } else {
                 // connected at least once
-                startService(new Intent(this, PodsConnectivityService.class));
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        sendScanPodsAction();
-                        if (!TextUtils.isEmpty(podsMacID)) {
-                            // Pods already connected, Let the auto connect do the work
-                            startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
-                            finish();
-                        }
-                    }
-                }, 2000);
+                startAnimation();
             }
 
         }
     }
+
+    private void startAnimation() {
+        startService(new Intent(this, PodsConnectivityService.class));
+        AlphaAnimation alphaAnimation = Constants.getAlphaAnimation();
+        alphaAnimation.setAnimationListener(fadeOutAnimationListener);
+        findViewById(R.id.splash_walk).startAnimation(alphaAnimation);
+    }
+
+    private Animation.AnimationListener fadeOutAnimationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            sendScanPodsAction();
+            if (!TextUtils.isEmpty(podsMacID)) {
+                // Pods already connected, Let the auto connect do the work
+                findViewById(R.id.splash_walk).setVisibility(View.GONE);
+                startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                finish();
+            } else {
+                // TODO remove red image
+                findViewById(R.id.splash_walk).setVisibility(View.GONE);
+                findViewById(R.id.splash_red).setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    };
 
     private void sendScanPodsAction() {
         foundDevices.clear();
@@ -255,7 +292,9 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                     progress.clearAnimation();
                     progress.setVisibility(View.INVISIBLE);
                     connectivityStatus.setText(R.string.scan_stopped);
-                    showListOfDevices();
+                    if (TextUtils.isEmpty(podsMacID)) {
+                        showListOfDevices();
+                    }
                     break;
                 case ServiceBroadcastActions.BLE_DEVICE_FOUND:
                     BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);

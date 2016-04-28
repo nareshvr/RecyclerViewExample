@@ -14,4 +14,5 @@ public interface ActionsToService {
     String CONNECT_TO_DEVICE = pkg + "connectToDevice";
     String INTENSITY = pkg + "intensity";
     String FOOTWEAR_TYPE = pkg + "footwearType";
+    String GET_BATTERY = pkg + "getBattery";
 }

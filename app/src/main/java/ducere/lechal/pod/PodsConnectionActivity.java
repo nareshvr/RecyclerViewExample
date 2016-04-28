@@ -63,7 +63,6 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     boolean isGoogleApiClientConnected = false;
     boolean isPermissionsGranted = false;
 
-    private BluetoothManager bluetoothManager;
     private BluetoothAdapter bluetoothAdapter;
 
     @Override
@@ -71,7 +70,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connection);
 
-        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
 
         coordinate = findViewById(R.id.coordinate);

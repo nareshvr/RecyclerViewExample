@@ -199,6 +199,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     protected void onStop() {
         super.onStop();
         googleApiClient.disconnect();
+        isGoogleApiClientConnected = false;
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(serviceActionsReceiver);
 

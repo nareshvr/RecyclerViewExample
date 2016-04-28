@@ -54,16 +54,17 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PodsConnectionActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PodsConnectionActivity"
-            android:screenOrientation="portrait"></activity>
 
         <service
             android:name=".ble.PodsConnectivityService"
@@ -77,8 +78,18 @@
         </receiver>
         <receiver android:name=".LocationReceiver" />
 
-        <activity android:name=".SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".VibrationTutorialActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".IntensityActity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_intensity_actity"
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".FootwearActity"></activity>
     </application>
 
 </manifest>

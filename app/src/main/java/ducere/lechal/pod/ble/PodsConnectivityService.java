@@ -145,6 +145,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     break;
                 case ActionsToService.FOOTWEAR_TYPE:
                     pattern = intent.getStringExtra(ActionsToService.FOOTWEAR_TYPE);
+                    setFootwearType(pattern);
                     break;
             }
         }

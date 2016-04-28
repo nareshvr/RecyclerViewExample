@@ -239,7 +239,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(new Intent(ServiceBroadcastActions.PODS_CONNECTED));
+                Intent intent = new Intent(ServiceBroadcastActions.PODS_CONNECTED);
+                intent.putExtra(BundleKeys.BLE_DEVICE, gatt.getDevice());
+                LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
                 Log.i(PodsConnectivityService.class.getName(), "Connected to GATT server.");
                 bluetoothGatt = gatt;
                 bluetoothGatt.discoverServices();
@@ -296,7 +298,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
             }, 10000);*/
 
             showConnectedPodsNotification(78, getRemainingBattery());
-
         }
 
         @Override

@@ -23,4 +23,16 @@ public class Constants {
         intent.putExtra(ActionsToService.VIBRATE, pattern);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
+
+    public static void sendIntensity(Context context, String pattern) {
+        Intent intent = new Intent(ActionsToService.INTENSITY);
+        intent.putExtra(ActionsToService.INTENSITY, pattern);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    public static void sendFootwear(Context context, String pattern) {
+        Intent intent = new Intent(ActionsToService.FOOTWEAR_TYPE);
+        intent.putExtra(ActionsToService.FOOTWEAR_TYPE, pattern);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
 }

@@ -242,7 +242,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/radio_drawable"
-
                     android:button="@android:color/transparent"
                     android:checked="true"
                     android:gravity="center"

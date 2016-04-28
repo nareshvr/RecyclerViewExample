@@ -40,5 +40,22 @@
     <string name="ree_route">Re-route</string>
     <string name="look_at_your_phone">Look at your phone</string>
     <string name="destination_reached">Destination Reached</string>
+    <string name="vibrations">VIBRATIONS</string>
+    <string name="intensity">Intensity</string>
+    <string name="very_high">Very high</string>
+    <string name="Tutorials">Tutorials</string>
+    <string name="footwear">FOOTWEAR</string>
+    <string name="type">Type</string>
+    <string name="insole">Insole</string>
+    <string name="pods">PODS</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="rename">Rename</string>
+    <string name="about">About</string>
+    <color name="colorPrimaryProfile">#3333ff</color>
+    <string name="swap">swap</string>
 
+    <string name="title_activity_intensity_actity">IntensityActity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="shoetype">shoetype</string>
 </resources>

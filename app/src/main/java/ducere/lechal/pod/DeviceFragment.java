@@ -1,28 +1,49 @@
 package ducere.lechal.pod;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.seanzor.prefhelper.SharedPrefHelper;
+
+import ducere.lechal.pod.constants.Constants;
+import ducere.lechal.pod.constants.Vibrations;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 
 
-public class DeviceFragment extends Fragment {
+public class DeviceFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private String VB = "VB";
+    Vibrations vib;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    View view;
+    SharedPrefHelper mPref;
+    SharedPreferences defaultSharedPreferences;
+    TextView txtShoeType;
 
     private OnFragmentInteractionListener mListener;
-
+    Context mContext = getContext();
     public DeviceFragment() {
         // Required empty public constructor
     }
@@ -55,10 +76,22 @@ public class DeviceFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_device, container, false);
+        view = inflater.inflate(R.layout.fragment_device, container, false);
+        vib = new Vibrations();
+        defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mPref = new SharedPrefHelper(getResources(), defaultSharedPreferences);
+        Button btnCheckPodPosition = (Button)view.findViewById(R.id.btnCheckPodPosition);
+        btnCheckPodPosition.setOnClickListener(this);
+        TextView txtVibrations = (TextView) view.findViewById(R.id.txtVibrations);
+        txtVibrations.setOnClickListener(this);
+        LinearLayout llIntensity = (LinearLayout)view.findViewById(R.id.llIntensity);
+        llIntensity.setOnClickListener(this);
+        LinearLayout llFootwear = (LinearLayout)view.findViewById(R.id.llFootwear);
+        llFootwear.setOnClickListener(this);
+        txtShoeType = (TextView)view.findViewById(R.id.txtShoeType);
+        return view;
     }
 
     /*// TODO: Rename method, update argument and hook method into UI event
@@ -83,6 +116,124 @@ public class DeviceFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+       switch (v.getId()){
+           case R.id.btnCheckPodPosition:
+               //@ToDo
+               checkPodPositionDialog();
+               break;
+           case R.id.txtVibrations:
+               startActivity(new Intent(getActivity(),VibrationTutorialActivity.class));
+               break;
+           case R.id.llIntensity:
+               startActivity(new Intent(getActivity(),IntensityActity.class));
+               break;
+           case R.id.llFootwear:
+              // startActivity(new Intent(getActivity(),FootwearActity.class));
+               showFootwearDialog();
+               break;
+       }
+    }
+
+    private void checkPodPositionDialog() {
+        // custom dialog
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.check_pods_position);
+        // set the custom dialog components - text, image and button
+        ImageView leftPod = (ImageView) dialog.findViewById(R.id.leftPod);
+        leftPod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*if (mPref.getBoolean(R.string.swap, false)) {
+                    BLEMS.sendVibM1("VB", "0001");
+                } else {
+
+                    BLEMS.sendVibM1("VB", "0100");
+                }
+                //BLEMS.sendVibM1("VB", "0100");
+                ivLeft.setBackgroundResource(R.drawable.pod_position_left);
+                new CountDownTimer(1000, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        ivLeft.setBackgroundResource(R.drawable.pod_position_left0);
+                    }
+                }.start();*/
+            }
+        });
+
+        ImageView rightPod = (ImageView)dialog.findViewById(R.id.rightPod);
+        rightPod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        ImageView swapPods = (ImageView)dialog.findViewById(R.id.podSwap);
+        swapPods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showFootwearDialog() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Footwear type");
+
+        final CharSequence[] choiceList = {"Casual shoes", "Sports shoes" , "Insole" , "Ballerina" };
+
+        int selected = -1; // does not select anything
+        builder.setSingleChoiceItems(choiceList, selected, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getContext(), "Select "+choiceList[which], Toast.LENGTH_SHORT).show();
+                        switch (which){
+                            case 0:
+                                mPref.commitInt(R.string.shoetype,0);
+                                txtShoeType.setText(" Casual Shoe ");
+                                // BLEMS.writeData("CD2");
+                                Constants.sendFootwear(getContext(),"CD2");
+                                break;
+                            case 1:
+                                mPref.commitInt(R.string.shoetype,1);
+                                txtShoeType.setText(" Sports shoes ");
+                                // BLEMS.writeData("CD2");
+                                Constants.sendFootwear(getContext(),"CD3");
+                                break;
+                            case 2:
+                                mPref.commitInt(R.string.shoetype,2);
+                                txtShoeType.setText(" Insole ");
+                                // BLEMS.writeData("CD2");
+                                Constants.sendFootwear(getContext(),"CD1");
+                                break;
+                            case 3:
+                                mPref.commitInt(R.string.shoetype,3);
+                                txtShoeType.setText(" Ballerina ");
+                                // BLEMS.writeData("CD2");
+                                Constants.sendFootwear(getContext(),"CD4");
+                                break;
+
+                        }
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**

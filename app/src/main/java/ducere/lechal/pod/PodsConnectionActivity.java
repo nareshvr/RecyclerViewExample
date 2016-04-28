@@ -2,7 +2,9 @@ package ducere.lechal.pod;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,12 +41,15 @@ import ducere.lechal.pod.ble.PodsConnectivityService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.ActivityRequestCodes;
 import ducere.lechal.pod.constants.BundleKeys;
+import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.LocationConstants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
+import ducere.lechal.pod.customViews.CircleProgressView;
 
 public class PodsConnectionActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private View rootView;
+    private View coordinate;
+    private CircleProgressView progress;
     private Handler handler = new Handler();
 
     private Map<String, BluetoothDevice> foundDevices = new HashMap<>();
@@ -58,12 +63,20 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     boolean isGoogleApiClientConnected = false;
     boolean isPermissionsGranted = false;
 
+    private BluetoothAdapter bluetoothAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connection);
 
-        rootView = findViewById(R.id.root_view);
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        bluetoothAdapter = bluetoothManager.getAdapter();
+
+        coordinate = findViewById(R.id.coordinate);
+        progress = (CircleProgressView) findViewById(R.id.progress);
+        progress.setProgress(10);
+        progress.setVisibility(View.INVISIBLE);
         connectivityStatus = (TextView) findViewById(R.id.connectivity_status);
 
         checkLocationPermission();
@@ -81,7 +94,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     private void checkBluetoothPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BLUETOOTH_ADMIN)) {
-                Snackbar.make(rootView, getString(R.string.permission_reason_bluetooth), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(coordinate, getString(R.string.permission_reason_bluetooth), Snackbar.LENGTH_LONG).show();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.BLUETOOTH_ADMIN},
@@ -97,7 +110,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Snackbar.make(rootView, getString(R.string.permission_reason_location), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(coordinate, getString(R.string.permission_reason_location), Snackbar.LENGTH_LONG).show();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -156,6 +169,9 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         intentFilter.addAction(ServiceBroadcastActions.PODS_DIS_CONNECTED);
         intentFilter.addAction(ServiceBroadcastActions.LOCATION_UPDATED);
         LocalBroadcastManager.getInstance(this).registerReceiver(serviceActionsReceiver, intentFilter);
+
+        IntentFilter btIntentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(bluetoothStateChangeReceiver, btIntentFilter);
     }
 
     @Override
@@ -164,6 +180,8 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         googleApiClient.disconnect();
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(serviceActionsReceiver);
+
+        unregisterReceiver(bluetoothStateChangeReceiver);
 
         if (devicesListAlert != null) {
             devicesListAlert.dismiss();
@@ -174,22 +192,53 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         if (isPermissionsGranted && isGoogleApiClientConnected) {
             requestLocationUpdates();
 
-            startService(new Intent(this, PodsConnectivityService.class));
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    foundDevices.clear();
-                    displayDeviceNames.clear();
-                    LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
-                    String podsMacid = SharedPrefUtil.getPodsMacid(PodsConnectionActivity.this);
-                    if (!TextUtils.isEmpty(podsMacid)) {
-                        // Pods already connected, Let the auto connect do the work
-                        startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
-                        finish();
-                    }
+            final String podsMacID = SharedPrefUtil.getPodsMacid(PodsConnectionActivity.this);
+            // If pods not connected at least once. Check bluetooth enabled
+            if (TextUtils.isEmpty(podsMacID)) {
+                // not connected at least once
+                if (bluetoothAdapter.isEnabled()) {
+                    // bluetooth turned on
+                    startService(new Intent(this, PodsConnectivityService.class));
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendScanPodsAction();
+                        }
+                    }, 2000);
+                } else {
+                    // bluetooth not turned on
+                    Snackbar snackbar = Snackbar.make(coordinate, "Bluetooth is turned OFF", Snackbar.LENGTH_INDEFINITE);
+                    snackbar.setAction("Turn ON", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            bluetoothAdapter.enable();
+                        }
+                    });
+                    snackbar.show();
                 }
-            }, 2000);
+            } else {
+                // connected at least once
+                startService(new Intent(this, PodsConnectivityService.class));
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        sendScanPodsAction();
+                        if (!TextUtils.isEmpty(podsMacID)) {
+                            // Pods already connected, Let the auto connect do the work
+                            startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    }
+                }, 2000);
+            }
+
         }
+    }
+
+    private void sendScanPodsAction() {
+        foundDevices.clear();
+        displayDeviceNames.clear();
+        LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
     }
 
     private BroadcastReceiver serviceActionsReceiver = new BroadcastReceiver() {
@@ -198,10 +247,14 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
             switch (intent.getAction()) {
                 case ServiceBroadcastActions.BLE_SCAN_STARTED:
                     Log.i(PodsConnectionActivity.class.getName(), "Scan Started");
+                    progress.startAnimation(Constants.getRotateAnimation());
+                    progress.setVisibility(View.VISIBLE);
                     connectivityStatus.setText(R.string.scanning_pods);
                     break;
                 case ServiceBroadcastActions.BLE_SCAN_STOPPED:
-                    Snackbar.make(rootView, "Scan stopped", Snackbar.LENGTH_LONG).show();
+                    progress.clearAnimation();
+                    progress.setVisibility(View.INVISIBLE);
+                    connectivityStatus.setText(R.string.scan_stopped);
                     showListOfDevices();
                     break;
                 case ServiceBroadcastActions.BLE_DEVICE_FOUND:
@@ -221,7 +274,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                         displayDeviceNames.add(toBeAdded);
                     }
                     foundDevices.put(device.getAddress(), device);
-//                    Snackbar.make(rootView, "Device found" + device.getAddress(), Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(coordinate, "Device found" + device.getAddress(), Snackbar.LENGTH_LONG).show();
 
                     /*D0:93:80:00:10:76*/
                     /*if (device.getAddress().equalsIgnoreCase("D0:93:80:B0:03:50")) { // TODO Add custom filters needed
@@ -240,12 +293,14 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
 */
                     break;
                 case ServiceBroadcastActions.PODS_CONNECTED:
-                    Snackbar.make(rootView, "Connected to Pods", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(coordinate, "Connected to Pods", Snackbar.LENGTH_LONG).show();
+                    BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
+                    SharedPrefUtil.setPodsMacid(PodsConnectionActivity.this, bluetoothDevice.getAddress());
                     finish();
                     startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
                     break;
                 case ServiceBroadcastActions.PODS_DIS_CONNECTED:
-                    Snackbar.make(rootView, "Pods disconnected", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(coordinate, "Pods disconnected", Snackbar.LENGTH_LONG).show();
                     break;
                 case ServiceBroadcastActions.LOCATION_UPDATED:
 
@@ -270,8 +325,21 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                         connectDeviceIntent.putExtra(BundleKeys.BLE_DEVICE, device);
                         LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(connectDeviceIntent);
                         connectivityStatus.setText(R.string.connecting_to_pods);
+                        progress.setVisibility(View.VISIBLE);
+                        progress.startAnimation(Constants.getRotateAnimation());
                     }
-                });
+                }).setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
+            }
+        }).setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
 
         devicesListAlert = builder.create();
         devicesListAlert.show();
@@ -306,4 +374,29 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         locationRequest.setFastestInterval(LocationConstants.LOCATION_UPDATE_FASTEST_INTERVAL);
         return locationRequest;
     }
+
+    private final BroadcastReceiver bluetoothStateChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        Log.i(PodsConnectionActivity.class.getName(), "Bluetooth turned OFF");
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        Log.i(PodsConnectionActivity.class.getName(), "Bluetooth turned ON");
+                        startServiceAndScanPods();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        break;
+                }
+            }
+        }
+    };
 }

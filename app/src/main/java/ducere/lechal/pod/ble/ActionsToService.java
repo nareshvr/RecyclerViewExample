@@ -15,4 +15,6 @@ public interface ActionsToService {
     String INTENSITY = pkg + "intensity";
     String FOOTWEAR_TYPE = pkg + "footwearType";
     String GET_BATTERY = pkg + "getBattery";
+    String VIBRATE_LEFT = pkg + "vibrateLeft";
+    String VIBRATE_RIGHT = pkg + "vibrateRight";
 }

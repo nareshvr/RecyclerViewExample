@@ -111,6 +111,8 @@ public class PodsConnectivityService extends Service implements PodCommands {
         filter.addAction(ActionsToService.INTENSITY);
         filter.addAction(ActionsToService.FOOTWEAR_TYPE);
         filter.addAction(ActionsToService.GET_BATTERY);
+        filter.addAction(ActionsToService.VIBRATE_LEFT);
+        filter.addAction(ActionsToService.VIBRATE_RIGHT);
         // Add more commands
         LocalBroadcastManager.getInstance(PodsConnectivityService.this).registerReceiver(broadcastReceiverForCommands, filter);
     }
@@ -156,6 +158,12 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     intent = new Intent(ServiceBroadcastActions.BATTERY);
                     intent.putExtra(ServiceBroadcastActions.BATTERY, getRemainingBattery());
                     LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
+                    break;
+                case ActionsToService.VIBRATE_LEFT:
+                    vibrate("VB0100"); // TODO move strings to vibrations patterns
+                    break;
+                case ActionsToService.VIBRATE_RIGHT:
+                    vibrate("VB0001"); // TODO move strings to vibrations patterns
                     break;
             }
         }

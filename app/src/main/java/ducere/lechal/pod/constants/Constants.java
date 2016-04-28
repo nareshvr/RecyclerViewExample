@@ -20,6 +20,9 @@ import ducere.lechal.pod.ble.ActionsToService;
  * Created by sunde on 25-04-2016.
  */
 public class Constants {
+    /**
+     * never change
+     */
     public static final int NOTIFICATION_ID = 12706;
     public static final String NOTIFICATION_TEXT_FORMAT = "Goal %s : Battery %s";
     public static final String CURRENT_LOCATION_FORMAT = "%s\n%s";

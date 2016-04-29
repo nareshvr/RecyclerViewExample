@@ -6,9 +6,13 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.github.seanzor.prefhelper.SharedPrefHelper;
 
@@ -23,42 +27,51 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
     Vibrations vib;
     SharedPrefHelper mPref;
     SharedPreferences defaultSharedPreferences;
-    Button btnSlightTurn,btnUTurn,btnTurn,btnKeepStraight,btnSharpTurn,btnDestination,btnReeRoute,btnLookAtYourPhone;
+    LinearLayout llTurn,llKeepStraight,llSharpTurn,llDestination,llReeRoute,llLookAtYourPhone,llSlightTurn,llUTurn,llDestinationReached,llTutorials;
     String VB = "VB";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vibration_tutorial);
+        setContentView(R.layout.activity_vibration);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setup();
+
+
+    }
+
+    private void setup() {
         vib = new Vibrations();
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mPref = new SharedPrefHelper(getResources(), defaultSharedPreferences);
         rb3 = (RadioGroup)findViewById(R.id.radioGroup1);
         rb1 = (RadioGroup)findViewById(R.id.radioGroup2);
-       // radioGroup3 = (RadioGroup)findViewById(R.id.radioGroup3);
+        // radioGroup3 = (RadioGroup)findViewById(R.id.radioGroup3);
 
-        btnSlightTurn = (Button)findViewById(R.id.btnSlightTurn);
-        btnSlightTurn.setOnClickListener(this);
+        llSlightTurn = (LinearLayout) findViewById(R.id.llSlightTurn);
+        llSlightTurn.setOnClickListener(this);
 
-        btnUTurn = (Button)findViewById(R.id.btnUTurn);
-        btnUTurn.setOnClickListener(this);
+        llUTurn = (LinearLayout)findViewById(R.id.llUTurn);
+        llUTurn.setOnClickListener(this);
 
-        btnTurn = (Button)findViewById(R.id.btnTurn);
-        btnTurn.setOnClickListener(this);
+        llTurn = (LinearLayout) findViewById(R.id.llTurn);
+        llTurn.setOnClickListener(this);
+        llKeepStraight = (LinearLayout)findViewById(R.id.llKeepStraight);
+        llKeepStraight.setOnClickListener(this);
 
-        btnKeepStraight = (Button)findViewById(R.id.btnKeepStraight);
-        btnKeepStraight.setOnClickListener(this);
+        llSharpTurn = (LinearLayout)findViewById(R.id.llSharpTurn);
+        llSharpTurn.setOnClickListener(this);
 
-        btnSharpTurn = (Button)findViewById(R.id.btnSharpTurn);
-        btnSharpTurn.setOnClickListener(this);
+        llDestination = (LinearLayout)findViewById(R.id.llDestination);
+        llDestination.setOnClickListener(this);
 
-        btnDestination = (Button)findViewById(R.id.btnDestination);
-        btnDestination.setOnClickListener(this);
+        llReeRoute = (LinearLayout)findViewById(R.id.llree_route);
+        llReeRoute.setOnClickListener(this);
 
-        btnReeRoute = (Button)findViewById(R.id.btnReeRoute);
-        btnReeRoute.setOnClickListener(this);
+        llLookAtYourPhone = (LinearLayout)findViewById(R.id.lllook_at_your_phone);
+        llLookAtYourPhone.setOnClickListener(this);
 
-        btnLookAtYourPhone = (Button)findViewById(R.id.btnLookAtYourPhone);
-        btnLookAtYourPhone.setOnClickListener(this);
+        llDestinationReached = (LinearLayout)findViewById(R.id.llDestinationReached);
+        llDestinationReached.setOnClickListener(this);
 
         rb1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -77,10 +90,17 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                 }
             }
         });
-
-
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId()== android.R.id.home){
+            finish();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View v) {
@@ -94,13 +114,8 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
         View radioButton3 = rb3.findViewById(radioButtonID3);
         int idx3 = rb3.indexOfChild(radioButton3);
         switch (v.getId()){
-            case R.id.btnSlightTurn:
 
-
-
-
-
-
+            case R.id.llSlightTurn:
                 if (idx == 0) {
                     //btnSlightTurn.setBackgroundResource(R.drawable.demo_slight_turn_1);
 
@@ -206,7 +221,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                 }
 
                 break;
-            case R.id.btnUTurn:
+            case R.id.llUTurn:
                 if(idx==1){
                    // btnUTurn.setBackgroundResource(R.drawable.demo_uturn_right_1);
 
@@ -314,7 +329,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
 
 
                 break;
-            case R.id.btnTurn:
+            case R.id.llTurn:
 
 
                 if (idx == 0) {
@@ -424,7 +439,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
 
                 }
                 break;
-            case R.id.btnKeepStraight:
+            case R.id.llKeepStraight:
                // BLEMS.sendVibM1("VB", vib.striaght + vib.striaght);
                 Constants.sendVibrate(context,VB+vib.striaght + vib.striaght);
                 break;

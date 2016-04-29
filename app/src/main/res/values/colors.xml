@@ -8,8 +8,6 @@
     <color name="black_tabs">#88000000</color>
     <color name="transparent">#00000000</color>
     <color name="home_transparent">#AA000000</color>
-
     <color name="black_overlay">#66000000</color>
-
    <color name="button_blue">#26a7df</color>
 </resources>

@@ -85,7 +85,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".VibrationTutorialActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_vibration_tutorial"/>
         <activity
             android:name=".IntensityActity"
             android:configChanges="orientation|keyboardHidden|screenSize"

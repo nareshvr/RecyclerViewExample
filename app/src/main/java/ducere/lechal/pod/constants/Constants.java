@@ -47,4 +47,15 @@ public class Constants {
         intent.putExtra(ActionsToService.FOOTWEAR_TYPE, pattern);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
+    public static void sendVibrationLeft(Context context, String pattern) {
+        Intent intent = new Intent(ActionsToService.VIBRATE_LEFT);
+        intent.putExtra(ActionsToService.VIBRATE_LEFT, pattern);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    public static void sendVibrationRight(Context context, String pattern) {
+        Intent intent = new Intent(ActionsToService.VIBRATE_RIGHT);
+        intent.putExtra(ActionsToService.VIBRATE_RIGHT, pattern);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
 }

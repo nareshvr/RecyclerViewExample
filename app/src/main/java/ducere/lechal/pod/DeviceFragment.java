@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
@@ -24,6 +25,7 @@ import com.github.seanzor.prefhelper.SharedPrefHelper;
 
 import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.Vibrations;
+import ducere.lechal.pod.customViews.CircleProgressView;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 
 
@@ -41,9 +43,10 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
     SharedPrefHelper mPref;
     SharedPreferences defaultSharedPreferences;
     TextView txtShoeType;
-
+    CircleProgressView progressView;
     private OnFragmentInteractionListener mListener;
     Context mContext = getContext();
+    LinearLayout llTutorials;
     public DeviceFragment() {
         // Required empty public constructor
     }
@@ -82,15 +85,18 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
         vib = new Vibrations();
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mPref = new SharedPrefHelper(getResources(), defaultSharedPreferences);
-        Button btnCheckPodPosition = (Button)view.findViewById(R.id.btnCheckPodPosition);
+        LinearLayout btnCheckPodPosition = (LinearLayout) view.findViewById(R.id.llCheckPodPosition);
         btnCheckPodPosition.setOnClickListener(this);
-        TextView txtVibrations = (TextView) view.findViewById(R.id.txtVibrations);
-        txtVibrations.setOnClickListener(this);
+
+        llTutorials = (LinearLayout) view.findViewById(R.id.llTutorials);
+        llTutorials.setOnClickListener(this);
         LinearLayout llIntensity = (LinearLayout)view.findViewById(R.id.llIntensity);
         llIntensity.setOnClickListener(this);
         LinearLayout llFootwear = (LinearLayout)view.findViewById(R.id.llFootwear);
         llFootwear.setOnClickListener(this);
         txtShoeType = (TextView)view.findViewById(R.id.txtShoeType);
+        progressView = (CircleProgressView)view.findViewById(R.id.imgBattareyStatus);
+        progressView.setPaintColor(Color.CYAN);
         return view;
     }
 
@@ -121,11 +127,11 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
        switch (v.getId()){
-           case R.id.btnCheckPodPosition:
+           case R.id.llCheckPodPosition:
                //@ToDo
                checkPodPositionDialog();
                break;
-           case R.id.txtVibrations:
+           case R.id.llTutorials:
                startActivity(new Intent(getActivity(),VibrationTutorialActivity.class));
                break;
            case R.id.llIntensity:
@@ -143,18 +149,19 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.check_pods_position);
         // set the custom dialog components - text, image and button
-        ImageView leftPod = (ImageView) dialog.findViewById(R.id.leftPod);
+        final ImageView leftPod = (ImageView) dialog.findViewById(R.id.leftPod);
         leftPod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (mPref.getBoolean(R.string.swap, false)) {
-                    BLEMS.sendVibM1("VB", "0001");
+                if (mPref.getBoolean(R.string.swap, false)) {
+                    //BLEMS.sendVibM1("VB", "0001");
+                    Constants.sendVibrationLeft(getContext(),"VB0001");
                 } else {
-
-                    BLEMS.sendVibM1("VB", "0100");
+                    Constants.sendVibrationRight(getContext(),"VB0100");
+                    //BLEMS.sendVibM1("VB", "0100");
                 }
                 //BLEMS.sendVibM1("VB", "0100");
-                ivLeft.setBackgroundResource(R.drawable.pod_position_left);
+                //leftPod.setBackgroundResource(R.drawable.pod_position_left);
                 new CountDownTimer(1000, 1000) {
 
                     @Override
@@ -164,17 +171,37 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onFinish() {
-                        ivLeft.setBackgroundResource(R.drawable.pod_position_left0);
+                        //leftPod.setBackgroundResource(R.drawable.pod_position_left0);
                     }
-                }.start();*/
+                }.start();
             }
         });
 
-        ImageView rightPod = (ImageView)dialog.findViewById(R.id.rightPod);
+        final ImageView rightPod = (ImageView)dialog.findViewById(R.id.rightPod);
         rightPod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mPref.getBoolean(R.string.swap,false)){
+                    //BLEMS.sendVibM1("VB", "0100");
+                    Constants.sendVibrationLeft(getContext(),"VB0100");
 
+                }else{
+                   // BLEMS.sendVibM1("VB", "0001");
+                    Constants.sendVibrationRight(getContext(),"VB0001");
+                }
+               // rightPod.setBackgroundResource(R.drawable.pod_position_right);
+                new CountDownTimer(1000, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //rightPod.setBackgroundResource(R.drawable.pod_position_right0);
+                    }
+                }.start();
             }
         });
 
@@ -183,6 +210,36 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
 
+                if (mPref.getBoolean(R.string.swap, false)) {
+                    mPref.commitBoolean(R.string.swap, false);
+                    // BLEMS.sendVibM1("VB", "0100");
+
+                } else {
+                    mPref.commitBoolean(R.string.swap, true);
+                    //BLEMS.sendVibM1("VB", "0001");
+
+                }
+                //swapPods.setBackgroundResource(R.drawable.pod_position_swap);
+                new CountDownTimer(1000, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //swapPods.setBackgroundResource(R.drawable.pod_position_swap0);
+                    }
+                }.start();
+                Toast.makeText(getActivity(),"Swapped.",Toast.LENGTH_SHORT).show();
+            }
+        });
+        TextView txtok = (TextView)dialog.findViewById(R.id.txtOK);
+        txtok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
             }
         });
 
@@ -205,25 +262,25 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
                         Toast.makeText(getContext(), "Select "+choiceList[which], Toast.LENGTH_SHORT).show();
                         switch (which){
                             case 0:
-                                mPref.commitInt(R.string.shoetype,0);
+                                mPref.commitInt(R.string.shoe_type,0);
                                 txtShoeType.setText(" Casual Shoe ");
                                 // BLEMS.writeData("CD2");
                                 Constants.sendFootwear(getContext(),"CD2");
                                 break;
                             case 1:
-                                mPref.commitInt(R.string.shoetype,1);
+                                mPref.commitInt(R.string.shoe_type,1);
                                 txtShoeType.setText(" Sports shoes ");
                                 // BLEMS.writeData("CD2");
                                 Constants.sendFootwear(getContext(),"CD3");
                                 break;
                             case 2:
-                                mPref.commitInt(R.string.shoetype,2);
+                                mPref.commitInt(R.string.shoe_type,2);
                                 txtShoeType.setText(" Insole ");
                                 // BLEMS.writeData("CD2");
                                 Constants.sendFootwear(getContext(),"CD1");
                                 break;
                             case 3:
-                                mPref.commitInt(R.string.shoetype,3);
+                                mPref.commitInt(R.string.shoe_type,3);
                                 txtShoeType.setText(" Ballerina ");
                                 // BLEMS.writeData("CD2");
                                 Constants.sendFootwear(getContext(),"CD4");

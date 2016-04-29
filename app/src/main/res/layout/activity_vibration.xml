@@ -1,6 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_selectDistance"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_distance"
+            android:textColor="@color/button_blue"
+            android:textStyle="bold" />
+
+        <ducere.lechal.pod.constants.MultiRowsRadioGroup
+            android:id="@+id/radioGroup1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioMeters1000"
+                    style="@style/text_radio"
+                    android:layout_marginEnd="8dp"
+                    android:checked="true"
+                    android:text="@string/meters_1000" />
+
+                <RadioButton
+                    android:id="@+id/radio500m"
+                    style="@style/text_radio"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/meters_500" />
+
+                <RadioButton
+                    android:id="@+id/radio200m"
+                    style="@style/text_radio"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/meters_200" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio150m"
+                    style="@style/text_radio"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/meters_150" />
+
+                <RadioButton
+                    android:id="@+id/radioNow"
+                    style="@style/text_radio"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/meters_new" />
+
+            </LinearLayout>
+        </ducere.lechal.pod.constants.MultiRowsRadioGroup>
+
+        <TextView
+            android:id="@+id/txtSelectPod"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_pod"
+            android:textColor="@color/button_blue"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioleft"
+                style="@style/text_radio"
+                android:layout_marginEnd="16dp"
+                android:checked="true"
+                android:text="@string/left_pod" />
+
+            <RadioButton
+                android:id="@+id/radioright"
+                style="@style/text_radio"
+                android:layout_marginStart="16dp"
+                android:text="@string/right_pod" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tvSelectTurn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:text="@string/select_turn"
+            android:textColor="@color/button_blue"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/llSlightTurn"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/turn_icon"
+                        android:src="@drawable/icon_slight_turn" />
+
+                    <TextView
+                        android:id="@+id/btnSlightTurn"
+                        style="@style/turn_text"
+                        android:text="@string/slight_turn" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llUTurn"
+                    style="@style/turn_button"
+                    android:layout_marginStart="8dp">
+
+                    <ImageView
+                        style="@style/turn_icon"
+                        android:src="@drawable/icon_uturn_white" />
+
+                    <TextView
+                        android:id="@+id/btnUTurn"
+                        style="@style/turn_text"
+                        android:text="@string/u_turn" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/llTurn"
+                    style="@style/turn_button"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        style="@style/turn_icon"
+                        android:src="@drawable/icon_turn_white" />
+
+                    <TextView
+                        android:id="@+id/btnTurn"
+                        style="@style/turn_text"
+                        android:text="@string/turn" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llKeepStraight"
+                    style="@style/turn_button"
+                    android:layout_marginStart="8dp">
+
+                    <ImageView
+                        style="@style/turn_icon"
+                        android:src="@drawable/icon_keep_shight_white" />
+
+                    <TextView
+                        android:id="@+id/btnKeepStraight"
+                        style="@style/turn_text"
+                        android:text="@string/keep_straight" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/llSharpTurn"
+                    style="@style/turn_button"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        style="@style/turn_icon"
+                        android:src="@drawable/icon_sharpturn_white" />
+
+                    <TextView
+                        android:id="@+id/btnSharpTurn"
+                        style="@style/turn_text"
+                        android:text="@string/sharp_turn" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDestination"
+                    style="@style/turn_button"
+                    android:layout_marginStart="8dp">
+
+                    <ImageView
+                        style="@style/turn_icon"
+                        android:src="@drawable/icon_destination_white" />
+
+                    <TextView
+                        android:id="@+id/btnDestination"
+                        style="@style/turn_text"
+                        android:text="@string/destination" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:text="@string/independent_feedback"
+            android:textColor="@color/button_blue"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/llree_route"
+                style="@style/turn_button"
+                android:layout_marginEnd="8dp">
+
+                <ImageView
+                    style="@style/turn_icon"
+                    android:src="@drawable/icon_slight_turn" />
+
+                <TextView
+                    android:id="@+id/txtree_route"
+                    style="@style/turn_text"
+                    android:text="@string/ree_route" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lllook_at_your_phone"
+                style="@style/turn_button"
+                android:layout_marginEnd="8dp">
+
+                <ImageView
+                    style="@style/turn_icon"
+                    android:src="@drawable/icon_slight_turn" />
+
+                <TextView
+                    android:id="@+id/txtlook_at_your_phone"
+                    style="@style/turn_text"
+                    android:text="@string/look_at_your_phone" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llDestinationReached"
+            style="@style/turn_button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                style="@style/turn_icon"
+                android:src="@drawable/icon_slight_turn" />
+
+            <TextView
+                android:id="@+id/btnDestinationReached"
+                style="@style/turn_text"
+                android:text="@string/destination_reached" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

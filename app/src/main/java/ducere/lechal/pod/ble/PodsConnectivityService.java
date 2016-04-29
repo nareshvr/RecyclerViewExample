@@ -331,7 +331,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
         }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_menu_camera)
+                        .setSmallIcon(R.mipmap.lechal_white)
                         .setContentTitle("Lechal connected")
                         .setContentText(info)
                         .setOngoing(true);

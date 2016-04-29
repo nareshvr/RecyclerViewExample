@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,7 +55,6 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
 
     private View coordinate;
     private CircleProgressView progress;
-    private Handler handler = new Handler();
 
     private Map<String, BluetoothDevice> foundDevices = new HashMap<>();
     private List<CharSequence> displayDeviceNames = new ArrayList<>();
@@ -83,7 +83,8 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
 
         coordinate = findViewById(R.id.coordinate);
         progress = (CircleProgressView) findViewById(R.id.progress);
-        progress.setProgress(10);
+        progress.setProgress(7);
+        progress.setPaintColor(ContextCompat.getColor(this, R.color.colorPrimaryAlert));
         progress.setVisibility(View.INVISIBLE);
         connectivityStatus = (TextView) findViewById(R.id.connectivity_status);
 
@@ -261,9 +262,9 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                 startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
                 finish();
             } else {
-                // TODO remove red image
                 findViewById(R.id.splash_walk).setVisibility(View.GONE);
                 findViewById(R.id.splash_red).setVisibility(View.GONE);
+                findViewById(R.id.icon).setVisibility(View.GONE);
             }
         }
 

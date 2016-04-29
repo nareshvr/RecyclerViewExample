@@ -18,6 +18,12 @@
         android:layout_height="200dp"
         android:layout_centerInParent="true" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/connecting_pods" />
+
     <TextView
         android:id="@+id/hint"
         style="@style/Base.TextAppearance.AppCompat.Medium"
@@ -53,6 +59,12 @@
         android:layout_height="match_parent"
         android:background="@mipmap/splash_walk" />
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/lechal_white" />
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinate"

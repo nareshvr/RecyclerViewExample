@@ -47,6 +47,7 @@ public class CircleProgressView extends View {
 
     public void setPaintColor(int paintColor) {
         this.paintColor = paintColor;
+        drawPaint.setColor(paintColor);
         invalidate();
     }
 

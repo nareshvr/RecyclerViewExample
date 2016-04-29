@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+            <LinearLayout
+                android:id="@+id/ll_selectDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tv_selectDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/select_distance"
+                    android:textColor="@color/button_blue"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+
+                    android:orientation="horizontal">
+
+
+                    <ducere.lechal.pod.constants.MultiRowsRadioGroup
+                        android:id="@+id/radioGroup1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1">
+
+                            <RadioButton
+                                android:id="@+id/radioMeters1000"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/radio_drawable"
+
+                                android:button="@android:color/transparent"
+                                android:checked="true"
+                                android:gravity="center"
+                                android:text="@string/meters_1000" />
+
+                            <RadioButton
+                                android:id="@+id/radio500m"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+
+                                android:background="@drawable/button_small_selected"
+                                android:button="@android:color/transparent"
+                                android:gravity="center"
+                                android:text="@string/meters_500" />
+
+                            <RadioButton
+                                android:id="@+id/radio200m"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/button_small_selected"
+                                android:button="@android:color/transparent"
+                                android:gravity="center"
+                                android:text="@string/meters_200"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radio150m"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+
+                                android:background="@drawable/button_small_selected"
+                                android:button="@android:color/transparent"
+                                android:gravity="center"
+                                android:text="@string/meters_150"
+                                android:textSize="18sp" />
+
+                            <RadioButton
+                                android:id="@+id/radioNow"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+
+                                android:background="@drawable/button_small_selected"
+                                android:button="@android:color/transparent"
+                                android:gravity="center"
+                                android:text="@string/meters_new"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+                    </ducere.lechal.pod.constants.MultiRowsRadioGroup>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_selectPod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+             >
+
+                <TextView
+                    android:id="@+id/txtSelectPod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/select_pod"
+                    android:textColor="@color/button_blue"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                       >
+
+                        <RadioButton
+                            android:id="@+id/radioleft"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_small_selected"
+                            android:button="@android:color/transparent"
+                            android:checked="true"
+                            android:gravity="center"
+                            android:text="@string/left_pod"
+                            android:textSize="18sp" />
+
+                        <RadioButton
+                            android:id="@+id/radioright"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_small_selected"
+                            android:button="@android:color/transparent"
+                            android:gravity="center"
+                            android:text="@string/right_pod"
+                            android:textSize="18sp" />
+                    </RadioGroup>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_selectTurn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvSelectTurn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/select_turn"
+                    android:textColor="@color/button_blue"
+                    android:textStyle="bold" />
+
+                <!--<ducere.lechal.pod.constants.MultiRowsRadioGroup
+                    android:id="@+id/radioGroup3"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:layout_weight="3"
+                    android:orientation="vertical">-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/llSlightTurn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_drawable"
+                            android:button="@android:color/transparent"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/icon_slight_turn" />
+
+                            <TextView
+                                android:id="@+id/btnSlightTurn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:checked="true"
+                                android:gravity="center"
+                                android:text="@string/slight_turn"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llUTurn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_drawable"
+                            android:button="@android:color/transparent"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/icon_uturn_white" />
+
+                            <TextView
+                                android:id="@+id/btnUTurn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="35dp"
+                                android:layout_marginRight="15dp"
+                                android:gravity="center"
+                                android:text="@string/u_turn"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/llTurn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_drawable"
+                            android:button="@android:color/transparent"
+                            android:gravity="center">
+
+                            <ImageView
+
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/icon_turn_white" />
+
+                            <TextView
+                                android:id="@+id/btnTurn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="25dp"
+                                android:layout_marginRight="55dp"
+                                android:gravity="center"
+                                android:text="@string/turn"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llKeepStraight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_drawable"
+                            android:button="@android:color/transparent"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/icon_keep_shight_white" />
+
+                            <TextView
+                                android:id="@+id/btnKeepStraight"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/keep_straight"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/llSharpTurn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_drawable"
+                            android:button="@android:color/transparent"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/icon_sharpturn_white" />
+
+                            <TextView
+                                android:id="@+id/btnSharpTurn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:gravity="center"
+                                android:text="@string/sharp_turn"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/llDestination"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_drawable"
+                            android:button="@android:color/transparent"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/icon_destination_white" />
+
+                            <TextView
+                                android:id="@+id/btnDestination"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:gravity="center"
+                                android:text="@string/destination"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+                <!--  </ducere.lechal.pod.constants.MultiRowsRadioGroup>-->
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_independentFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvIndependentFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/independent_feedback"
+                    android:textColor="@color/button_blue"
+                    android:textStyle="bold" />
+                <!--<ducere.lechal.pod.constants.MultiRowsRadioGroup
+                    android:id="@+id/radioGroup4"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical">
+        -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnReeRoute"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/radio_drawable"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/ree_route" />
+
+                    <Button
+                        android:id="@+id/btnLookAtYourPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/radio_drawable"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/look_at_your_phone" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnDestinationReached"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/radio_drawable"
+                        android:button="@android:color/transparent"
+                        android:gravity="center"
+                        android:text="@string/destination_reached" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -57,7 +57,11 @@
     <string name="swap">swap</string>
 
     <string name="title_activity_intensity_actity">IntensityActity</string>
+    <string name="title_activity_vibration_tutorial">Vibration tutorials</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="shoetype">shoetype</string>
+    <string name="shoe_type">shoetype</string>
+    <string name="essential_pods">ESSENTIAL PODS</string>
+    <string name="bing_pods">Bing Pod</string>
+    <string name="last_sync">Last synced at :3:58PM</string>
 </resources>

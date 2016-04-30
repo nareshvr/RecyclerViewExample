@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
- <color name="colorPrimary">#26A7DF</color>
+    <color name="colorPrimary">#26A7DF</color>
     <color name="colorPrimaryDark">#26A7DF</color>
     <color name="colorAccent">#26A7DF</color>
     <color name="white">#ffffff</color>
@@ -9,5 +9,8 @@
     <color name="transparent">#00000000</color>
     <color name="home_transparent">#AA000000</color>
     <color name="black_overlay">#66000000</color>
-   <color name="button_blue">#26a7df</color>
+    <color name="button_blue">#26a7df</color>
+    <color name="colorPrimaryAlert">#F05854</color>
+    <color name="blue">#26A7DF</color>
+    >>>>>>> 6362baf... pods home fragment design
 </resources>

@@ -1,209 +1,266 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appp="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="ducere.lechal.pod.HomeFragment">
+    android:layout_height="wrap_content">
 
-    <fragment
-        android:id="@+id/mapfragment"
-        class="com.here.android.mpa.mapping.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
-
-        android:id="@+id/rlTransparent"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="false"
-        android:background="@color/home_transparent">
+        tools:context="ducere.lechal.pod.HomeFragment">
+
+        <fragment
+            android:id="@+id/mapfragment"
+            class="com.here.android.mpa.mapping.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_alignParentBottom="true">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/llCurrentLoc"
-                android:layout_marginRight="60dp">
-                <ImageView
-                    android:id="@+id/ivSwitchCurrentLoc"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_margin="5dp"
-                    android:visibility="gone"
-                    android:background="@drawable/tab_settings_1"
-                    android:layout_gravity="center"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <np.TextView
-                        style="@style/AppTheme.Lato_Bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvW3w"
-                        android:layout_marginBottom="6dp"
-                        android:text="loading what3words.."
-                        android:textColor="@color/white"
-                        android:textSize="13sp"/>
-                    <np.TextView
-                        style="@style/AppTheme.Lato_Light"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvLocName"
-                        android:text="..."
-                        android:layout_marginBottom="5dp"
-                        android:textColor="@color/white"
-                        android:textSize="32sp"/>
-                    <np.TextView
-                        style="@style/AppTheme.Lato_Bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvLocAddress"
-                        android:text="..."
-                        android:textColor="@color/white"
-                        android:textSize="32sp"/>
-                </LinearLayout>
-            </LinearLayout>
+            android:layout_height="match_parent">
 
-            <View
+            <RelativeLayout
+
+                android:id="@+id/rlTransparent"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/white"
-                android:id="@+id/viewLine"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_below="@+id/llCurrentLoc"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="48dp"
-                android:layout_below="@+id/viewLine">
+                android:layout_height="match_parent"
+                android:background="@color/home_transparent"
+                android:clickable="false">
+
+
                 <LinearLayout
+                    android:id="@+id/viewLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:gravity="center_vertical">
-                    <np.TextView
-                        style="@style/AppTheme.Lato_Bold"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="48dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="center_vertical">
+
+                        <np.TextView
+                            style="@style/AppTheme.Lato_Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Daily stepcount"
+                            android:textColor="@color/white"
+                            android:textSize="13sp" />
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="150dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="16dp"
+                            android:progress="50" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="horizontal">
+
+                        <np.TextView
+                            style="@style/AppTheme.Lato_Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1200"
+                            android:textColor="@color/white"
+                            android:textSize="28sp" />
+
+                        <np.TextView
+                            style="@style/AppTheme.Lato_Light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" steps"
+                            android:textColor="@color/white"
+                            android:textSize="28sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <com.github.clans.fab.FloatingActionMenu
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_above="@+id/viewLine"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="-50dp"
+                    appp:layout_anchorGravity="right"
+                    fab:menu_colorNormal="@color/colorPrimary"
+                    fab:menu_colorPressed="@color/colorPrimary"
+                    fab:menu_colorRipple="#99FFFFFF"
+                    fab:menu_fab_size="normal">
+
+                    <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/menu_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Daily stepcount"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"/>
-                    <ProgressBar
-                        android:layout_width="150dp"
-                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_menu_camera"
+                        fab:fab_label="Group journey"
+                        fab:fab_size="mini"
+                        fab:menu_colorNormal="@color/transparent"
+                        fab:menu_colorPressed="@color/transparent" />
+
+                    <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/menu_work_out"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_camera"
+                        fab:fab_label="Start a workout"
+                        fab:fab_size="mini"
+                        fab:menu_colorNormal="@color/transparent"
+                        fab:menu_colorPressed="@color/transparent" />
+
+                    <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/menu_trails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_camera"
+                        fab:fab_label="Record a trail"
+                        fab:fab_size="mini"
+                        fab:menu_colorNormal="@color/transparent"
+                        fab:menu_colorPressed="@color/transparent" />
+
+                    <com.github.clans.fab.FloatingActionButton
+                        android:id="@+id/menu_geo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_camera"
+                        fab:fab_label="Menu item 1"
+                        fab:fab_size="mini"
+                        fab:menu_colorNormal="@color/transparent"
+                        fab:menu_colorPressed="@color/transparent" />
+
+                </com.github.clans.fab.FloatingActionMenu>
+
+                <LinearLayout
+                    android:id="@+id/llCurrentLoc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/viewLine"
+                    android:layout_marginRight="60dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivSwitchCurrentLoc"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="16dp"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:progress="50"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <np.TextView
-                        style="@style/AppTheme.Lato_Bold"
-                        android:layout_width="wrap_content"
+                        android:background="@drawable/switch_location_nav"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1200"
-                        android:textColor="@color/white"
-                        android:textSize="32sp"/>
-                    <np.TextView
-                        style="@style/AppTheme.Lato_Light"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" steps"
-                        android:textColor="@color/white"
-                        android:textSize="32sp"/>
+                        android:layout_marginRight="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:orientation="vertical">
+
+                        <np.TextView
+                            android:id="@+id/tvW3w"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp"
+                            android:text="loading what3words.."
+                            android:textColor="@color/white"
+                            android:textSize="13sp" />
+
+                        <np.TextView
+                            android:id="@+id/tvLocName"
+                            style="@style/AppTheme.Lato_Light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:text="..."
+                            android:textColor="@color/white"
+                            android:textSize="28sp" />
+
+                        <np.TextView
+                            android:id="@+id/tvLocAddress"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/white"
+                            android:textSize="28sp" />
+                    </LinearLayout>
                 </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/llSearchBg"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:background="@color/black"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
             </LinearLayout>
-            <com.github.clans.fab.FloatingActionMenu
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                fab:menu_fab_size="normal"
-                android:layout_alignParentRight="true"
-                android:layout_above="@+id/viewLine"
-                fab:menu_colorNormal="@color/colorPrimary"
-                fab:menu_colorPressed="@color/colorPrimary"
-                fab:menu_colorRipple="#99FFFFFF"
-                android:layout_marginBottom="-50dp"
-                >
-                <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/menu_item"
+
+            <LinearLayout
+                android:id="@+id/llSearch"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_bg_home_drawable"
+                android:clickable="false">
+
+                <ImageView
+                    android:id="@+id/ivBack"
+                    android:layout_width="42dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_search_icon_drawable"
+                    android:padding="6.6dp"
+                    android:src="@drawable/search_nav_white" />
+
+                <np.TextView
+                    android:id="@+id/tvEditLocation"
+                    style="@style/AppTheme.Lato_Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_menu_camera"
-                    fab:fab_size="mini"
-                    fab:fab_label="Menu item 1" />
-            </com.github.clans.fab.FloatingActionMenu>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_weight="1"
+                    android:text="Enter destination"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/ivMockLocation"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/ic_edit_circle"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </RelativeLayout>
 
+
     </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/llSearchBg"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:visibility="gone"
-        android:orientation="horizontal"
-        android:background="@color/black">
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/llSearch"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="false"
-        android:background="@drawable/edittext_bg_home_drawable">
-
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:src="@drawable/ic_search"
-            android:background="@drawable/edittext_search_icon_drawable"/>
-
-        <np.TextView
-            android:id="@+id/tvEditLocation"
-            style="@style/AppTheme.Lato_Bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enter destination"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="12dp"/>
-        <ImageView
-            android:id="@+id/ivMockLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:visibility="gone"
-            android:src="@drawable/tab_settings_1"/>
-    </LinearLayout>
-
-</RelativeLayout>
-
-
-
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

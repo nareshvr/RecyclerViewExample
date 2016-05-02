@@ -2,11 +2,21 @@ package ducere.lechal.pod;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
+import android.os.Build;
 import android.provider.Settings;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +24,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,9 +48,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements ActionBar.TabListener {
 
     EditText etSearch;
     LinearLayout llSearchResults;
@@ -47,18 +59,38 @@ public class SearchActivity extends AppCompatActivity {
     PositioningManager positioningManager= null;
     List<DiscoveryResult> items;
     ScrollView scrollView;
-
+    private ViewPager viewPager;
+    private TabsPagerAdapter mAdapter;
     int from=0;
+    private TabLayout tabLayout;
+    ImageView ivW3w,ivBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        if (Build.VERSION.SDK_INT >= 21) {
+            //getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+
+        }
         initMapEngine();
         from= getIntent().getExtras().getInt("from");
 
         etSearch = (EditText) findViewById(R.id.etSearch);
         llSearchResults = (LinearLayout) findViewById(R.id.llSearchResult);
+        ivW3w = (ImageView)findViewById(R.id.ivW3w);
+        ivBack = (ImageView)findViewById(R.id.ivBack);
         scrollView = (ScrollView)findViewById(R.id.scrollView);
+        // Initilization
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -67,6 +99,23 @@ public class SearchActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 
                 return false;
+            }
+        });
+        ivW3w.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ivW3w.getDrawable() == getResources().getDrawable(R.drawable.ic_w3w_unfilled)) {
+                    ivW3w.setImageResource(R.drawable.ic_w3w_filled);
+
+                } else {
+                    ivW3w.setImageResource(R.drawable.ic_w3w_unfilled);
+                }
+            }
+        });
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -84,9 +133,9 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (s.toString().length() == 0) {
 
-
+                scrollView.setVisibility(View.GONE);
                 } else {
-
+                    scrollView.setVisibility(View.VISIBLE);
 
                     LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
                     if (isMapEngineInitialize) {
@@ -144,6 +193,13 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new HistoryFragment(), "History");
+        adapter.addFragment(new TagsFragment(), "Tags");
+        adapter.addFragment(new NearByFragment(), "Nearby");
+        viewPager.setAdapter(adapter);
+    }
     public void initMapEngine() {
         MapEngine mapEngine = MapEngine.getInstance(getApplicationContext());
         mapEngine.init(getApplicationContext(), new OnEngineInitListener() {
@@ -197,6 +253,22 @@ public class SearchActivity extends AppCompatActivity {
         // Showing Alert Message
         alertDialog.show();
     }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
     // Example Search request listener
     class SearchPlaceListener implements ResultListener<DiscoveryResultPage> {
         @Override
@@ -232,27 +304,33 @@ public class SearchActivity extends AppCompatActivity {
                             final TextView tvAddress = (TextView) rowView.findViewById(R.id.tvAddress);
                             final TextView tvDistance = (TextView) rowView.findViewById(R.id.tvDistance);
                             final ImageView ivType = (ImageView)rowView.findViewById(R.id.ivType);
+                            final ImageView ivTag = (ImageView)rowView.findViewById(R.id.ivTag);
                             ivType.setVisibility(View.GONE);
 
                             tvName.setText(placeLink.getTitle() + "");
                             tvAddress.setVisibility(View.VISIBLE);
                             tvAddress.setText(placeLink.getVicinity().replace("<br/>", ",") + "");
                             tvDistance.setText(placeLink.getDistance()/1000.0+" km");
+                            ivTag.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            });
 
                             rowView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     if (from == 0) {//for search
+                                        Intent returnIntent = new Intent(SearchActivity.this,NavigationActivity.class);
 
-                                    } else {//for mock location set
-                                        Intent returnIntent = new Intent();
-                                        setResult(Activity.RESULT_OK, returnIntent);
-                                        returnIntent.putExtra("title", placeLink.getTitle());
-                                        returnIntent.putExtra("lat", placeLink.getPosition().getLatitude());
-                                        returnIntent.putExtra("lng", placeLink.getPosition().getLatitude());
-                                        returnIntent.putExtra("geo", placeLink.getPosition().toString());
-                                        returnIntent.putExtra("vicinity", placeLink.getVicinity());
+                                        Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                                        returnIntent.putExtra("place", place);
+                                        startActivity(returnIntent);
                                         finish();
+                                    } else {//for mock location set
+                                        showDialogSwitchLocation(placeLink);
+
 
                                     }
                                 }
@@ -273,5 +351,68 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         }
+    }
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+    void showDialogSwitchLocation(final PlaceLink placeLink){
+        final Dialog dialog = new Dialog(SearchActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_layout);
+
+        TextView title = (TextView) dialog.findViewById(R.id.tvTitle);
+        TextView description = (TextView) dialog.findViewById(R.id.tvDescription);
+        TextView cancel = (TextView) dialog.findViewById(R.id.tvCancel);
+        TextView ok = (TextView) dialog.findViewById(R.id.tvOk);
+        title.setText("Edit your location");
+        description.setText("You have chosen to edit your current location to "+placeLink.getTitle()+".All your searches will refer this new location, Do you want to continue?");
+        ok.setText("Yes");
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_OK, returnIntent);
+                Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                returnIntent.putExtra("place", place);
+
+                finish();
+                dialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 }

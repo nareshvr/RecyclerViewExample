@@ -1,6 +1,7 @@
 package ducere.lechal.pod.ble;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -25,6 +26,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,7 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import ducere.lechal.pod.R;
 import ducere.lechal.pod.constants.BundleKeys;
+import ducere.lechal.pod.constants.Constants;
+import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.podsdata.FitnessData;
 
 /**
@@ -49,7 +54,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
     // Scan only for ten seconds
     private static final long SCAN_PERIOD = 10000;
 
-    private boolean isScanning = false;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner bluetoothLeScanner;
     private BluetoothGatt bluetoothGatt;
@@ -60,6 +64,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
     private List<BluetoothGattService> bluetoothGattServices;
 
     private Handler handler;
+
+    private String msBattery = "";
+    private String qtrBattery = "";
 
     /**
      * this method will not be called if service is already running
@@ -104,6 +111,11 @@ public class PodsConnectivityService extends Service implements PodCommands {
         filter.addAction(ActionsToService.SCAN_PODS);
         filter.addAction(ActionsToService.SCAN_STOP);
         filter.addAction(ActionsToService.CONNECT_TO_DEVICE);
+        filter.addAction(ActionsToService.INTENSITY);
+        filter.addAction(ActionsToService.FOOTWEAR_TYPE);
+        filter.addAction(ActionsToService.GET_BATTERY);
+        filter.addAction(ActionsToService.VIBRATE_LEFT);
+        filter.addAction(ActionsToService.VIBRATE_RIGHT);
         // Add more commands
         LocalBroadcastManager.getInstance(PodsConnectivityService.this).registerReceiver(broadcastReceiverForCommands, filter);
     }
@@ -136,6 +148,26 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
                     Log.i(PodsConnectivityService.class.getName(), "Connect to " + device.getAddress());
                     bluetoothGatt = device.connectGatt(PodsConnectivityService.this, true, gattCallback);
+                    break;
+                case ActionsToService.INTENSITY:
+                    pattern = intent.getStringExtra(ActionsToService.INTENSITY);
+                    setIntensity(pattern);
+                    break;
+                case ActionsToService.FOOTWEAR_TYPE:
+                    pattern = intent.getStringExtra(ActionsToService.FOOTWEAR_TYPE);
+                    setFootwearType(pattern);
+                    break;
+                case ActionsToService.GET_BATTERY:
+                    intent = new Intent(ServiceBroadcastActions.BATTERY);
+                    intent.putExtra(ServiceBroadcastActions.BATTERY, getRemainingBattery());
+                    LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
+                    break;
+                case ActionsToService.VIBRATE_LEFT:
+                    vibrate("VB0100"); // TODO move strings to vibrations patterns
+                    break;
+                case ActionsToService.VIBRATE_RIGHT:
+                    vibrate("VB0001"); // TODO move strings to vibrations patterns
+
                     break;
             }
         }
@@ -192,19 +224,34 @@ public class PodsConnectivityService extends Service implements PodCommands {
         intent.putExtra(BundleKeys.BLE_RSSI, rssi);
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+        if (device.getAddress().equalsIgnoreCase(SharedPrefUtil.getPodsMacid(this))) {
+            // found device previously connected
+            Intent connectDeviceIntent = new Intent(ActionsToService.CONNECT_TO_DEVICE);
+            connectDeviceIntent.putExtra(BundleKeys.BLE_DEVICE, device);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(connectDeviceIntent);
+
+            // stop scan
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(ActionsToService.SCAN_STOP));
+        }
     }
 
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(new Intent(ServiceBroadcastActions.PODS_CONNECTED));
+                Intent intent = new Intent(ServiceBroadcastActions.PODS_CONNECTED);
+                intent.putExtra(BundleKeys.BLE_DEVICE, gatt.getDevice());
+                LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
                 Log.i(PodsConnectivityService.class.getName(), "Connected to GATT server.");
                 bluetoothGatt = gatt;
                 bluetoothGatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 // TODO broadcast gatt disconnected state to the app
                 Log.i(PodsConnectivityService.class.getName(), "Disconnected from GATT server.");
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(Constants.NOTIFICATION_ID);
             }
         }
 
@@ -250,6 +297,8 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     startSendingFitnessData();
                 }
             }, 10000);*/
+
+            showConnectedPodsNotification(78, getRemainingBattery());
         }
 
         @Override
@@ -268,10 +317,41 @@ public class PodsConnectivityService extends Service implements PodCommands {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.i(PodsConnectivityService.class.getName(), "Characteristic changed");
+//            Log.i(PodsConnectivityService.class.getName(), "Characteristic changed");
             handleCharacteristic(characteristic);
         }
     };
+
+    private void showConnectedPodsNotification(int goalCompletedPercent, int remainingBatteryPercent) {
+        String info = "";
+        if (goalCompletedPercent > 0) {
+            info = "Goal " + goalCompletedPercent + "%";
+        }
+        if (remainingBatteryPercent != -1) {
+            info = info.concat(" Battery " + remainingBatteryPercent + "%").trim();
+        }
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.lechal_white)
+                        .setContentTitle("Lechal connected")
+                        .setContentText(info)
+                        .setOngoing(true);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(Constants.NOTIFICATION_ID, mBuilder.build());
+    }
+
+    int getRemainingBattery() {
+        if (TextUtils.isEmpty(msBattery) || TextUtils.isEmpty(qtrBattery)) {
+            return -1;
+        }
+        int msRemaining = Integer.parseInt(msBattery.substring(2, 5));
+        int qtrRemaining = Integer.parseInt(qtrBattery.substring(2, 5));
+        if (msRemaining > qtrRemaining) {
+            return qtrRemaining;
+        }
+        return msRemaining;
+    }
 
     private void handleCharacteristic(BluetoothGattCharacteristic characteristic) {
         byte[] data;
@@ -287,13 +367,18 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 }
                 break;
             case PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_MS_NOTIFY:
-                Log.i(PodsConnectivityService.class.getName(), "Found MS notify: " + characteristic.getUuid());
+//                Log.i(PodsConnectivityService.class.getName(), "Found MS notify: " + characteristic.getUuid());
                 data = characteristic.getValue();
                 String msMsg = new String(data);
                 if (!TextUtils.isEmpty(msMsg)) {
-                    Intent intent = new Intent(ServiceBroadcastActions.MISC_MS_DATA);
-                    intent.putExtra(ServiceBroadcastActions.MISC_MS_DATA, msMsg);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+                    Log.i("MS Notify", msMsg);
+                    if (msMsg.startsWith("BT")) {
+                        msBattery = msMsg;
+
+                        int remainingBattery = getRemainingBattery();
+                        showConnectedPodsNotification(78, remainingBattery);
+                    }
                 }
                 // Ask for battery status after given time
                 handler.postDelayed(new Runnable() {
@@ -304,13 +389,15 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 }, BATTERY_PING_FREQUENCY);
                 break;
             case PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_QTR_NOTIFY:
-                Log.i(PodsConnectivityService.class.getName(), "Found QTR Notify: " + characteristic.getUuid());
+//                Log.i(PodsConnectivityService.class.getName(), "Found QTR Notify: " + characteristic.getUuid());
                 data = characteristic.getValue();
                 String qtrMsg = new String(data);
                 if (!TextUtils.isEmpty(qtrMsg)) {
-                    Intent intent = new Intent(ServiceBroadcastActions.MISC_QTR_DATA);
-                    intent.putExtra(ServiceBroadcastActions.MISC_QTR_DATA, qtrMsg);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+                    Log.i("QTR Notify", qtrMsg);
+                    if (qtrMsg.startsWith("BT")) {
+                        qtrBattery = qtrMsg;
+                    }
                 }
                 break;
             default:
@@ -384,6 +471,24 @@ public class PodsConnectivityService extends Service implements PodCommands {
         enableDescriptor(characteristic);
     }
 
+    @Override
+    public void setIntensity(String intensity) {
+        BluetoothGattCharacteristic vibCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_VIBRATE));
+        if (vibCharacteristic != null) {
+            vibCharacteristic.setValue(intensity);
+            bluetoothGatt.writeCharacteristic(vibCharacteristic);
+        }
+    }
+
+    @Override
+    public void setFootwearType(String footwearType) {
+        BluetoothGattCharacteristic characteristic = miscellaneousService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_WRITE));
+        if (characteristic != null) {
+            characteristic.setValue(footwearType);
+            bluetoothGatt.writeCharacteristic(characteristic);
+        }
+    }
+
     private void readServices() {
         Log.i(PodsConnectivityService.class.getName(), "Discovered Services : " + bluetoothGattServices.size());
         for (BluetoothGattService bluetoothGattService : bluetoothGattServices) {
@@ -400,8 +505,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
     }
 
     private void startBleScan() {
-        isScanning = true;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             ScanSettings.Builder scanSettingsBuilder = new ScanSettings.Builder();
@@ -426,7 +529,6 @@ public class PodsConnectivityService extends Service implements PodCommands {
     }
 
     private void stopBleScan() {
-        isScanning = false;
         // stop only when it's turned ON
         if (bluetoothAdapter != null && bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -443,6 +545,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 
     @Override
     public void onDestroy() {
@@ -479,7 +582,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                         break;
                     case BluetoothAdapter.STATE_ON:
                         Log.i(PodsConnectivityService.class.getName(), "Bluetooth turned ON");
-                        startBleScan();
+                        LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
 //                        setButtonText("Turning Bluetooth on...");
@@ -490,8 +593,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
     };
 
     public static float byteToFloat(byte[] data) {
-        float f = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
-        return f;
+        return ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
 }

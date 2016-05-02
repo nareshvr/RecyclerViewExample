@@ -1,18 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg"
     android:keepScreenOn="true"
     tools:context=".PodsConnectionActivity">
 
-    <TextView
-        style="@style/Base.TextAppearance.AppCompat.Large"
-        android:id="@+id/connectivity_status"
-        android:layout_width="match_parent"
-        android:text="helo"
-        android:gravity="center_horizontal"
-        android:layout_height="wrap_content" />
+    <ducere.lechal.pod.customViews.CircleProgressView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <ducere.lechal.pod.customViews.CircleProgressView
+        android:id="@+id/progress"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/connecting_pods" />
+
+    <TextView
+        android:id="@+id/hint"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/progress"
+        android:layout_marginBottom="64dp"
+        android:gravity="center_horizontal"
+        android:text="@string/pods_connection_hint_keep_close"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/connectivity_status"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/hint"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:text="Welcome"
+        android:textColor="@android:color/white" />
+
+
+    <ImageView
+        android:id="@+id/splash_red"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/splash_red" />
+
+    <ImageView
+        android:id="@+id/splash_walk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/splash_walk" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/lechal_white" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

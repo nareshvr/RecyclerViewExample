@@ -1,5 +1,6 @@
 package ducere.lechal.pod;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -166,7 +167,6 @@ public class MainActivity extends AppCompatActivity
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -184,12 +184,10 @@ public class MainActivity extends AppCompatActivity
 
         public void addFrag(Fragment fragment, String title) {
             mFragmentList.add(fragment);
-            // mFragmentTitleList.add(title);
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-
             return "";
         }
     }
@@ -263,5 +261,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }

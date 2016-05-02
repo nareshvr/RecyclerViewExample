@@ -53,7 +53,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="rename">Rename</string>
     <string name="about">About</string>
-    <color name="colorPrimaryProfile">#3333ff</color>
+
     <string name="swap">swap</string>
 
     <string name="title_activity_intensity_actity">IntensityActity</string>

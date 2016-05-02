@@ -1,5 +1,4 @@
 package ducere.lechal.pod;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -22,10 +21,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.github.seanzor.prefhelper.SharedPrefHelper;
 import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
-
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.Vibrations;
@@ -41,6 +38,8 @@ public class DeviceFragment extends Fragment implements View.OnClickListener{
     Vibrations vib;
     TextView txtShoeType;
     View view;
+    Context context = getContext();
+    AlertDialog levelDialog;
     public DeviceFragment() {
         // Required empty public constructor
     }
@@ -76,7 +75,6 @@ public class DeviceFragment extends Fragment implements View.OnClickListener{
     public void onStart() {
         super.onStart();
         IntentFilter intentFilter = new IntentFilter(ServiceBroadcastActions.BATTERY);
-
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -103,7 +101,8 @@ public class DeviceFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.llIntensity:
-                startActivity(new Intent(getActivity(),IntensityActity.class));
+                //startActivity(new Intent(getActivity(),IntensityActity.class));
+                showIntensityDialog();
                 break;
             case R.id.cwPodsPosition:
                 checkPodPositionDialog();
@@ -117,6 +116,65 @@ public class DeviceFragment extends Fragment implements View.OnClickListener{
 
         }
     }
+
+    private void showIntensityDialog() {
+        // Strings to Show In Dialog with Radio Buttons
+        final CharSequence[] items = {" Very High "," High "," Medium "," Low "," Very Low "};
+
+        // Creating and Building the Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Vibration Intensity Levels");
+        builder.setSingleChoiceItems(items, Math.abs(mPref.getInt(R.string.vibintensity,5)-5), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                switch(item)
+                {
+                    case 0:
+                        // Your code when first option seletced
+                        mPref.commitInt(R.string.vibintensity,5);
+                        //tvVibINtensity.setText(" Very High ");
+                        // BLEMS.sendVibM1("VI", "5");
+                        Constants.sendIntensity(context,"VI5");
+                        break;
+                    case 1:
+                        // Your code when 2nd  option seletced
+                        mPref.commitInt(R.string.vibintensity,4);
+                        //tvVibINtensity.setText(" High ");
+                        //BLEMS.sendVibM1("VI", "4");
+                        Constants.sendIntensity(context,"VI4");
+
+                        break;
+                    case 2:
+                        // Your code when 3rd option seletced
+                        mPref.commitInt(R.string.vibintensity,3);
+                        // tvVibINtensity.setText(" Medium ");
+                        //BLEMS.sendVibM1("VI","3");
+                        Constants.sendIntensity(context,"VI3");
+                        break;
+                    case 3:
+                        // Your code when 3rd option seletced
+                        mPref.commitInt(R.string.vibintensity,2);
+                        //tvVibINtensity.setText(" Low ");
+                        // BLEMS.sendVibM1("VI","2");
+                        Constants.sendIntensity(context,"VI2");
+                        break;
+                    case 4:
+                        // Your code when 3rd option seletced
+                        mPref.commitInt(R.string.vibintensity,1);
+                        //tvVibINtensity.setText(" Very Low ");
+                        //BLEMS.sendVibM1("VI","1");
+                        Constants.sendIntensity(context,"VI1");
+                        break;
+
+                }
+                levelDialog.dismiss();
+            }
+        });
+
+        levelDialog = builder.create();
+        levelDialog.show();
+
+    }
+
     private void checkPodPositionDialog() {
         // custom dialog
         final Dialog dialog = new Dialog(getContext());
@@ -131,17 +189,11 @@ public class DeviceFragment extends Fragment implements View.OnClickListener{
                     Constants.sendVibrationLeft(getContext(),"VB0001");
                 } else {
                     Constants.sendVibrationRight(getContext(),"VB0100");
-                    //BLEMS.sendVibM1("VB", "0100");
                 }
-                //BLEMS.sendVibM1("VB", "0100");
-                //leftPod.setBackgroundResource(R.drawable.pod_position_left);
                 new CountDownTimer(1000, 1000) {
-
                     @Override
                     public void onTick(long millisUntilFinished) {
-
                     }
-
                     @Override
                     public void onFinish() {
                         //leftPod.setBackgroundResource(R.drawable.pod_position_left0);
@@ -155,11 +207,9 @@ public class DeviceFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 if(mPref.getBoolean(R.string.swap,false)){
-                    //BLEMS.sendVibM1("VB", "0100");
                     Constants.sendVibrationLeft(getContext(),"VB0100");
 
                 }else{
-                    // BLEMS.sendVibM1("VB", "0001");
                     Constants.sendVibrationRight(getContext(),"VB0001");
                 }
                 // rightPod.setBackgroundResource(R.drawable.pod_position_right);

@@ -30,6 +30,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -441,11 +442,13 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void vibrate(String pattern) {
-        BluetoothGattCharacteristic vibCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_VIBRATE));
-        if (vibCharacteristic != null) {
-            vibCharacteristic.setValue(pattern);
-            bluetoothGatt.writeCharacteristic(vibCharacteristic);
-        }
+
+            BluetoothGattCharacteristic vibCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_VIBRATE));
+            if (vibCharacteristic != null) {
+                vibCharacteristic.setValue(pattern);
+                bluetoothGatt.writeCharacteristic(vibCharacteristic);
+            }
+
     }
 
     @Override

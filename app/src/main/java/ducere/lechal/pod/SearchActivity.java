@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
 
 public class SearchActivity extends AppCompatActivity implements ActionBar.TabListener {
@@ -63,6 +64,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
     int from=0;
     private TabLayout tabLayout;
     ImageView ivW3w,ivBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -322,7 +324,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                                     if (from == 0) {//for search
                                         Intent returnIntent = new Intent(SearchActivity.this,NavigationActivity.class);
 
-                                        Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude());
+                                        Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
                                         returnIntent.putExtra("place", place);
                                         startActivity(returnIntent);
                                         finish();
@@ -397,7 +399,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
-                Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude());
+                Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
                 returnIntent.putExtra("place", place);
 
                 finish();

@@ -4,11 +4,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +34,9 @@ public class TagsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    PlaceUtility placeUtility;
+    View view;
+    List<Place> placeList;
 
 
     public TagsFragment() {
@@ -65,7 +74,24 @@ public class TagsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tags, container, false);
+        if (view != null) {
+
+            ViewGroup parent = (ViewGroup) view.getParent();
+
+            if (parent != null)
+                parent.removeView(view);
+        } else
+            try {
+                view =  inflater.inflate(R.layout.fragment_tags, container, false);
+                placeUtility = new PlaceUtility(getActivity());
+                placeList = placeUtility.getTags();
+                Log.d("tags size",placeList.size()+"");
+
+            }catch (InflateException e) {
+
+            }
+
+        return view;
     }
 
 

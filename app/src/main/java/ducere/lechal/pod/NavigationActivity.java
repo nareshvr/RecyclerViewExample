@@ -105,7 +105,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                             new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                     LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    GeoCoordinate geo = new GeoCoordinate(place.getLat(),place.getLng());
+                    GeoCoordinate geo = new GeoCoordinate(place.getGeo().getLatitude(),place.getGeo().getLongitude());
                     map.setCenter(geo,
                                     Map.Animation.LINEAR);
 

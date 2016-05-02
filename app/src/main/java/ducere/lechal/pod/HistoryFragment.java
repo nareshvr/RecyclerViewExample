@@ -20,6 +20,7 @@ import ca.barrenechea.widget.recyclerview.decoration.DividerDecoration;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.adapters.StickyTestAdapter;
+import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
 import np.TextView;
 
@@ -84,15 +85,15 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
         mList.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         mList.addItemDecoration(divider);
 
-        placeList.add(new Place("Gvk One", "banjara hills", 2, 17.225544, 78.335566));
-        placeList.add(new Place("Lv Prasad", "banjara hills", 2, 17.225544, 78.335566));
-        placeList.add(new Place("Panjagutta", "banjara hills", 2, 17.225544, 78.335566));
-        placeList.add(new Place("Gvk One", "banjara hills", 2, 17.225544, 78.335566));
-        placeList.add(new Place("Lv Prasad","banjara hills",2,17.225544,78.335566));
-        placeList.add(new Place("Panjagutta","banjara hills",2,17.225544,78.335566));
-        placeList.add(new Place("Gvk One", "banjara hills", 2, 17.225544, 78.335566));
-        placeList.add(new Place("Lv Prasad","banjara hills",2,17.225544,78.335566));
-        placeList.add(new Place("Panjagutta","banjara hills",2,17.225544,78.335566));
+        placeList.add(new Place("Gvk One", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566) ));
+        placeList.add(new Place("Lv Prasad", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Panjagutta", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Gvk One", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Lv Prasad","banjara hills",2, new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Panjagutta","banjara hills",2,new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Gvk One", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Lv Prasad","banjara hills",2, new GeoCoordinate(17.225544, 78.335566)));
+        placeList.add(new Place("Panjagutta","banjara hills",2, new GeoCoordinate(17.225544, 78.335566)));
         setAdapterAndDecor(mList);
     }
 

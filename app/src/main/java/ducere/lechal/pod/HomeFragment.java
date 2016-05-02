@@ -582,8 +582,8 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             ivSwitchCurrentLoc.setVisibility(View.VISIBLE);
             Place place = (Place)data.getSerializableExtra("place");
             prefUtil.commitString(getActivity(), prefUtil.MOCK_LOCATION, place.getTitle());
-            prefUtil.commitDouble(getActivity(), prefUtil.MOCK_LAT, (float) place.getLat());
-            prefUtil.commitDouble(getActivity(),prefUtil.MOCK_LNG,(float)place.getLng());
+            prefUtil.commitDouble(getActivity(), prefUtil.MOCK_LAT, (float) place.getGeo().getLatitude());
+            prefUtil.commitDouble(getActivity(),prefUtil.MOCK_LNG,(float)place.getGeo().getLongitude());
             prefUtil.commitString(getActivity(), prefUtil.MOCK_VICINITY, place.getVicinity());
             prefUtil.commitBoolean(getActivity(), prefUtil.IS_MOCK_ENABLE, true);
 

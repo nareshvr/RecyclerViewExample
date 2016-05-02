@@ -1,10 +1,14 @@
 package ducere.lechal.pod;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,10 +23,13 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -68,11 +75,12 @@ import java.lang.ref.WeakReference;
 
 import ducere.lechal.pod.beans.Place;
 import ducere.lechal.pod.constants.SharedPrefUtil;
+import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 import ducere.lechal.pod.interfaces.OnUpdateSearchLocation;
 
 
-public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
+public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnBackPressed {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -192,23 +200,25 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                 llSearch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(getActivity(), SearchActivity.class).putExtra("from", 0));
+                        startActivity(new Intent(getActivity(), SearchActivity.class).putExtra("from", 0),
+                                ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
                     }
                 });
                 ivMockLocation.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivityForResult(new Intent(getActivity(), SearchActivity.class).putExtra("from", 1), 101);
+                        startActivityForResult(new Intent(getActivity(), SearchActivity.class).putExtra("from", 1), 101,
+                                ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
                     }
                 });
                 ivSwitchCurrentLoc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(prefUtil.getBoolean(getActivity(),prefUtil.IS_MOCK_ENABLE)){
-                            prefUtil.commitBoolean(getActivity(), prefUtil.IS_MOCK_ENABLE, false);
-                            ivSwitchCurrentLoc.setVisibility(View.GONE);
-                        }
+                        showDialogSwitchLocation();
+
                     }
+
+
                 });
 
 
@@ -224,22 +234,20 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
             MainActivity.tabLayout.setVisibility(View.GONE);
             llSearchBg.setVisibility(View.VISIBLE);
             MainActivity.toolbar.setVisibility(View.GONE);
+
             // MainActivity.toolbar.animate().translationY(-MainActivity.toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
 
-            Animation bottomDown = AnimationUtils.loadAnimation(getContext(),
+           /* Animation bottomDown = AnimationUtils.loadAnimation(getContext(),
                     R.anim.bottom_down);
-            rlTransparent.startAnimation(bottomDown);
+            rlTransparent.startAnimation(bottomDown);*/
 
-            int colorFrom = Color.BLACK;
-            int colorTo = Color.TRANSPARENT;
-            int duration = 100;
-            ObjectAnimator.ofObject(rlTransparent, "backgroundColor", new ArgbEvaluator(), colorFrom, colorTo)
-                    .setDuration(duration)
-                    .start();
+
 
             final Animation slideUp = AnimationUtils.loadAnimation(getContext(),
                     R.anim.slide_up);
             llSearch.startAnimation(slideUp);
+           // invisibleView(rlTransparent);
+            rlTransparent.setVisibility(View.GONE);
 
             slideUp.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -262,42 +270,26 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                 }
             });
 
-            bottomDown.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
 
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                    rlTransparent.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
         } else {
-
+            llSearchBg.setVisibility(View.GONE);
             //MainActivity.toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-            int colorFrom = Color.TRANSPARENT;
-            int colorTo = 0xAA000000;
-            int duration = 100;
-            ObjectAnimator.ofObject(rlTransparent, "backgroundColor", new ArgbEvaluator(), colorFrom, colorTo)
-                    .setDuration(duration)
-                    .start();
 
-            Animation slideDown = AnimationUtils.loadAnimation(getContext(),
+
+            /*Animation slideDown = AnimationUtils.loadAnimation(getContext(),
                     R.anim.slide_down);
-            llSearch.startAnimation(slideDown);
-            slideDown.setAnimationListener(new Animation.AnimationListener() {
+            slideDown.setFillAfter(true);*/
+           // llSearch.setVisibility(View.VISIBLE);
+
+            ivBack.setImageResource(R.drawable.search_nav_white);
+            tvEditLocation.setText("Enter destination");
+           // llSearch.startAnimation(slideDown);
+
+         /*   slideDown.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
-                    ivBack.setImageResource(R.drawable.ic_search);
-                    tvEditLocation.setText("Enter destination");
+
                 }
 
                 @Override
@@ -309,12 +301,16 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                 public void onAnimationRepeat(Animation animation) {
 
                 }
-            });
+            });*/
+            ivMockLocation.setVisibility(View.GONE);
+            viewVisible(rlTransparent);
 
-            Animation bottomUp = AnimationUtils.loadAnimation(getContext(),
+
+           /* Animation bottomUp = AnimationUtils.loadAnimation(getContext(),
                     R.anim.bottom_up);
-            rlTransparent.startAnimation(bottomUp);
-            bottomUp.setAnimationListener(new Animation.AnimationListener() {
+            rlTransparent.startAnimation(bottomUp);*/
+
+          /*  bottomUp.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
                     ivMockLocation.setVisibility(View.GONE);
@@ -326,7 +322,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                 public void onAnimationEnd(Animation animation) {
                     MainActivity.tabLayout.setVisibility(View.VISIBLE);
                     MainActivity.toolbar.setVisibility(View.VISIBLE);
-                    llSearchBg.setVisibility(View.GONE);
+
                     rlTransparent.setVisibility(View.VISIBLE);
 
 
@@ -336,10 +332,11 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                 public void onAnimationRepeat(Animation animation) {
 
                 }
-            });
+            });*/
 
         }
     }
+
 
     private void initiateW3w() {
         try {
@@ -376,7 +373,6 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                     //MapEngine.setOnline(false);
                 } else {
                     // handle factory initialization failure
-
                     Toast.makeText(getActivity(), "cannot initialize map engine : " + error.toString() + "", Toast.LENGTH_SHORT).show();
                     isMapEngineInitialize = false;
                 }
@@ -397,8 +393,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                     map = mapFragment.getMap();
 
                     // Set the zoom level to the average between min and max
-                    map.setZoomLevel(17);
-
+                    map.setZoomLevel(20);
 
                     //set the map projection
                     map.setProjectionMode(Map.Projection.GLOBE);
@@ -418,7 +413,6 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
                         } else if (positioningManager.getLastKnownPosition().isValid()) {
                             map.setCenter(positioningManager.getLastKnownPosition().getCoordinate(),
                                     Map.Animation.LINEAR);
-
 
                         } else {
                             Toast.makeText(getActivity(), "Waiting for Gps Fix", Toast.LENGTH_SHORT).show();
@@ -559,9 +553,13 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
 
     @Override
     public void onUpdateSearchLocation(PlaceLink placeLink) {
-        if (placeLink != null && !prefUtil.getBoolean(getActivity(),prefUtil.IS_MOCK_ENABLE)) {
-            tvLocationName.setText(placeLink.getTitle());
-            tvLocationAddress.setText(placeLink.getVicinity().split("<br/>")[0]);
+        if(placeLink != null && prefUtil!=null){
+
+            prefUtil.commitString(getActivity(), prefUtil.CURRENT_LOCATION, placeLink.getTitle());
+            prefUtil.commitString(getActivity(), prefUtil.CURRENT_VICINITY, placeLink.getVicinity());
+            prefUtil.commitDouble(getActivity(), prefUtil.CURRENT_LAT, (float) placeLink.getPosition().getLatitude());
+            prefUtil.commitDouble(getActivity(),prefUtil.CURRENT_LNG,(float)placeLink.getPosition().getLongitude());
+            setCurrentLocationTexts();
         }
 
     }
@@ -581,11 +579,125 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 101) {
             toggleTabs();
-            tvLocationName.setText(data.getStringExtra("title"));
-            tvLocationAddress.setText(data.getStringExtra("vicinity").split("<br/>")[0]);
             ivSwitchCurrentLoc.setVisibility(View.VISIBLE);
+            Place place = (Place)data.getSerializableExtra("place");
+            prefUtil.commitString(getActivity(), prefUtil.MOCK_LOCATION, place.getTitle());
+            prefUtil.commitDouble(getActivity(), prefUtil.MOCK_LAT, (float) place.getLat());
+            prefUtil.commitDouble(getActivity(),prefUtil.MOCK_LNG,(float)place.getLng());
+            prefUtil.commitString(getActivity(), prefUtil.MOCK_VICINITY, place.getVicinity());
             prefUtil.commitBoolean(getActivity(), prefUtil.IS_MOCK_ENABLE, true);
-            Log.d("geo", data.getStringExtra("geo"));
+
+            setCurrentLocationTexts();
+
         }
+    }
+    private void setCurrentLocationTexts() {
+        if (!prefUtil.getBoolean(getActivity(),prefUtil.IS_MOCK_ENABLE)) {
+            tvLocationName.setText(prefUtil.getString(getActivity(),prefUtil.CURRENT_LOCATION));
+            tvLocationAddress.setText(prefUtil.getString(getActivity(), prefUtil.CURRENT_VICINITY).split("<br/>")[0]);
+        }else{
+            tvLocationName.setText(prefUtil.getString(getActivity(), prefUtil.MOCK_LOCATION));
+            tvLocationAddress.setText(prefUtil.getString(getActivity(), prefUtil.MOCK_VICINITY).split("<br/>")[0]);
+        }
+    }
+    void showDialogSwitchLocation(){
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_layout);
+
+        TextView title = (TextView) dialog.findViewById(R.id.tvTitle);
+        TextView description = (TextView) dialog.findViewById(R.id.tvDescription);
+        TextView cancel = (TextView) dialog.findViewById(R.id.tvCancel);
+        TextView ok = (TextView) dialog.findViewById(R.id.tvOk);
+        title.setText("Current location");
+        description.setText("Do you want to switch your location from "+tvLocationName.getText()+" to your current location?");
+        ok.setText("Yes");
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(prefUtil.getBoolean(getActivity(),prefUtil.IS_MOCK_ENABLE)){
+                    prefUtil.commitBoolean(getActivity(), prefUtil.IS_MOCK_ENABLE, false);
+                    ivSwitchCurrentLoc.setVisibility(View.GONE);
+                    setCurrentLocationTexts();
+                }
+                dialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        toggleTabs();
+    }
+
+    void viewVisible(View myView){
+        // previously invisible view
+
+
+// get the center for the clipping circle
+        int cx = myView.getWidth() / 2;
+        int cy = myView.getHeight() / 2;
+
+// get the final radius for the clipping circle
+        float finalRadius = (float) Math.hypot(cx, cy);
+
+// create the animator for this view (the start radius is zero)
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                MainActivity.tabLayout.setVisibility(View.VISIBLE);
+                MainActivity.toolbar.setVisibility(View.VISIBLE);
+                llSearch.setVisibility(View.VISIBLE);
+            }
+        });
+
+// make the view visible and start the animation
+        myView.setVisibility(View.VISIBLE);
+        anim.start();
+    }
+
+
+    void invisibleView(final View myView){
+        int cx = myView.getWidth() / 2;
+        int cy = myView.getHeight() / 2;
+
+// get the initial radius for the clipping circle
+        float initialRadius = (float) Math.hypot(cx, cy);
+
+// create the animation (the final radius is zero)
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+
+// make the view invisible when the animation is done
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                myView.setVisibility(View.INVISIBLE);
+            }
+        });
+
+// start the animation
+        anim.start();
     }
 }

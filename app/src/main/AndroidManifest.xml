@@ -63,7 +63,7 @@
         </activity>
         <activity
             android:name=".PodsConnectionActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".ble.PodsConnectivityService"
@@ -77,8 +77,11 @@
         </receiver>
         <receiver android:name=".LocationReceiver" />
 
-        <activity android:name=".SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NavigationActivity"
+            android:theme="@style/AppTheme.NoActionBar" ></activity>
     </application>
 
 </manifest>

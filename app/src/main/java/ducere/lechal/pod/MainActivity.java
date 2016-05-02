@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ducere.lechal.pod.customViews.CustomViewPager;
+import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity
@@ -64,7 +65,17 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(toolbar.getVisibility()==View.GONE){
+            List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+            if (fragmentList != null) {
+                //TODO: Perform your logic to pass back press here
+                for(Fragment fragment : fragmentList){
+                    if(fragment instanceof OnBackPressed){
+                        ((OnBackPressed)fragment).onBackPressed();
+                    }
+                }
+            }
+        } else{
             super.onBackPressed();
         }
     }
@@ -184,27 +195,31 @@ public class MainActivity extends AppCompatActivity
 
         public void addFrag(Fragment fragment, String title) {
             mFragmentList.add(fragment);
-            // mFragmentTitleList.add(title);
+             mFragmentTitleList.add(title);
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
 
-            return "";
+            return mFragmentTitleList.get(position);
         }
     }
     private void setupTabIcons0() {
 
 
         int[] tabIcons = {
-                R.drawable.tab_nav_1,
-                R.drawable.tab_fit_0,
-                R.drawable.tab_settings_0
+                R.drawable.home_tab_white,
+                R.drawable.activity_tab_white,
+                R.drawable.lechal_tab_white
         };
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+        tabLayout.getTabAt(1).setIcon(null);
+        tabLayout.getTabAt(2).setIcon(null);
+
+        tabLayout.getTabAt(0).setText("");
+        tabLayout.getTabAt(1).setText("Activity");
+        tabLayout.getTabAt(2).setText("Device");
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page selected");
         tabLayout.getTabAt(1).setContentDescription("Fitness Home page ");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page");
@@ -221,14 +236,17 @@ public class MainActivity extends AppCompatActivity
 
 
         int[] tabIcons = {
-                R.drawable.tab_nav_0,
-                R.drawable.tab_fit_1,
-                R.drawable.tab_settings_0
+                R.drawable.home_tab_white,
+                R.drawable.activity_tab_white,
+                R.drawable.lechal_tab_white
         };
 
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(0).setIcon(null);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+        tabLayout.getTabAt(2).setIcon(null);
+        tabLayout.getTabAt(0).setText("Home");
+        tabLayout.getTabAt(1).setText("");
+        tabLayout.getTabAt(2).setText("Device");
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page ");
         tabLayout.getTabAt(1).setContentDescription("Fitness Home page selected");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page");
@@ -243,14 +261,18 @@ public class MainActivity extends AppCompatActivity
 
 
         int[] tabIcons = {
-                R.drawable.tab_nav_0,
-                R.drawable.tab_fit_0,
-                R.drawable.tab_settings_1
+                R.drawable.home_tab_white,
+                R.drawable.activity_tab_white,
+                R.drawable.lechal_tab_white
         };
 
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(0).setIcon(null);
+        tabLayout.getTabAt(1).setIcon(null);
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+
+        tabLayout.getTabAt(0).setText("Home");
+        tabLayout.getTabAt(1).setText("Activity");
+        tabLayout.getTabAt(2).setText("");
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page ");
         tabLayout.getTabAt(1).setContentDescription("Fitness Home page ");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page selected");

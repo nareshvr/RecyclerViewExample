@@ -414,6 +414,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void enableFitnessNotification(boolean isEnabled) {
+        if (fitnessService == null) {
+            return;
+        }
         BluetoothGattCharacteristic fitnessNotificationCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS));
         if (fitnessNotificationCharacteristic != null) {
             bluetoothGatt.setCharacteristicNotification(fitnessNotificationCharacteristic, isEnabled);
@@ -433,6 +436,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void startSendingFitnessData() {
+        if (fitnessService == null) {
+            return;
+        }
         BluetoothGattCharacteristic fitnessCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS));
         if (fitnessCharacteristic != null) {
             fitnessCharacteristic.setValue(START_FITNESS_COMMAND);
@@ -447,6 +453,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void vibrate(String pattern) {
+        if (fitnessService == null) {
+            return;
+        }
         BluetoothGattCharacteristic vibCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_VIBRATE));
         if (vibCharacteristic != null) {
             vibCharacteristic.setValue(pattern);
@@ -456,6 +465,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void sendRBT() {
+        if (miscellaneousService == null) {
+            return;
+        }
         BluetoothGattCharacteristic characteristic = miscellaneousService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_WRITE));
         if (characteristic != null) {
             characteristic.setValue("RBT");
@@ -465,6 +477,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void enableMSNotification(boolean isEnabled) {
+        if (miscellaneousService == null) {
+            return;
+        }
         BluetoothGattCharacteristic characteristic = miscellaneousService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_MS_NOTIFY));
         bluetoothGatt.setCharacteristicNotification(characteristic, true);
         enableDescriptor(characteristic);
@@ -472,6 +487,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void enableQTRNotification(boolean isEnabled) {
+        if (miscellaneousService == null) {
+            return;
+        }
         BluetoothGattCharacteristic characteristic = miscellaneousService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_QTR_NOTIFY));
         bluetoothGatt.setCharacteristicNotification(characteristic, true);
         enableDescriptor(characteristic);
@@ -479,6 +497,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void setIntensity(String intensity) {
+        if (fitnessService == null) {
+            return;
+        }
         BluetoothGattCharacteristic vibCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_VIBRATE));
         if (vibCharacteristic != null) {
             vibCharacteristic.setValue(intensity);
@@ -488,6 +509,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
     @Override
     public void setFootwearType(String footwearType) {
+        if (miscellaneousService == null) {
+            return;
+        }
         BluetoothGattCharacteristic characteristic = miscellaneousService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_WRITE));
         if (characteristic != null) {
             characteristic.setValue(footwearType);

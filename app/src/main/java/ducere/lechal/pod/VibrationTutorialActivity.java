@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,9 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.github.seanzor.prefhelper.SharedPrefHelper;
-
 import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.Vibrations;
 
@@ -27,7 +26,8 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
     Vibrations vib;
     SharedPrefHelper mPref;
     SharedPreferences defaultSharedPreferences;
-    LinearLayout llTurn,llKeepStraight,llSharpTurn,llDestination,llReeRoute,llLookAtYourPhone,llSlightTurn,llUTurn,llDestinationReached,llTutorials;
+    CardView llTurn,llKeepStraight,llSharpTurn,llDestination,llReeRoute,llLookAtYourPhone,llDestinationReached,llTutorials;
+    CardView llSlightTurn,llUTurn;
     String VB = "VB";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,6 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
         setContentView(R.layout.activity_vibration);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setup();
-
-
     }
 
     private void setup() {
@@ -47,30 +45,30 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
         rb1 = (RadioGroup)findViewById(R.id.radioGroup2);
         // radioGroup3 = (RadioGroup)findViewById(R.id.radioGroup3);
 
-        llSlightTurn = (LinearLayout) findViewById(R.id.llSlightTurn);
+        llSlightTurn = (CardView) findViewById(R.id.llSlightTurn);
         llSlightTurn.setOnClickListener(this);
 
-        llUTurn = (LinearLayout)findViewById(R.id.llUTurn);
+        llUTurn = (CardView) findViewById(R.id.llUTurn);
         llUTurn.setOnClickListener(this);
 
-        llTurn = (LinearLayout) findViewById(R.id.llTurn);
+        llTurn = (CardView) findViewById(R.id.llTurn);
         llTurn.setOnClickListener(this);
-        llKeepStraight = (LinearLayout)findViewById(R.id.llKeepStraight);
+        llKeepStraight = (CardView)findViewById(R.id.llKeepStraight);
         llKeepStraight.setOnClickListener(this);
 
-        llSharpTurn = (LinearLayout)findViewById(R.id.llSharpTurn);
+        llSharpTurn = (CardView)findViewById(R.id.llSharpTurn);
         llSharpTurn.setOnClickListener(this);
 
-        llDestination = (LinearLayout)findViewById(R.id.llDestination);
+        llDestination = (CardView)findViewById(R.id.llDestination);
         llDestination.setOnClickListener(this);
 
-        llReeRoute = (LinearLayout)findViewById(R.id.llree_route);
+        llReeRoute = (CardView)findViewById(R.id.llree_route);
         llReeRoute.setOnClickListener(this);
 
-        llLookAtYourPhone = (LinearLayout)findViewById(R.id.lllook_at_your_phone);
+        llLookAtYourPhone = (CardView)findViewById(R.id.lllook_at_your_phone);
         llLookAtYourPhone.setOnClickListener(this);
 
-        llDestinationReached = (LinearLayout)findViewById(R.id.llDestinationReached);
+        llDestinationReached = (CardView)findViewById(R.id.llDestinationReached);
         llDestinationReached.setOnClickListener(this);
 
         rb1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -443,7 +441,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                // BLEMS.sendVibM1("VB", vib.striaght + vib.striaght);
                 Constants.sendVibrate(context,VB+vib.striaght + vib.striaght);
                 break;
-            case R.id.btnSharpTurn:
+            case R.id.llSharpTurn:
 
 
                 if (idx == 0) {
@@ -549,7 +547,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                 }
 
                 break;
-            case R.id.btnDestination:
+            case R.id.llDestination:
                 //btnDestination.setBackgroundResource(R.drawable.demo_destination_1);
                 new CountDownTimer(1000, 1000) {
                     @Override
@@ -600,7 +598,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                 }
 
                 break;
-            case R.id.btnReeRoute:
+            case R.id.llree_route:
                // btnReeRoute.setBackgroundResource(R.drawable.demo_re_route_1);
 
                 new CountDownTimer(1000, 1000) {
@@ -633,7 +631,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                     }
                 }.start();
                 break;
-            case R.id.btnLookAtYourPhone:
+            case R.id.lllook_at_your_phone:
                 //btnLookAtYourPhone.setBackgroundResource(R.drawable.demo_look_atphone_1);
 
                 new CountDownTimer(1000, 1000) {
@@ -666,7 +664,7 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
                     }
                 }.start();
                 break;
-            case R.id.btnDestinationReached:
+            case R.id.llDestinationReached:
                 //btnDestinationReached.setBackgroundResource(R.drawable.demo_destination_reached_1);
 
                 new CountDownTimer(1000, 1000) {

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -126,8 +127,26 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal">
+                <android.support.v7.widget.CardView
+                    style="@style/text_card"
+                    android:id="@+id/llSlightTurn"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/blue">
 
-                <LinearLayout
+                    <LinearLayout style="@style/icon_text_layout">
+
+                        <ImageView
+                            style="@style/icon_when_text"
+                            android:src="@drawable/icon_slight_turn" />
+
+                        <TextView
+                            style="@style/text_when_icon"
+                            android:text="@string/slight_turn"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+                <!--<LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/llSlightTurn"
@@ -143,9 +162,9 @@
                         android:id="@+id/btnSlightTurn"
                         style="@style/turn_text"
                         android:text="@string/slight_turn" />
-                </LinearLayout>
+                </LinearLayout>-->
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/llUTurn"
                     style="@style/turn_button"
                     android:layout_marginStart="8dp">
@@ -158,8 +177,26 @@
                         android:id="@+id/btnUTurn"
                         style="@style/turn_text"
                         android:text="@string/u_turn" />
-                </LinearLayout>
+                </LinearLayout>-->
+                <android.support.v7.widget.CardView
+                    style="@style/text_card"
+                    android:id="@+id/llUTurn"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/blue">
 
+                    <LinearLayout style="@style/icon_text_layout">
+
+                        <ImageView
+                            style="@style/icon_when_text"
+                            android:src="@drawable/icon_uturn_white" />
+
+                        <TextView
+                            style="@style/text_when_icon"
+                            android:text="@string/u_turn"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 
@@ -169,8 +206,26 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:orientation="horizontal">
+                <android.support.v7.widget.CardView
+                    style="@style/text_card"
+                    android:id="@+id/llTurn"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/blue">
 
-                <LinearLayout
+                    <LinearLayout style="@style/icon_text_layout">
+
+                        <ImageView
+                            style="@style/icon_when_text"
+                            android:src="@drawable/icon_turn_white" />
+
+                        <TextView
+                            style="@style/text_when_icon"
+                            android:text="@string/turn"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+               <!-- <LinearLayout
                     android:id="@+id/llTurn"
                     style="@style/turn_button"
                     android:layout_marginEnd="8dp">
@@ -183,9 +238,27 @@
                         android:id="@+id/btnTurn"
                         style="@style/turn_text"
                         android:text="@string/turn" />
-                </LinearLayout>
+                </LinearLayout>-->
+                <android.support.v7.widget.CardView
+                    style="@style/text_card"
+                    android:id="@+id/llKeepStraight"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/blue">
 
-                <LinearLayout
+                    <LinearLayout style="@style/icon_text_layout">
+
+                        <ImageView
+                            style="@style/icon_when_text"
+                            android:src="@drawable/icon_keep_shight_white" />
+
+                        <TextView
+                            style="@style/text_when_icon"
+                            android:text="@string/keep_straight"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+               <!-- <LinearLayout
                     android:id="@+id/llKeepStraight"
                     style="@style/turn_button"
                     android:layout_marginStart="8dp">
@@ -198,7 +271,7 @@
                         android:id="@+id/btnKeepStraight"
                         style="@style/turn_text"
                         android:text="@string/keep_straight" />
-                </LinearLayout>
+                </LinearLayout>-->
 
 
             </LinearLayout>
@@ -210,7 +283,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/llSharpTurn"
                     style="@style/turn_button"
                     android:layout_marginEnd="8dp">
@@ -223,9 +296,27 @@
                         android:id="@+id/btnSharpTurn"
                         style="@style/turn_text"
                         android:text="@string/sharp_turn" />
-                </LinearLayout>
+                </LinearLayout>-->
+                <android.support.v7.widget.CardView
+                    style="@style/text_card"
+                    android:id="@+id/llSharpTurn"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/blue">
 
-                <LinearLayout
+                    <LinearLayout style="@style/icon_text_layout">
+
+                        <ImageView
+                            style="@style/icon_when_text"
+                            android:src="@drawable/icon_sharpturn_white" />
+
+                        <TextView
+                            style="@style/text_when_icon"
+                            android:text="@string/sharp_turn"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+               <!-- <LinearLayout
                     android:id="@+id/llDestination"
                     style="@style/turn_button"
                     android:layout_marginStart="8dp">
@@ -238,8 +329,26 @@
                         android:id="@+id/btnDestination"
                         style="@style/turn_text"
                         android:text="@string/destination" />
-                </LinearLayout>
+                </LinearLayout>-->
+                <android.support.v7.widget.CardView
+                    style="@style/text_card"
+                    android:id="@+id/llDestination"
+                    android:layout_marginStart="8dp"
+                    app:cardBackgroundColor="@color/blue">
 
+                    <LinearLayout style="@style/icon_text_layout">
+
+                        <ImageView
+                            style="@style/icon_when_text"
+                            android:src="@drawable/icon_destination_white" />
+
+                        <TextView
+                            style="@style/text_when_icon"
+                            android:text="@string/destination"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
         </LinearLayout>
@@ -258,7 +367,7 @@
             android:layout_marginTop="8dp"
             android:gravity="center">
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/llree_route"
                 style="@style/turn_button"
                 android:layout_marginEnd="8dp">
@@ -271,9 +380,27 @@
                     android:id="@+id/txtree_route"
                     style="@style/turn_text"
                     android:text="@string/ree_route" />
-            </LinearLayout>
+            </LinearLayout>-->
+            <android.support.v7.widget.CardView
+                style="@style/text_card"
+                android:id="@+id/llree_route"
+                android:layout_marginStart="8dp"
+                app:cardBackgroundColor="@color/blue">
 
-            <LinearLayout
+                <LinearLayout style="@style/icon_text_layout">
+
+                    <ImageView
+                        style="@style/icon_when_text"
+                        android:src="@drawable/icon_slight_turn" />
+
+                    <TextView
+                        style="@style/text_when_icon"
+                        android:text="@string/ree_route"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+           <!-- <LinearLayout
                 android:id="@+id/lllook_at_your_phone"
                 style="@style/turn_button"
                 android:layout_marginEnd="8dp">
@@ -286,12 +413,30 @@
                     android:id="@+id/txtlook_at_your_phone"
                     style="@style/turn_text"
                     android:text="@string/look_at_your_phone" />
-            </LinearLayout>
+            </LinearLayout>-->
 
+            <android.support.v7.widget.CardView
+                style="@style/text_card"
+                android:id="@+id/lllook_at_your_phone"
+                android:layout_marginStart="8dp"
+                app:cardBackgroundColor="@color/blue">
 
+                <LinearLayout style="@style/icon_text_layout">
+
+                    <ImageView
+                        style="@style/icon_when_text"
+                        android:src="@drawable/icon_slight_turn" />
+
+                    <TextView
+                        style="@style/text_when_icon"
+                        android:text="@string/look_at_your_phone"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/llDestinationReached"
             style="@style/turn_button"
             android:layout_gravity="center_horizontal"
@@ -305,8 +450,27 @@
                 android:id="@+id/btnDestinationReached"
                 style="@style/turn_text"
                 android:text="@string/destination_reached" />
-        </LinearLayout>
+        </LinearLayout>-->
+        <android.support.v7.widget.CardView
+            style="@style/text_card"
+            android:id="@+id/llDestinationReached"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center_horizontal"
+            app:cardBackgroundColor="@color/blue">
 
+            <LinearLayout style="@style/icon_text_layout">
+
+                <ImageView
+                    style="@style/icon_when_text"
+                    android:src="@drawable/icon_slight_turn" />
+
+                <TextView
+                    style="@style/text_when_icon"
+                    android:text="@string/destination_reached"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 </ScrollView>

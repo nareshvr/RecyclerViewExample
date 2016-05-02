@@ -74,6 +74,7 @@
     </LinearLayout>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cwPodsPosition"
         style="@style/text_card"
         android:layout_below="@id/pod_details_layout"
         android:layout_marginStart="16dp"

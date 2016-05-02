@@ -64,4 +64,6 @@
     <string name="essential_pods">ESSENTIAL PODS</string>
     <string name="bing_pods">Bing Pod</string>
     <string name="last_sync">Last synced at :3:58PM</string>
+    <string name="vibintensityRight">vibintensityRight</string>
+    <string name="vibintensity">vibintensity</string>
 </resources>

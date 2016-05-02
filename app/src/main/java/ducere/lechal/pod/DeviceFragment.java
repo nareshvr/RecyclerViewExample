@@ -1,31 +1,46 @@
 package ducere.lechal.pod;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.seanzor.prefhelper.SharedPrefHelper;
 import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
 
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.constants.Constants;
+import ducere.lechal.pod.constants.Vibrations;
 import ducere.lechal.pod.customViews.CircleProgressView;
 
 
-public class DeviceFragment extends Fragment {
+public class DeviceFragment extends Fragment implements View.OnClickListener{
 
     private TextView batteryText;
     private CircleProgressView batteryProgress;
-
+    SharedPrefHelper mPref;
+    SharedPreferences defaultSharedPreferences;
+    Vibrations vib;
+    TextView txtShoeType;
+    View view;
     public DeviceFragment() {
         // Required empty public constructor
     }
@@ -33,13 +48,27 @@ public class DeviceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_pods, container, false);
-        ParallaxScrollView mScrollView = (ParallaxScrollView) view.findViewById(R.id.view);
-        mScrollView.setParallaxView(getActivity().getLayoutInflater().inflate(R.layout.pods_header, mScrollView, false));
-        batteryText = (TextView) view.findViewById(R.id.battery_text);
-        batteryProgress = (CircleProgressView) view.findViewById(R.id.battery_progress);
-        batteryProgress.setProgress(0);
-        batteryProgress.setPaintColor(Color.WHITE);
+       // if(view!=null) {
+            view = inflater.inflate(R.layout.fragment_pods, container, false);
+            vib = new Vibrations();
+            defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            mPref = new SharedPrefHelper(getResources(), defaultSharedPreferences);
+            ParallaxScrollView mScrollView = (ParallaxScrollView) view.findViewById(R.id.view);
+            mScrollView.setParallaxView(getActivity().getLayoutInflater().inflate(R.layout.pods_header, mScrollView, false));
+            batteryText = (TextView) view.findViewById(R.id.battery_text);
+            batteryProgress = (CircleProgressView) view.findViewById(R.id.battery_progress);
+            batteryProgress.setProgress(0);
+            batteryProgress.setPaintColor(Color.WHITE);
+            CardView cwPodsPosition = (CardView) view.findViewById(R.id.cwPodsPosition);
+            cwPodsPosition.setOnClickListener(this);
+            LinearLayout llIntensity = (LinearLayout) view.findViewById(R.id.llIntensity);
+            llIntensity.setOnClickListener(this);
+            LinearLayout llTutorials = (LinearLayout) view.findViewById(R.id.llTutorials);
+            llTutorials.setOnClickListener(this);
+            txtShoeType = (TextView) view.findViewById(R.id.txtShoeType);
+            LinearLayout llFootwearType = (LinearLayout) view.findViewById(R.id.llFootwearType);
+            llFootwearType.setOnClickListener(this);
+        //}
         return view;
     }
 
@@ -69,4 +98,171 @@ public class DeviceFragment extends Fragment {
             }
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.llIntensity:
+                startActivity(new Intent(getActivity(),IntensityActity.class));
+                break;
+            case R.id.cwPodsPosition:
+                checkPodPositionDialog();
+                break;
+            case R.id.llTutorials:
+                startActivity(new Intent(getActivity(),VibrationTutorialActivity.class));
+                break;
+            case R.id.llFootwearType:
+                showFootwearDialog();
+                break;
+
+        }
+    }
+    private void checkPodPositionDialog() {
+        // custom dialog
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.check_pods_position);
+        // set the custom dialog components - text, image and button
+        final ImageView leftPod = (ImageView) dialog.findViewById(R.id.leftPod);
+        leftPod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPref.getBoolean(R.string.swap, false)) {
+                    //BLEMS.sendVibM1("VB", "0001");
+                    Constants.sendVibrationLeft(getContext(),"VB0001");
+                } else {
+                    Constants.sendVibrationRight(getContext(),"VB0100");
+                    //BLEMS.sendVibM1("VB", "0100");
+                }
+                //BLEMS.sendVibM1("VB", "0100");
+                //leftPod.setBackgroundResource(R.drawable.pod_position_left);
+                new CountDownTimer(1000, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //leftPod.setBackgroundResource(R.drawable.pod_position_left0);
+                    }
+                }.start();
+            }
+        });
+
+        final ImageView rightPod = (ImageView)dialog.findViewById(R.id.rightPod);
+        rightPod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mPref.getBoolean(R.string.swap,false)){
+                    //BLEMS.sendVibM1("VB", "0100");
+                    Constants.sendVibrationLeft(getContext(),"VB0100");
+
+                }else{
+                    // BLEMS.sendVibM1("VB", "0001");
+                    Constants.sendVibrationRight(getContext(),"VB0001");
+                }
+                // rightPod.setBackgroundResource(R.drawable.pod_position_right);
+                new CountDownTimer(1000, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //rightPod.setBackgroundResource(R.drawable.pod_position_right0);
+                    }
+                }.start();
+            }
+        });
+
+        ImageView swapPods = (ImageView)dialog.findViewById(R.id.podSwap);
+        swapPods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mPref.getBoolean(R.string.swap, false)) {
+                    mPref.commitBoolean(R.string.swap, false);
+                    // BLEMS.sendVibM1("VB", "0100");
+
+                } else {
+                    mPref.commitBoolean(R.string.swap, true);
+                    //BLEMS.sendVibM1("VB", "0001");
+
+                }
+                //swapPods.setBackgroundResource(R.drawable.pod_position_swap);
+                new CountDownTimer(1000, 1000) {
+
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        //swapPods.setBackgroundResource(R.drawable.pod_position_swap0);
+                    }
+                }.start();
+                Toast.makeText(getActivity(),"Swapped.",Toast.LENGTH_SHORT).show();
+            }
+        });
+        TextView txtok = (TextView)dialog.findViewById(R.id.txtOK);
+        txtok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showFootwearDialog() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Footwear type");
+
+        final CharSequence[] choiceList = {"Casual shoes", "Sports shoes" , "Insole" , "Ballerina" };
+
+        int selected = -1; // does not select anything
+        builder.setSingleChoiceItems(choiceList, selected, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext(), "Select "+choiceList[which], Toast.LENGTH_SHORT).show();
+                switch (which){
+                    case 0:
+                        mPref.commitInt(R.string.shoe_type,0);
+                        txtShoeType.setText(" Casual Shoe ");
+                        // BLEMS.writeData("CD2");
+                        Constants.sendFootwear(getContext(),"CD2");
+                        break;
+                    case 1:
+                        mPref.commitInt(R.string.shoe_type,1);
+                        txtShoeType.setText(" Sports shoes ");
+                        // BLEMS.writeData("CD2");
+                        Constants.sendFootwear(getContext(),"CD3");
+                        break;
+                    case 2:
+                        mPref.commitInt(R.string.shoe_type,2);
+                        txtShoeType.setText(" Insole ");
+                        // BLEMS.writeData("CD2");
+                        Constants.sendFootwear(getContext(),"CD1");
+                        break;
+                    case 3:
+                        mPref.commitInt(R.string.shoe_type,3);
+                        txtShoeType.setText(" Ballerina ");
+                        // BLEMS.writeData("CD2");
+                        Constants.sendFootwear(getContext(),"CD4");
+                        break;
+
+                }
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 }

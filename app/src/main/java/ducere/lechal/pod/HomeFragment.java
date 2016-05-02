@@ -553,7 +553,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
     @Override
     public void onUpdateSearchLocation(PlaceLink placeLink) {
-        if(placeLink != null && prefUtil!=null){
+        if(placeLink != null && prefUtil!=null && getActivity()!=null){
 
             prefUtil.commitString(getActivity(), prefUtil.CURRENT_LOCATION, placeLink.getTitle());
             prefUtil.commitString(getActivity(), prefUtil.CURRENT_VICINITY, placeLink.getVicinity());

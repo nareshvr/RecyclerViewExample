@@ -93,6 +93,7 @@
             android:label="@string/title_activity_intensity_actity"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".FootwearActity"></activity>
+
     </application>
 
 </manifest>

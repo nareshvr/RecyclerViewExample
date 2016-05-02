@@ -158,9 +158,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     setFootwearType(pattern);
                     break;
                 case ActionsToService.GET_BATTERY:
-                    intent = new Intent(ServiceBroadcastActions.BATTERY);
-                    intent.putExtra(ServiceBroadcastActions.BATTERY, getRemainingBattery());
-                    LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
+                    broadcastBattery();
                     break;
                 case ActionsToService.VIBRATE_LEFT:
                     vibrate("VB0100"); // TODO move strings to vibrations patterns
@@ -172,6 +170,12 @@ public class PodsConnectivityService extends Service implements PodCommands {
             }
         }
     };
+
+    private void broadcastBattery() {
+        Intent intent = new Intent(ServiceBroadcastActions.BATTERY);
+        intent.putExtra(ServiceBroadcastActions.BATTERY, getRemainingBattery());
+        LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
+    }
 
     private void registerForBluetoothStateChange() {
         IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -378,6 +382,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
 
                         int remainingBattery = getRemainingBattery();
                         showConnectedPodsNotification(78, remainingBattery);
+                        broadcastBattery();
                     }
                 }
                 // Ask for battery status after given time
@@ -387,6 +392,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                         sendRBT();
                     }
                 }, BATTERY_PING_FREQUENCY);
+
                 break;
             case PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_QTR_NOTIFY:
 //                Log.i(PodsConnectivityService.class.getName(), "Found QTR Notify: " + characteristic.getUuid());

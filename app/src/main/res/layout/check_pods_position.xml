@@ -1,84 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_weight="4"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="3">
 
-    <LinearLayout
-        android:gravity="center"
+
+    <ImageView
+        android:id="@+id/leftPod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#F05854"
-        android:padding="20dp"
-        android:layout_gravity="center_horizontal">
+        android:padding="8dp"
+        android:src="@drawable/pod_left_position" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Confirm pod position"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:id="@+id/textView2" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:padding="30dp"
-        android:weightSum="3"
-        android:gravity="center"
-        android:layout_weight="2"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        >
-
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:src="@drawable/pod_left_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/leftPod"
-             />
-
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:src="@drawable/pod_swap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/podSwap"/>
-        <ImageView
-            android:layout_weight="1"
-            android:src="@drawable/pod_right_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/rightPod"
-             />
-    </LinearLayout>
-
-    <LinearLayout
-        android:gravity="center|right"
+    <ImageView
+        android:id="@+id/podSwap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:padding="8dp"
+        android:src="@drawable/pod_swap" />
 
-        <TextView
-            android:textColor="#F05854"
-            android:layout_marginRight="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OK"
-            android:textSize="30sp"
-            android:id="@+id/txtOK" />
-
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/rightPod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:src="@drawable/pod_right_position" />
 </LinearLayout>

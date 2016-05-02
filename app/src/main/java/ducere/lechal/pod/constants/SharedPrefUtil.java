@@ -9,6 +9,11 @@ import android.content.SharedPreferences;
 public class SharedPrefUtil {
     private static final String PODS_MACID = "podsMacId";
     public static final String IS_MOCK_ENABLE = "isMockEnable";
+    private static final String LOCATION_MOCKED = "locationMocked";
+    private static final String MOCKED_PLACE = "mockedPlace";
+    private static final String IS_SWAPPED = "isSwapped";
+    private static final String FOOTWEAR_TYPE = "footwearType";
+    private static final String INTENSITY_TYPE = "intensityType";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
@@ -21,18 +26,44 @@ public class SharedPrefUtil {
     public static void setPodsMacid(Context context, String podsMacid) {
         getPref(context).edit().putString(PODS_MACID, podsMacid).apply();
     }
-    public static void commitString(Context context,String key, String value){
+
+    public static void commitString(Context context, String key, String value) {
         getPref(context).edit().putString(key, value).apply();
     }
-    public static String getString(Context context,String key){
+
+    public static String getString(Context context, String key) {
         return getPref(context).getString(key, null);
     }
-    public static void commitBoolean(Context context,String key, boolean value){
+
+    public static void commitBoolean(Context context, String key, boolean value) {
         getPref(context).edit().putBoolean(key, value).apply();
     }
-    public static boolean getBoolean(Context context,String key){
+
+    public static boolean getBoolean(Context context, String key) {
         return getPref(context).getBoolean(key, false);
     }
 
+    public static boolean isPodSwapped(Context context) {
+        return getPref(context).getBoolean(IS_SWAPPED, false);
+    }
 
+    public static void setPodSwapped(Context context, boolean isSwapped) {
+        getPref(context).edit().putBoolean(IS_SWAPPED, isSwapped).apply();
+    }
+
+    public static int getFootwearType(Context context) {
+        return getPref(context).getInt(FOOTWEAR_TYPE, -1);
+    }
+
+    public static void setFootwearType(Context context, int index) {
+        getPref(context).edit().putInt(FOOTWEAR_TYPE, index).apply();
+    }
+
+    public static int getIntensityType(Context context) {
+        return getPref(context).getInt(INTENSITY_TYPE, 0);
+    }
+
+    public static void setIntensityType(Context context, int index) {
+        getPref(context).edit().putInt(INTENSITY_TYPE, index).apply();
+    }
 }

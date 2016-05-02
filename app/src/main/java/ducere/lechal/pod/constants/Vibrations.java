@@ -5,6 +5,10 @@ package ducere.lechal.pod.constants;
  */
 
 public class Vibrations {
+    public static final String prefix = "VB";
+
+    public static final String VIBRATE_LEFT_POD = prefix + "0100";
+    public static final String VIBRATE_RIGHT_POD = prefix + "0001";
 
     //At Turn
     public String d1_left_right = "35";
@@ -26,7 +30,7 @@ public class Vibrations {
 
     public String d2_slight = "30";
 
-    public String d2_sharp= "50";
+    public String d2_sharp = "50";
 
     public String d2_uTurn = "42";
 
@@ -35,11 +39,11 @@ public class Vibrations {
     // At 500mts Turn
     public String d3_left_right = "33";
 
-    public String d3_keep= "29";
+    public String d3_keep = "29";
 
     public String d3_slight = "29";
 
-    public String d3_sharp= "49";
+    public String d3_sharp = "49";
 
     public String d3_uTurn = "41";
 
@@ -61,7 +65,6 @@ public class Vibrations {
     public String d1_left_right_suffix = "16";
 
 
-
     public String d1_uTurn_suffix = "17";
 
     //RoundAbout
@@ -69,31 +72,28 @@ public class Vibrations {
     public String d2_roundAboutLeft = "23";
 
 
-
     //GoStriaght
     public String striaght = "20";
 
     //Re_Route
-    public String reRoute_left= "21";
-    public String reRoute_right= "22";
+    public String reRoute_left = "21";
+    public String reRoute_right = "22";
 
     //Orientation
-    public String orien_left= "01";
-    public String orien_right= "02";
+    public String orien_left = "01";
+    public String orien_right = "02";
 
     //suffix
     public String suffix = "01";
 
     //Look at mobile
-    public String lookAtMobile= "01";
+    public String lookAtMobile = "01";
 
     public String lowBattery = "46";
 
     //confirmation
-    public  String confirmation = "01";
+    public String confirmation = "01";
 
-    public  String confirmation_2k = "15";
-
-
+    public String confirmation_2k = "15";
 
 }

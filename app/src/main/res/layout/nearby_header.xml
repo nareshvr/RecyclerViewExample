@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rlRoot"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:background="@drawable/poi_list" />
+
+        <FrameLayout
+
+            android:id="@+id/menu_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:visibility="invisible">
+
+            <com.ogaclejapan.arclayout.ArcLayout
+                android:id="@+id/arc_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:arc_axisRadius="100dp"
+                app:arc_color="#00000000"
+                app:arc_freeAngle="false"
+                app:arc_origin="center"
+                app:arc_radius="120dp"
+                app:arc_reverseAngle="false">
+
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="45"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_eat"
+                    app:arc_origin="center" />
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="90"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_services_gray"
+                    app:arc_origin="center" />
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="135"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_hospitals_gray"
+                    app:arc_origin="center" />
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="180"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_petrol_gray"
+                    app:arc_origin="center" />
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="225"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_admin_gray"
+                    app:arc_origin="center" />
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="280"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_hotels_gray"
+                    app:arc_origin="center" />
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="325"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_going_out_gray"
+                    app:arc_origin="center" />
+
+
+                <ImageView
+                    style="@style/Item.Path"
+                    app:arc_angle="360"
+                    android:id="@+id/center_item"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/poi_atms_gray"
+                    app:arc_origin="center" />
+
+            </com.ogaclejapan.arclayout.ArcLayout>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+</LinearLayout>

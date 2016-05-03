@@ -212,7 +212,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     }
 
     private void startServiceAndScanPods() {
-        if (isPermissionsGranted && isGoogleApiClientConnected) {
+        if (isPermissionsGranted && isGoogleApiClientConnected && SharedPrefUtil.getPodsMacid(getApplicationContext())!=null) {
             requestLocationUpdates();
 
             // If pods not connected at least once. Check bluetooth enabled

@@ -22,6 +22,8 @@ public class Constants {
     public static final String NOTIFICATION_TEXT_FORMAT = "Goal %s : Battery %s";
     public static final String CURRENT_LOCATION_FORMAT = "%s\n%s";
 
+    public static final CharSequence[] INTENSITIES = {" Very High ", " High ", " Medium ", " Low ", " Very Low "};
+
     public static RotateAnimation getRotateAnimation() {
         RotateAnimation rotate = new RotateAnimation(0, 360,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
@@ -57,14 +59,14 @@ public class Constants {
         intent.putExtra(ActionsToService.FOOTWEAR_TYPE, pattern);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
-    public static void sendVibrationLeft(Context context, String pattern) {
+
+    public static void sendVibrationLeft(Context context) {
         Intent intent = new Intent(ActionsToService.VIBRATE_LEFT);
-        intent.putExtra(ActionsToService.VIBRATE_LEFT, pattern);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
-    public static void sendVibrationRight(Context context, String pattern) {
+
+    public static void sendVibrationRight(Context context) {
         Intent intent = new Intent(ActionsToService.VIBRATE_RIGHT);
-        intent.putExtra(ActionsToService.VIBRATE_RIGHT, pattern);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 

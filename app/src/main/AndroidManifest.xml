@@ -67,7 +67,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-             <service
+
+        <service
             android:name=".ble.PodsConnectivityService"
             android:enabled="true"
             android:exported="true" />
@@ -84,16 +85,17 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".VibrationTutorialActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_vibration_tutorial"/>
+            android:label="@string/title_activity_vibration_tutorial"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".IntensityActity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_intensity_actity"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".FootwearActity"></activity>
-        <activity android:name=".NavigationActivity"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
+        <activity
+            android:name=".NavigationActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

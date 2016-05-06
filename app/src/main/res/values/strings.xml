@@ -67,4 +67,18 @@
     <string name="last_sync">Last synced at :3:58PM</string>
     <string name="vibintensityRight">vibintensityRight</string>
     <string name="vibintensity">vibintensity</string>
+    <string name="start_session">Choose mode</string>
+    <string name="set_session_goal">Set session goal</string>
+    <string name="save_completed_session">Save completed session</string>
+    <string name="dont_my_save">Don\'t save</string>
+    <string name="next">Next</string>
+    <string name="cancel">Cancel</string>
+    <string name="start">Start</string>
+    <string-array name="goals_array">
+        <item>Calories</item>
+        <item>Steps</item>
+        <item>Distance</item>
+        <item>Time</item>
+    </string-array>
+
 </resources>

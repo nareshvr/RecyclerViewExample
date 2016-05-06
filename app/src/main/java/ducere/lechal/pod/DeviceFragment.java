@@ -25,8 +25,6 @@ import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.constants.Vibrations;
 import ducere.lechal.pod.customViews.CircleProgressView;
-
-
 public class DeviceFragment extends Fragment implements View.OnClickListener {
 
     private TextView batteryText;

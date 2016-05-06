@@ -6,6 +6,9 @@ package ducere.lechal.pod.ble;
 public interface PodCommands {
 
     byte[] START_FITNESS_COMMAND = new byte[]{(byte) 0xFE, (byte) 0x0B, (byte) 0x01};
+    byte[] GET_TODAY_FITNESS = new byte[]{(byte) 0xFE, (byte) 0x10};
+    byte[] GET_YESTERDAY_FITNESS = new byte[]{(byte) 0xFE, (byte) 0x11};
+    byte[] GET_DAY_B4_YESTERDAY_FITNESS = new byte[]{(byte) 0xFE, (byte) 0x12};
 
     void enableFitnessNotification(boolean isEnabled);
 
@@ -24,4 +27,10 @@ public interface PodCommands {
     void setIntensity(String intensity);
 
     void setFootwearType(String footwearType);
+
+    void getTodayFitness();
+
+    void getYesterdayFitness();
+
+    void getDayB4YesterdayFitness();
 }

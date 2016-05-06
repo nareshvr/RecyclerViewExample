@@ -105,19 +105,10 @@ public class PodsConnectivityService extends Service implements PodCommands {
     }
 
     private void registerReceiverForCommands() {
-        IntentFilter filter = new IntentFilter(ActionsToService.VIBRATE);
-        filter.addAction(ActionsToService.FITNESS_NOTIFICATION);
-        filter.addAction(ActionsToService.FITNESS_START);
-        filter.addAction(ActionsToService.RBT);
-        filter.addAction(ActionsToService.SCAN_PODS);
-        filter.addAction(ActionsToService.SCAN_STOP);
-        filter.addAction(ActionsToService.CONNECT_TO_DEVICE);
-        filter.addAction(ActionsToService.INTENSITY);
-        filter.addAction(ActionsToService.FOOTWEAR_TYPE);
-        filter.addAction(ActionsToService.GET_BATTERY);
-        filter.addAction(ActionsToService.VIBRATE_LEFT);
-        filter.addAction(ActionsToService.VIBRATE_RIGHT);
-        // Add more commands
+        IntentFilter filter = new IntentFilter();
+        for (String action : ActionsToService.actions) {
+            filter.addAction(action);
+        }
         LocalBroadcastManager.getInstance(PodsConnectivityService.this).registerReceiver(broadcastReceiverForCommands, filter);
     }
 
@@ -167,6 +158,15 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 case ActionsToService.VIBRATE_RIGHT:
                     vibrate("VB0001"); // TODO move strings to vibrations patterns
 
+                    break;
+                case ActionsToService.FITNESS_TODAY_DATA:
+                    getTodayFitness();
+                    break;
+                case ActionsToService.FITNESS_YESTERDAY_DATA:
+                    getYesterdayFitness();
+                    break;
+                case ActionsToService.FITNESS_DAY_B4_YESTERDAY_DATA:
+                    getDayB4YesterdayFitness();
                     break;
             }
         }
@@ -364,7 +364,22 @@ public class PodsConnectivityService extends Service implements PodCommands {
             case PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS:
                 Log.i(PodsConnectivityService.class.getName(), "Found Fitness characteristic: " + characteristic.getUuid());
                 data = characteristic.getValue();
-                if (data[0] == (byte) 0xFE && data[1] == (byte) 0x0B) {
+                if (data[0] == START_FITNESS_COMMAND[0] && data[1] == START_FITNESS_COMMAND[1]) {
+                    FitnessData fitnessData = new FitnessData(data);
+                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
+                    intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } else if (data[0] == GET_TODAY_FITNESS[0] && data[1] == GET_TODAY_FITNESS[1]) {
+                    FitnessData fitnessData = new FitnessData(data);
+                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
+                    intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } else if (data[0] == GET_YESTERDAY_FITNESS[0] && data[1] == GET_YESTERDAY_FITNESS[1]) {
+                    FitnessData fitnessData = new FitnessData(data);
+                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
+                    intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } else if (data[0] == GET_DAY_B4_YESTERDAY_FITNESS[0] && data[1] == GET_DAY_B4_YESTERDAY_FITNESS[1]) {
                     FitnessData fitnessData = new FitnessData(data);
                     Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
                     intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
@@ -517,6 +532,42 @@ public class PodsConnectivityService extends Service implements PodCommands {
         if (characteristic != null) {
             characteristic.setValue(footwearType);
             bluetoothGatt.writeCharacteristic(characteristic);
+        }
+    }
+
+    @Override
+    public void getTodayFitness() {
+        if (fitnessService == null) {
+            return;
+        }
+        BluetoothGattCharacteristic fitnessCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS));
+        if (fitnessCharacteristic != null) {
+            fitnessCharacteristic.setValue(GET_TODAY_FITNESS);
+            bluetoothGatt.writeCharacteristic(fitnessCharacteristic);
+        }
+    }
+
+    @Override
+    public void getYesterdayFitness() {
+        if (fitnessService == null) {
+            return;
+        }
+        BluetoothGattCharacteristic fitnessCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS));
+        if (fitnessCharacteristic != null) {
+            fitnessCharacteristic.setValue(GET_YESTERDAY_FITNESS);
+            bluetoothGatt.writeCharacteristic(fitnessCharacteristic);
+        }
+    }
+
+    @Override
+    public void getDayB4YesterdayFitness() {
+        if (fitnessService == null) {
+            return;
+        }
+        BluetoothGattCharacteristic fitnessCharacteristic = fitnessService.getCharacteristic(UUID.fromString(PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS));
+        if (fitnessCharacteristic != null) {
+            fitnessCharacteristic.setValue(GET_DAY_B4_YESTERDAY_FITNESS);
+            bluetoothGatt.writeCharacteristic(fitnessCharacteristic);
         }
     }
 

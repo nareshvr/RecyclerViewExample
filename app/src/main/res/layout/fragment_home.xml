@@ -278,6 +278,7 @@
                     android:textSize="12sp" />
 
                 <np.EditText
+                    android:id="@+id/etTag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary" />
@@ -306,7 +307,7 @@
 
             <TextView
                 style="@style/text_when_icon"
-                android:text="@string/u_turn"
+                android:text="@string/save"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </LinearLayout>

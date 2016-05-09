@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import ducere.lechal.pod.R;
 import ducere.lechal.pod.adapters.StickyTestAdapter;
 import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 import np.TextView;
 
 
@@ -67,8 +69,46 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_history, container, false);
-        mList = (RecyclerView) view.findViewById(R.id.list);
+        if (view != null) {
+
+            ViewGroup parent = (ViewGroup) view.getParent();
+
+            if (parent != null)
+                parent.removeView(view);
+        } else
+            try {
+                view =  inflater.inflate(R.layout.fragment_history, container, false);
+                mList = (RecyclerView) view.findViewById(R.id.list);
+                final DividerDecoration divider = new DividerDecoration.Builder(this.getActivity())
+
+                        .build();
+
+                mList.setHasFixedSize(true);
+                mList.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+               /* mList.addItemDecoration(divider, 0);
+                mList.addItemDecoration(divider,1);*/
+
+                PlaceUtility placeUtility = new PlaceUtility(getActivity());
+                // placeList = placeUtility.getTags();
+                Place placeHome = new Place();
+                placeHome.setMockName("Home");
+                placeHome.setTitle("Home");
+                placeHome.setVicinity("");
+
+                Place placeOffice = new Place();
+                placeOffice.setMockName("Work");
+                placeOffice.setTitle("Work");
+                placeOffice.setVicinity("");
+                placeList.add(placeHome);
+                placeList.add(placeOffice);
+                placeList.addAll( placeUtility.getHistory());
+
+                setAdapterAndDecor(mList);
+
+            }catch (InflateException e) {
+
+            }
+
 
         return view;
     }
@@ -77,24 +117,7 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final DividerDecoration divider = new DividerDecoration.Builder(this.getActivity())
 
-                .build();
-
-        mList.setHasFixedSize(true);
-        mList.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        mList.addItemDecoration(divider);
-
-        placeList.add(new Place("Gvk One", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566) ));
-        placeList.add(new Place("Lv Prasad", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Panjagutta", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Gvk One", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Lv Prasad","banjara hills",2, new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Panjagutta","banjara hills",2,new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Gvk One", "banjara hills", 2, new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Lv Prasad","banjara hills",2, new GeoCoordinate(17.225544, 78.335566)));
-        placeList.add(new Place("Panjagutta","banjara hills",2, new GeoCoordinate(17.225544, 78.335566)));
-        setAdapterAndDecor(mList);
     }
 
     private void setAdapterAndDecor(RecyclerView list) {
@@ -104,7 +127,7 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
         setHasOptionsMenu(true);
 
         list.setAdapter(adapter);
-        list.addItemDecoration(decor, 1);
+        list.addItemDecoration(decor);
         list.addOnItemTouchListener(this);
     }
 
@@ -144,7 +167,7 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
         View view = decor.findHeaderViewUnder(e.getX(), e.getY());
 
         if (view instanceof TextView) {
-           // Toast.makeText(this.getActivity(), ((TextView) view).getText() + " clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getActivity(), ((TextView) view).getText() + " clicked", Toast.LENGTH_SHORT).show();
         }
     }
 

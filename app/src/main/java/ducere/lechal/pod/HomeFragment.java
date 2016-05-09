@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -36,6 +37,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsoluteLayout;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,6 +95,7 @@ import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 import ducere.lechal.pod.interfaces.OnUpdateSearchLocation;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 
 public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnBackPressed {
@@ -123,6 +126,11 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
     TextView tvLocationName, tvLocationAddress, tvW3w, tvEditLocation;
     ImageView ivBack, ivMockLocation, ivSwitchCurrentLoc;
     SharedPrefUtil prefUtil;
+    EditText etTag;
+    Place placeTag;
+    boolean flag=true;
+
+    long milli;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -168,6 +176,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         } else
             try {
                 view = inflater.inflate(R.layout.fragment_home, container, false);
+                milli = System.currentTimeMillis();
                 tvLocationName = (TextView) view.findViewById(R.id.tvLocName);
                 tvLocationAddress = (TextView) view.findViewById(R.id.tvLocAddress);
                 tvW3w = (TextView) view.findViewById(R.id.tvW3w);
@@ -181,6 +190,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 ivSwitchCurrentLoc = (ImageView) view.findViewById(R.id.ivSwitchCurrentLoc);
                 llTag = (LinearLayout) view.findViewById(R.id.llTag);
                 llSave = (CardView) view.findViewById(R.id.llSave);
+                etTag = (EditText)view.findViewById(R.id.etTag);
                 llSearchBg = (LinearLayout) view.findViewById(R.id.llSearchBg);
                     prefUtil = new SharedPrefUtil();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -249,6 +259,19 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
 
                 });
+                llSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(etTag.getText().toString().length()>0 && placeTag!=null){
+                            PlaceUtility placeUtility = new PlaceUtility(getActivity());
+                            long id = placeUtility.putTag(placeTag);
+                            Log.d("insertId",id+"");
+                            hideTag();
+                        }else{
+
+                        }
+                    }
+                });
 
 
             } catch (InflateException e) {
@@ -263,13 +286,6 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             MainActivity.tabLayout.setVisibility(View.GONE);
             llSearchBg.setVisibility(View.VISIBLE);
             MainActivity.toolbar.setVisibility(View.GONE);
-
-            // MainActivity.toolbar.animate().translationY(-MainActivity.toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-
-           /* Animation bottomDown = AnimationUtils.loadAnimation(getContext(),
-                    R.anim.bottom_down);
-            rlTransparent.startAnimation(bottomDown);*/
-
 
 
             final Animation slideUp = AnimationUtils.loadAnimation(getContext(),
@@ -302,66 +318,14 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
         } else {
             llSearchBg.setVisibility(View.GONE);
-            //MainActivity.toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-
-
-            /*Animation slideDown = AnimationUtils.loadAnimation(getContext(),
-                    R.anim.slide_down);
-            slideDown.setFillAfter(true);*/
-           // llSearch.setVisibility(View.VISIBLE);
 
             ivBack.setImageResource(R.drawable.search_nav_white);
             tvEditLocation.setText("Enter destination");
-           // llSearch.startAnimation(slideDown);
 
-         /*   slideDown.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });*/
             ivMockLocation.setVisibility(View.GONE);
             viewVisible(rlTransparent);
 
 
-           /* Animation bottomUp = AnimationUtils.loadAnimation(getContext(),
-                    R.anim.bottom_up);
-            rlTransparent.startAnimation(bottomUp);*/
-
-          /*  bottomUp.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    ivMockLocation.setVisibility(View.GONE);
-
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    MainActivity.tabLayout.setVisibility(View.VISIBLE);
-                    MainActivity.toolbar.setVisibility(View.VISIBLE);
-
-                    rlTransparent.setVisibility(View.VISIBLE);
-
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });*/
 
         }
     }
@@ -525,9 +489,15 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             PositioningManager.OnPositionChangedListener() {
 
                 @Override
-                public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, GeoPosition geoPosition, boolean b) {
-                    getNearLocation(geoPosition.getCoordinate());
-                    what3Words(geoPosition.getCoordinate());
+                public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, final GeoPosition geoPosition, boolean b) {
+
+                            if ((System.currentTimeMillis()-milli)>30000 || flag){
+                                getNearLocation(geoPosition.getCoordinate());
+                                what3Words(geoPosition.getCoordinate());
+                                milli=System.currentTimeMillis();
+                                flag=false;
+                            }
+
                 }
 
                 @Override
@@ -535,6 +505,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
                 }
             };
+
 
     /**
      * Getting current address
@@ -606,7 +577,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 101) {
+        if (resultCode == Activity.RESULT_OK ) {
             toggleTabs();
             ivSwitchCurrentLoc.setVisibility(View.VISIBLE);
             Place place = (Place)data.getSerializableExtra("place");
@@ -820,37 +791,23 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         tvEditLocation.setText(title + ", " + address);
         llTag.setVisibility(View.VISIBLE);
         llSave.setVisibility(View.VISIBLE);
-
-     /*   final ImageView fabIconNew = new ImageView(getActivity());
-        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.location_tag_gray));
-        final FloatingActionButton rightLowerButton = new FloatingActionButton.Builder(getActivity())
-                .setContentView(fabIconNew)
-                .build();
-        rightLowerButton.setPivotX(mapmarker.getAnchorPoint().x);
-        rightLowerButton.setPivotY(mapmarker.getAnchorPoint().y);
-
-        SubActionButton.Builder rLSubBuilder = new SubActionButton.Builder(getActivity());
-        ImageView rlIcon1 = new ImageView(getActivity());
-        ImageView rlIcon2 = new ImageView(getActivity());
-        ImageView rlIcon3 = new ImageView(getActivity());
-        ImageView rlIcon4 = new ImageView(getActivity());
-
-        rlIcon1.setImageDrawable(getResources().getDrawable(R.drawable.poi_eat_gray));
-        rlIcon2.setImageDrawable(getResources().getDrawable(R.drawable.poi_eat_gray));
-        rlIcon3.setImageDrawable(getResources().getDrawable(R.drawable.poi_eat_gray));
-        rlIcon4.setImageDrawable(getResources().getDrawable(R.drawable.poi_eat_gray));
-
-        // Build the menu with default options: light theme, 90 degrees, 72dp radius.
-        // Set 4 default SubActionButtons
-        final FloatingActionMenu rightLowerMenu = new FloatingActionMenu.Builder(getActivity())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon1).build())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon2).build())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon3).build())
-                .addSubActionView(rLSubBuilder.setContentView(rlIcon4).build())
-                .attachTo(rightLowerButton)
-                .build();*/
-
+        etTag.setText(title);
+        placeTag = new Place(title, address, 0, new ducere.lechal.pod.beans.GeoCoordinate(geo.getLatitude(),geo.getLongitude())) ;
+        placeTag.setMockName(etTag.getText().toString());
+        placeTag.setType(0);
+        placeTag.setIsSynced(false);
     }
 
+    void hideTag(){
+
+            if (mapcontainer != null)
+                mapcontainer.removeAllMapObjects();
+            if (mapmarker != null)
+                map.removeMapObject(mapmarker);
+            llTag.setVisibility(View.GONE);
+            llSave.setVisibility(View.GONE);
+
+
+    }
 
 }

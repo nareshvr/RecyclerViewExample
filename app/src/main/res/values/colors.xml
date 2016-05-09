@@ -7,7 +7,7 @@
     <color name="colorAccent">#26A7DF</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="black_tabs">#88000000</color>
+    <color name="black_tabs">#AA000000</color>
     <color name="transparent">#00000000</color>
     <color name="home_transparent">#AA000000</color>
     <color name="black_overlay">#66000000</color>
@@ -16,4 +16,5 @@
     <color name="button_black">#333333</color>
     <color name="text_gray">#6D6D6D</color>
     <color name="text_alert_not_selected">#B3B3B3</color>
+    <color name="line">#55B3B3B3</color>
 </resources>

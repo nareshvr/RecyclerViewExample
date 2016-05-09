@@ -4,6 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ducere.lechal.pod.NearByFragment">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <np.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.Lato_Bold"
+                android:textColor="@color/colorPrimary"
+                android:text="POINTS OF INTEREST"
+                android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/poiList"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/poi_list" />
+
+        </LinearLayout>
 
 
         <view
@@ -12,6 +40,9 @@
             class="android.support.v7.widget.RecyclerView"
             android:id="@+id/recycler"
             android:layout_gravity="left|top"/>
+
+
+    </LinearLayout>
 
 
 

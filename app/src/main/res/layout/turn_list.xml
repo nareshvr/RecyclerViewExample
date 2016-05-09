@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="15dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/ivTurn"
+                android:background="@drawable/ic_turn_straight_blue"
+                android:layout_margin="8dp"
+                />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:layout_weight="1">
+            <np.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTurnInstruction"
+                android:text="Take Right Turn"
+                android:textSize="16sp"
+                android:textColor="@color/text_gray"
+                style="@style/AppTheme.Lato_Bold"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTurnInstructionDeatils"
+                android:visibility="visible"
+                android:textSize="14sp"
+                android:textColor="@color/text_gray"
+                style="@style/AppTheme.Lato_Regular"
+                android:text=""/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="85dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <np.TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="230 m"
+            android:id="@+id/tvTurnDistance"
+            android:textSize="16sp"
+            android:padding="3dp"
+            android:background="#11000000"
+            android:textColor="@color/colorPrimary"
+            style="@style/AppTheme.Lato_Bold"/>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#1F000000"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

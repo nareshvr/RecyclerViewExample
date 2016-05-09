@@ -18,15 +18,16 @@ public class TablesColumns {
         public static final String COLUMN_NAME_SYNCED = "synced";
         public static final String COLUMN_NAME_JSON = "json";
         public static final String COLUMN_NAME_UPDATED = "updated";
+        public static final String COLUMN_NAME_PLACE_ID = "placeId";
     }
-
+    private static final String PRIMARY_KEY = " PRIMARY KEY";
     private static final String TEXT_TYPE = " TEXT";
     private static final String INT_TYPE = " INTEGER";
     private static final String BIGINT_TYPE = " BIGINT";
     private static final String COMMA_SEP = ",";
     static final String SQL_CREATE_TAGS =
             "CREATE TABLE " + TagEntry.TABLE_NAME + " (" +
-                    TagEntry._ID + " INTEGER AUTO_INCREMENT PRIMARY KEY" + COMMA_SEP +
+                    TagEntry.COLUMN_NAME_PLACE_ID + TEXT_TYPE + PRIMARY_KEY + COMMA_SEP +
                     TagEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
                     TagEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + COMMA_SEP +
                     TagEntry.COLUMN_NAME_MOCK_TITLE + TEXT_TYPE + COMMA_SEP +
@@ -35,7 +36,6 @@ public class TablesColumns {
                     TagEntry.COLUMN_NAME_JSON + TEXT_TYPE + COMMA_SEP +
                     TagEntry.COLUMN_NAME_UPDATED + BIGINT_TYPE +
                     " )";
-
     private static final String SQL_DELETE_TAGS =
             "DROP TABLE IF EXISTS " + TagEntry.TABLE_NAME;
 }

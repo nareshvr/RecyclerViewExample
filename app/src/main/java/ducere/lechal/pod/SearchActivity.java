@@ -50,6 +50,7 @@ import java.util.List;
 
 import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 public class SearchActivity extends AppCompatActivity implements ActionBar.TabListener {
 
@@ -303,18 +304,22 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                             final TextView tvName = (TextView) rowView.findViewById(R.id.tvName);
                             final TextView tvAddress = (TextView) rowView.findViewById(R.id.tvAddress);
                             final TextView tvDistance = (TextView) rowView.findViewById(R.id.tvDistance);
-                            final ImageView ivType = (ImageView)rowView.findViewById(R.id.ivType);
                             final ImageView ivTag = (ImageView)rowView.findViewById(R.id.ivTag);
-                            ivType.setVisibility(View.GONE);
 
                             tvName.setText(placeLink.getTitle() + "");
                             tvAddress.setVisibility(View.VISIBLE);
-                            tvAddress.setText(placeLink.getVicinity().replace("<br/>", ",") + "");
+                            tvAddress.setText(placeLink.getVicinity().replace("<br/>", ", ") + "");
                             tvDistance.setText(placeLink.getDistance()/1000.0+" km");
                             ivTag.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-
+                                    PlaceUtility placeUtility = new PlaceUtility(SearchActivity.this);
+                                    Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                                    place.setType(0);
+                                    place.setMockName(placeLink.getTitle());
+                                    place.setPlaceId(placeLink.getId());
+                                    placeUtility.putTag(place);
+                                    Toast.makeText(getApplicationContext(),"Tag added.",Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -401,9 +406,9 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                 setResult(Activity.RESULT_OK, returnIntent);
                 Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
                 returnIntent.putExtra("place", place);
-
-                finish();
                 dialog.dismiss();
+                finish();
+
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {

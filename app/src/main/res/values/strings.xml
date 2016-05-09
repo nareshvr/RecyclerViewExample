@@ -56,6 +56,7 @@
     <string name="about">About</string>
     <color name="colorPrimaryProfile">#3333ff</color>
     <string name="swap">swap</string>
+    <string name="save">Save</string>
 
     <string name="title_activity_intensity_actity">IntensityActity</string>
     <string name="title_activity_vibration_tutorial">Vibration tutorials</string>

@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by Siva on 26-04-2016.
  */
-public class Place implements Serializable {
+public class Office implements Serializable {
     int id;
     String title;
     String vicinity;
@@ -21,11 +21,10 @@ public class Place implements Serializable {
     boolean isSynced;
     long updated;
 
-
-    public Place() {
+    public Office() {
     }
 
-    public Place(String title, String vicinity, double distance, ducere.lechal.pod.beans.GeoCoordinate geo) {
+    public Office(String title, String vicinity, double distance, ducere.lechal.pod.beans.GeoCoordinate geo) {
         this.title = title;
         this.vicinity = vicinity;
         this.distance = distance;

@@ -54,13 +54,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PodsConnectionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -92,10 +90,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_intensity_actity"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".FootwearActity"></activity>
+        <activity android:name=".FootwearActity" />
         <activity
             android:name=".NavigationActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NearbyListActivity"></activity>
     </application>
 
 </manifest>

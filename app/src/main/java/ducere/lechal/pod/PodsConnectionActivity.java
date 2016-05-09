@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -75,6 +76,12 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ble_connection);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            //getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+
+        }
 
         podsMacID = SharedPrefUtil.getPodsMacid(PodsConnectionActivity.this);
 
@@ -212,7 +219,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
     }
 
     private void startServiceAndScanPods() {
-        if (isPermissionsGranted && isGoogleApiClientConnected) {
+        if (isPermissionsGranted && isGoogleApiClientConnected ) {
             requestLocationUpdates();
 
             // If pods not connected at least once. Check bluetooth enabled

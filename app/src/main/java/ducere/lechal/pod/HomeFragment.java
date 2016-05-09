@@ -19,8 +19,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
@@ -34,6 +36,9 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AbsoluteLayout;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -48,14 +53,22 @@ import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.MapEngine;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.PositioningManager;
+import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.guidance.NavigationManager;
+import com.here.android.mpa.mapping.LocationInfo;
 import com.here.android.mpa.mapping.Map;
+import com.here.android.mpa.mapping.MapCartoMarker;
 import com.here.android.mpa.mapping.MapContainer;
 import com.here.android.mpa.mapping.MapFragment;
+import com.here.android.mpa.mapping.MapGesture;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapPolyline;
+import com.here.android.mpa.mapping.MapProxyObject;
 import com.here.android.mpa.mapping.MapRoute;
 import com.here.android.mpa.mapping.MapTransitLayer;
+import com.here.android.mpa.mapping.TransitAccessObject;
+import com.here.android.mpa.mapping.TransitLineObject;
+import com.here.android.mpa.mapping.TransitStopObject;
 import com.here.android.mpa.routing.RouteOptions;
 import com.here.android.mpa.search.DiscoveryResultPage;
 import com.here.android.mpa.search.HereRequest;
@@ -63,6 +76,9 @@ import com.here.android.mpa.search.Location;
 import com.here.android.mpa.search.PlaceLink;
 import com.here.android.mpa.search.ResultListener;
 import com.here.android.mpa.search.ReverseGeocodeRequest2;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.what3words.W3wLanguageEnum;
 import com.what3words.core.W3wPosition;
 import com.what3words.sdk.android.W3wAlreadyInitedException;
@@ -72,12 +88,14 @@ import com.what3words.sdk.android.W3wLoadedListener;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import ducere.lechal.pod.beans.Place;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 import ducere.lechal.pod.interfaces.OnUpdateSearchLocation;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 
 public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnBackPressed {
@@ -102,11 +120,17 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
     public static MapMarker mapmarker = null;
     W3wAndroidSDK core;
 
-    LinearLayout llCurrentLoc, llSearch, llSearchBg;
+    LinearLayout llCurrentLoc, llSearch, llSearchBg,llTag;
+    CardView llSave;
     RelativeLayout rlTransparent;
     TextView tvLocationName, tvLocationAddress, tvW3w, tvEditLocation;
     ImageView ivBack, ivMockLocation, ivSwitchCurrentLoc;
     SharedPrefUtil prefUtil;
+    EditText etTag;
+    Place placeTag;
+    boolean flag=true;
+
+    long milli;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -152,6 +176,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         } else
             try {
                 view = inflater.inflate(R.layout.fragment_home, container, false);
+                milli = System.currentTimeMillis();
                 tvLocationName = (TextView) view.findViewById(R.id.tvLocName);
                 tvLocationAddress = (TextView) view.findViewById(R.id.tvLocAddress);
                 tvW3w = (TextView) view.findViewById(R.id.tvW3w);
@@ -163,6 +188,10 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 ivBack = (ImageView) view.findViewById(R.id.ivBack);
                 ivMockLocation = (ImageView) view.findViewById(R.id.ivMockLocation);
                 ivSwitchCurrentLoc = (ImageView) view.findViewById(R.id.ivSwitchCurrentLoc);
+                llTag = (LinearLayout) view.findViewById(R.id.llTag);
+                llSave = (CardView) view.findViewById(R.id.llSave);
+                etTag = (EditText)view.findViewById(R.id.etTag);
+                llSearchBg = (LinearLayout) view.findViewById(R.id.llSearchBg);
                     prefUtil = new SharedPrefUtil();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
@@ -194,7 +223,17 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 ivBack.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        toggleTabs();
+                        if(llTag.getVisibility()==View.VISIBLE){
+                            if (mapcontainer != null)
+                                mapcontainer.removeAllMapObjects();
+                            if (mapmarker != null)
+                                map.removeMapObject(mapmarker);
+                            llTag.setVisibility(View.GONE);
+                            llSave.setVisibility(View.GONE);
+
+                        }
+                        else
+                            toggleTabs();
                     }
                 });
                 llSearch.setOnClickListener(new View.OnClickListener() {
@@ -220,6 +259,19 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
 
                 });
+                llSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(etTag.getText().toString().length()>0 && placeTag!=null){
+                            PlaceUtility placeUtility = new PlaceUtility(getActivity());
+                            long id = placeUtility.putTag(placeTag);
+                            Log.d("insertId",id+"");
+                            hideTag();
+                        }else{
+
+                        }
+                    }
+                });
 
 
             } catch (InflateException e) {
@@ -234,13 +286,6 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             MainActivity.tabLayout.setVisibility(View.GONE);
             llSearchBg.setVisibility(View.VISIBLE);
             MainActivity.toolbar.setVisibility(View.GONE);
-
-            // MainActivity.toolbar.animate().translationY(-MainActivity.toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-
-           /* Animation bottomDown = AnimationUtils.loadAnimation(getContext(),
-                    R.anim.bottom_down);
-            rlTransparent.startAnimation(bottomDown);*/
-
 
 
             final Animation slideUp = AnimationUtils.loadAnimation(getContext(),
@@ -273,66 +318,14 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
         } else {
             llSearchBg.setVisibility(View.GONE);
-            //MainActivity.toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-
-
-            /*Animation slideDown = AnimationUtils.loadAnimation(getContext(),
-                    R.anim.slide_down);
-            slideDown.setFillAfter(true);*/
-           // llSearch.setVisibility(View.VISIBLE);
 
             ivBack.setImageResource(R.drawable.search_nav_white);
             tvEditLocation.setText("Enter destination");
-           // llSearch.startAnimation(slideDown);
 
-         /*   slideDown.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });*/
             ivMockLocation.setVisibility(View.GONE);
             viewVisible(rlTransparent);
 
 
-           /* Animation bottomUp = AnimationUtils.loadAnimation(getContext(),
-                    R.anim.bottom_up);
-            rlTransparent.startAnimation(bottomUp);*/
-
-          /*  bottomUp.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    ivMockLocation.setVisibility(View.GONE);
-
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    MainActivity.tabLayout.setVisibility(View.VISIBLE);
-                    MainActivity.toolbar.setVisibility(View.VISIBLE);
-
-                    rlTransparent.setVisibility(View.VISIBLE);
-
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });*/
 
         }
     }
@@ -404,7 +397,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                             new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                     LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
+                    mapFragment.getMapGesture().addOnGestureListener(gestureListener);
                     if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         if (positioningManager.hasValidPosition()) {
                             map.setCenter(positioningManager.getPosition().getCoordinate(),
@@ -496,9 +489,15 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             PositioningManager.OnPositionChangedListener() {
 
                 @Override
-                public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, GeoPosition geoPosition, boolean b) {
-                    getNearLocation(geoPosition.getCoordinate());
-                    what3Words(geoPosition.getCoordinate());
+                public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, final GeoPosition geoPosition, boolean b) {
+
+                            if ((System.currentTimeMillis()-milli)>30000 || flag){
+                                getNearLocation(geoPosition.getCoordinate());
+                                what3Words(geoPosition.getCoordinate());
+                                milli=System.currentTimeMillis();
+                                flag=false;
+                            }
+
                 }
 
                 @Override
@@ -506,6 +505,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
                 }
             };
+
 
     /**
      * Getting current address
@@ -577,7 +577,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 101) {
+        if (resultCode == Activity.RESULT_OK ) {
             toggleTabs();
             ivSwitchCurrentLoc.setVisibility(View.VISIBLE);
             Place place = (Place)data.getSerializableExtra("place");
@@ -638,21 +638,31 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
     @Override
     public void onBackPressed() {
-        toggleTabs();
+        if(llTag.getVisibility()==View.VISIBLE){
+            if (mapcontainer != null)
+                mapcontainer.removeAllMapObjects();
+            if (mapmarker != null)
+                map.removeMapObject(mapmarker);
+            llTag.setVisibility(View.GONE);
+            llSave.setVisibility(View.GONE);
+
+        }
+        else
+            toggleTabs();
     }
 
     void viewVisible(View myView){
         // previously invisible view
 
 
-// get the center for the clipping circle
+    // get the center for the clipping circle
         int cx = myView.getWidth() / 2;
         int cy = myView.getHeight() / 2;
 
-// get the final radius for the clipping circle
+    // get the final radius for the clipping circle
         float finalRadius = (float) Math.hypot(cx, cy);
 
-// create the animator for this view (the start radius is zero)
+    // create the animator for this view (the start radius is zero)
         Animator anim =
                 ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
         anim.addListener(new AnimatorListenerAdapter() {
@@ -676,19 +686,18 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         anim.start();
     }
 
-
     void invisibleView(final View myView){
         int cx = myView.getWidth() / 2;
         int cy = myView.getHeight() / 2;
 
-// get the initial radius for the clipping circle
+    // get the initial radius for the clipping circle
         float initialRadius = (float) Math.hypot(cx, cy);
 
-// create the animation (the final radius is zero)
+    // create the animation (the final radius is zero)
         Animator anim =
                 ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
 
-// make the view invisible when the animation is done
+    // make the view invisible when the animation is done
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -697,7 +706,108 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             }
         });
 
-// start the animation
+    // start the animation
         anim.start();
     }
+    private MapGesture.OnGestureListener gestureListener =
+            new MapGesture.OnGestureListener.OnGestureListenerAdapter() {
+
+                @Override
+                public boolean onMapObjectsSelected(List<ViewObject> objects) {
+                    //  Log.d("tapped","tapped");
+                    for (ViewObject viewObj : objects) {
+
+
+                        switch (viewObj.getBaseType()) {
+                            case PROXY_OBJECT:
+                                MapProxyObject proxyObj = (MapProxyObject) viewObj;
+                                switch (proxyObj.getType()) {
+                                    case TRANSIT_ACCESS:
+                                        TransitAccessObject transitAccessObj =
+                                                (TransitAccessObject) proxyObj;
+                                        Log.d("proxyObj", "Found a TransitAccessObject");
+                                        showPlaceMarker(transitAccessObj.getCoordinate(),transitAccessObj.getTransitAccessInfo().getName(),"","");
+
+                                        break;
+                                    case TRANSIT_LINE:
+                                        TransitLineObject transitLineObj =
+                                                (TransitLineObject) proxyObj;
+                                        Log.d("proxyObj", "Found a TransitLineObject");
+                                        // showPlaceMarker(transitLineObj., transitStopObj.getTransitStopInfo().getInformalName(), transitStopObj.getTransitStopInfo().getOfficialName());
+                                        break;
+                                    case TRANSIT_STOP:
+                                        TransitStopObject transitStopObj =
+                                                (TransitStopObject) proxyObj;
+                                        Log.d("proxyObj", "Found a TransitStopObject" +transitStopObj.getTransitStopInfo().getInformalName()+"-"+transitStopObj.getTransitStopInfo().getOfficialName());
+                                        showPlaceMarker(transitStopObj.getCoordinate(),transitStopObj.getTransitStopInfo().getOfficialName(),
+                                                transitStopObj.getTransitStopInfo().getInformalName(),"");
+                                        break;
+                                    case MAP_CARTO_MARKER:
+                                        MapCartoMarker mapCartoMarker =
+                                                (MapCartoMarker) proxyObj;
+                                        showPlaceMarker(mapCartoMarker.getLocation().getCoordinate(),mapCartoMarker.getLocation().getInfo().getField(LocationInfo.Field.PLACE_NAME),
+                                                mapCartoMarker.getLocation().getInfo().getField(LocationInfo.Field.LOCATION_TEXT),mapCartoMarker.getLocation().getInfo().getField(LocationInfo.Field.PLACE_PHONE_NUMBER));
+                                        Log.d("proxyObj", "Found a MapCartoMarker "+mapCartoMarker.getLocation().getInfo().getField(LocationInfo.Field.LOCATION_TEXT));
+                                        break;
+                                    default:
+                                        Log.d("proxyObj", "ProxyObject.getType() unknown");
+                                }
+                                break;
+                            // User objects are more likely to be handled
+                            // as in the previous example
+                            case USER_OBJECT:
+                            default:
+                                Log.d("proxyObj",
+                                        "ViewObject.getBaseType() is USER_OBJECT or unknown");
+                                break;
+                        }
+
+
+                    }
+                    return false;
+                }
+            };
+
+    void showPlaceMarker(final GeoCoordinate geo, final String title, final String address,final String phone   ) {
+
+        if (mapcontainer != null)
+            mapcontainer.removeAllMapObjects();
+        if (mapmarker != null)
+            map.removeMapObject(mapmarker);
+        Image myImage = new com.here.android.mpa.common.Image();
+        try {
+            myImage.setImageResource(R.drawable.location_tag_gray);
+        } catch (IOException e) {
+            Log.d("Exception", e.toString() + "");
+        }
+        mapmarker = new MapMarker(geo, myImage);
+        mapcontainer = new MapContainer();
+
+        //progressDialog = new ProgressDialog(getActivity());
+        //   progressDialog.setMessage("Getting Address...");
+        //progressDialog.show();
+        map.addMapObject(mapcontainer);
+        mapcontainer.addMapObject(mapmarker);
+        tvEditLocation.setText(title + ", " + address);
+        llTag.setVisibility(View.VISIBLE);
+        llSave.setVisibility(View.VISIBLE);
+        etTag.setText(title);
+        placeTag = new Place(title, address, 0, new ducere.lechal.pod.beans.GeoCoordinate(geo.getLatitude(),geo.getLongitude())) ;
+        placeTag.setMockName(etTag.getText().toString());
+        placeTag.setType(0);
+        placeTag.setIsSynced(false);
+    }
+
+    void hideTag(){
+
+            if (mapcontainer != null)
+                mapcontainer.removeAllMapObjects();
+            if (mapmarker != null)
+                map.removeMapObject(mapmarker);
+            llTag.setVisibility(View.GONE);
+            llSave.setVisibility(View.GONE);
+
+
+    }
+
 }

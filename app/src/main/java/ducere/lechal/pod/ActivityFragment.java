@@ -38,7 +38,7 @@ public class ActivityFragment extends Fragment {
     }
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new Fitness(), "Fitness");
+        adapter.addFragment(new FitnessFragment(), "Fitness");
         adapter.addFragment(new Journeys(), "Journeys");
         viewPager.setAdapter(adapter);
     }
@@ -55,7 +55,7 @@ public class ActivityFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                     return new Fitness();
+                     return new FitnessFragment();
                 case 1:
                     return new Journeys();
             }

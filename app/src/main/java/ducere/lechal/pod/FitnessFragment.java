@@ -1,9 +1,19 @@
 package ducere.lechal.pod;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +28,9 @@ import android.widget.Toast;
 
 import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,11 +39,14 @@ import java.util.Date;
 import java.util.Locale;
 
 import ducere.lechal.pod.adapters.StartSessionDialog;
+import ducere.lechal.pod.ble.ActionsToService;
+import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.podsdata.FitnessData;
 
 /**
  * Created by VR Naresh on 03-05-2016.
  */
-public class Fitness extends Fragment implements View.OnClickListener {
+public class FitnessFragment extends Fragment implements View.OnClickListener {
     private View view;
     ImageView imgMenuPop;
     private final int value = 000000;
@@ -43,8 +59,9 @@ public class Fitness extends Fragment implements View.OnClickListener {
     Calendar datecal;
     int decrementdate = 1;
     int increment = 1;
+    long steps;
 
-    public Fitness() {
+    public FitnessFragment() {
         // Required empty public constructor
     }
 
@@ -61,6 +78,8 @@ public class Fitness extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_fitness, container, false);
         ParallaxScrollView mScrollView = (ParallaxScrollView) view.findViewById(R.id.view1);
         mScrollView.setParallaxView(getActivity().getLayoutInflater().inflate(R.layout.fitnes_header, mScrollView, false));
+
+
         flipMeter = (Flipmeter) view.findViewById(R.id.Flipmeter);
         ProgressBar seekBarFitness = (ProgressBar) view.findViewById(R.id.seekBarFitness);
         seekBarFitness.setProgress(seekBarValue);
@@ -94,6 +113,8 @@ public class Fitness extends Fragment implements View.OnClickListener {
         imgrightArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(ActionsToService.FITNESS_TODAY_DATA);
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                 datecal = Calendar.getInstance();
                 incrementDateByOne(date);
                 mYear = datecal.get(Calendar.YEAR);
@@ -111,6 +132,47 @@ public class Fitness extends Fragment implements View.OnClickListener {
 
         return view;
     }
+
+   /* @Override
+    public void onResume() {
+        super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }, 5000);
+    }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter(ServiceBroadcastActions.FITNESS_TODAY_DATA));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ServiceBroadcastActions.FITNESS_TODAY_DATA.equals(action)) {
+                FitnessData serializable = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_TODAY_DATA);
+                if (serializable == null) {
+                    return;
+                }
+                steps = serializable.getSteps();
+                Log.i("FitnessData", "Today Steps::" + steps);
+                long cal = serializable.getCal();
+
+            }
+
+        }
+    };
 
     public Date decrementDateByOne(Date date) {
         Calendar c = Calendar.getInstance();
@@ -154,17 +216,61 @@ public class Fitness extends Fragment implements View.OnClickListener {
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(getActivity(), imgMenuPop);
         //Inflating the Popup using xml file
-        popup.getMenuInflater().inflate(R.menu.main, popup.getMenu());
+        popup.getMenuInflater().inflate(R.menu.fitness_popup_menu, popup.getMenu());
 
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(getActivity(), "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+
+                switch (item.getItemId()){
+                    case R.id.dailyGoals:
+                        startActivity(new Intent(getActivity(),EditDailySession.class));
+                        break;
+                    case R.id.shareCompletedSteps:
+                        showSocailMedia();
+                        break;
+                    case R.id.viewSavedSession:
+                        break;
+                }
+
                 return true;
             }
         });
 
         popup.show();//showing popup menu
+    }
+
+    private void showSocailMedia() {
+        // specify our test image location
+        Uri url = Uri.parse("android.resource://"
+                + getActivity().getPackageName() + "/" + R.drawable.ic_menu_camera);
+
+        // set up an intent to share the image
+        Intent share_intent = new Intent();
+        share_intent.setAction(Intent.ACTION_SEND);
+        share_intent.setType("image/png");
+        share_intent.putExtra(Intent.EXTRA_STREAM,
+                Uri.fromFile(new File(url.toString())));
+        share_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        share_intent.putExtra(Intent.EXTRA_SUBJECT,
+                "share an image");
+        share_intent.putExtra(Intent.EXTRA_TEXT,
+                "This is an image to share with you");
+
+        // start the intent
+        try {
+            startActivity(Intent.createChooser(share_intent,
+                    "ShareThroughChooser Test"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            (new AlertDialog.Builder(getActivity())
+                    .setMessage("Share failed")
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                }
+                            }).create()).show();
+        }
     }
 
 

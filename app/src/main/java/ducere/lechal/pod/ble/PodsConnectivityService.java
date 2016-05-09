@@ -157,9 +157,9 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     break;
                 case ActionsToService.VIBRATE_RIGHT:
                     vibrate("VB0001"); // TODO move strings to vibrations patterns
-
                     break;
                 case ActionsToService.FITNESS_TODAY_DATA:
+                    Log.i(PodsConnectivityService.class.getName(), "Received command");
                     getTodayFitness();
                     break;
                 case ActionsToService.FITNESS_YESTERDAY_DATA:
@@ -296,12 +296,12 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 }
             }, 8000);
 
-            /*handler.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     startSendingFitnessData();
                 }
-            }, 10000);*/
+            }, 10000);
 
             showConnectedPodsNotification(78, getRemainingBattery());
         }
@@ -362,7 +362,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
         byte[] data;
         switch (characteristic.getUuid().toString()) {
             case PodsServiceCharacteristics.SERVICE_C_CHARACTERISTIC_FITNESS:
-                Log.i(PodsConnectivityService.class.getName(), "Found Fitness characteristic: " + characteristic.getUuid());
+                Log.i(PodsConnectivityService.class.getName(), "Found FitnessFragment characteristic: " + characteristic.getUuid());
                 data = characteristic.getValue();
                 if (data[0] == START_FITNESS_COMMAND[0] && data[1] == START_FITNESS_COMMAND[1]) {
                     FitnessData fitnessData = new FitnessData(data);
@@ -371,18 +371,18 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 } else if (data[0] == GET_TODAY_FITNESS[0] && data[1] == GET_TODAY_FITNESS[1]) {
                     FitnessData fitnessData = new FitnessData(data);
-                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
-                    intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
+                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_TODAY_DATA);
+                    intent.putExtra(ServiceBroadcastActions.FITNESS_TODAY_DATA, fitnessData);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 } else if (data[0] == GET_YESTERDAY_FITNESS[0] && data[1] == GET_YESTERDAY_FITNESS[1]) {
                     FitnessData fitnessData = new FitnessData(data);
-                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
-                    intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
+                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_YESTERDAY_DATA);
+                    intent.putExtra(ServiceBroadcastActions.FITNESS_YESTERDAY_DATA, fitnessData);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 } else if (data[0] == GET_DAY_B4_YESTERDAY_FITNESS[0] && data[1] == GET_DAY_B4_YESTERDAY_FITNESS[1]) {
                     FitnessData fitnessData = new FitnessData(data);
-                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DATA);
-                    intent.putExtra(ServiceBroadcastActions.FITNESS_DATA, fitnessData);
+                    Intent intent = new Intent(ServiceBroadcastActions.FITNESS_DAY_B4_YESTERDAY_DATA);
+                    intent.putExtra(ServiceBroadcastActions.FITNESS_DAY_B4_YESTERDAY_DATA, fitnessData);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 }
                 break;

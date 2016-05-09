@@ -17,12 +17,9 @@
     <string name="action_notification">Notifications</string>
     <string name="action_add_pods">Add</string>
     <string name="pods_connection_hint_keep_close">Make sure the pods are close to\nyour phone</string>
-
     <string name="enter_destination">Enter destination</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
     <string name="select_distance">SELECT DISTANCE</string>
     <string name="meters_1000">1000m</string>
     <string name="meters_500">500m</string>
@@ -54,9 +51,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="rename">Rename</string>
     <string name="about">About</string>
-
     <string name="swap">swap</string>
-
     <string name="title_activity_intensity_actity">IntensityActity</string>
     <string name="title_activity_vibration_tutorial">Vibration tutorials</string>
     <string name="dummy_button">Dummy Button</string>
@@ -70,15 +65,21 @@
     <string name="start_session">Choose mode</string>
     <string name="set_session_goal">Set session goal</string>
     <string name="save_completed_session">Save completed session</string>
-    <string name="dont_my_save">Don\'t save</string>
-    <string name="next">Next</string>
-    <string name="cancel">Cancel</string>
-    <string name="start">Start</string>
+    <string name="dont_my_save">DON\'T SAVE</string>
+    <string name="next">NEXT</string>
+    <string name="cancel">CANCEL</string>
+    <string name="start">START</string>
     <string-array name="goals_array">
         <item>Calories</item>
         <item>Steps</item>
         <item>Distance</item>
         <item>Time</item>
     </string-array>
-
+    <string name="edit_daily_goal">Edit daily goals</string>
+    <string name="share_completed_steps">Share completed steps</string>
+    <string name="view_saved_session">View saved session</string>
+    <string name="daily_steps_count">Daily step count</string>
+    <string name="walk10000_desc">An average human being walks about 5,500 steps a day.Dot\'t be an average human being.Switch to a healthire lifestyle by incorporating more Lechal steps in your day.</string>
+    <string name="cal">Calories burnt are based are base on individual\'s height,weight and gender</string>
+<string name="edit_daily_goals">Edit daily goals</string>
 </resources>

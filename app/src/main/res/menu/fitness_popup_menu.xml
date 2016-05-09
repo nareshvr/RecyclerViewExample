@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/dailyGoals"
+        android:orderInCategory="100"
+        android:title="@string/edit_daily_goal"
+        android:icon="@drawable/contacts_action_white"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/shareCompletedSteps"
+        android:orderInCategory="100"
+        android:title="@string/share_completed_steps"
+        android:icon="@drawable/contacts_action_white"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/viewSavedSession"
+        android:orderInCategory="100"
+        android:title="@string/view_saved_session"
+        android:icon="@drawable/contacts_action_white"
+        android:visible="true"
+        app:showAsAction="always" />
+
+</menu>

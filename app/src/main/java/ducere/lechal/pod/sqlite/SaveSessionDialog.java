@@ -7,6 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.EditText;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import ducere.lechal.pod.R;
 
@@ -19,12 +25,24 @@ public class SaveSessionDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.save_session_dialog, null);
         builder.setView(view);
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        EditText edtSessionTime = (EditText)view.findViewById(R.id.edtSessionTime);
+        String title = "";
+        if (Integer.parseInt(getHour()) >= 0 && Integer.parseInt(getHour()) < 12) {
+            title = "Morning Session";
+        } else if (Integer.parseInt(getHour()) >= 12 && Integer.parseInt(getHour()) < 16) {
+            title = "Afternoon Session";
+        } else if (Integer.parseInt(getHour()) >= 16 && Integer.parseInt(getHour()) < 20) {
+            title = "Evening Session";
+        } else {
+            title = "Night Session";
+        }
+        edtSessionTime.setText(title);
+        builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("Don\'t save", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("DON\'t SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -40,5 +58,19 @@ public class SaveSessionDialog extends DialogFragment {
             }
         });
         return alertDialog;
+    }
+
+    public String getHour() {
+
+        Date myDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.setTime(myDate);
+        Date time = calendar.getTime();
+        SimpleDateFormat outputFmt = new SimpleDateFormat("HH");
+        String dateAsString = outputFmt.format(time);
+
+        return dateAsString;
+
     }
 }

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/img_fitness"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cwPodsPosition"
+        style="@style/fitness_card"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="16dp"
+        app:cardBackgroundColor="@color/blue">
+
+        <LinearLayout
+            android:id="@+id/llStartSession"
+            style="@style/icon_text_layout">
+            <ImageView
+                style="@style/icon_when_text"
+                android:src="@mipmap/fab_start_work_out" />
+
+            <TextView
+                style="@style/text_when_icon"
+                android:text="Save"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <np.TextView
+        style="@style/AppTheme.Lato_Regular"
+        android:id="@+id/daily_steps_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:padding="20dp"
+        android:text="@string/daily_steps_count"
+        android:textColor="@color/white"
+        android:textSize="23sp" />
+
+    <LinearLayout
+        android:id="@+id/stepsCal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/daily_steps_count"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <EditText
+            android:id="@+id/edtSteps"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="1000"
+            android:inputType="number"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Steps"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <EditText
+            android:inputType="number"
+            android:id="@+id/edtCal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="475"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cals*"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <np.TextView
+        style="@style/AppTheme.Lato_Bold"
+        android:id="@+id/walk10000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stepsCal"
+        android:padding="16dp"
+        android:text="Walk 10,000 steps per day for a healthier body."
+        android:textColor="@color/white"
+        android:textSize="23sp" />
+
+    <np.TextView
+        style="@style/AppTheme.Lato_Regular"
+        android:id="@+id/txtWalk10000Desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/walk10000"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="32dp"
+        android:text="@string/walk10000_desc"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/txtWalk10000Desc"
+        android:background="@color/white" />
+
+    <np.TextView
+        style="@style/AppTheme.Lato_Bold"
+        android:paddingTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view"
+        android:text="@string/cal"
+        android:textColor="@color/white"
+        android:paddingBottom="16dp"
+        android:textSize="15sp" />
+</RelativeLayout>

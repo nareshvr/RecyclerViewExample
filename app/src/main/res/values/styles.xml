@@ -96,6 +96,15 @@
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
     </style>
+    <style name="Alert">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
 
     <style name="turn_text">
         <item name="android:layout_width">wrap_content</item>

@@ -4,26 +4,31 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import ca.barrenechea.widget.recyclerview.decoration.DividerDecoration;
+import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.adapters.StickyTestAdapter;
+import ducere.lechal.pod.adapters.TagsAdapter;
+import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
 import ducere.lechal.pod.sqlite.PlaceUtility;
+import np.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TagsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link TagsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class TagsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,10 +40,11 @@ public class TagsFragment extends Fragment {
     private String mParam2;
 
     PlaceUtility placeUtility;
+    private StickyHeaderDecoration decor;
     View view;
-    List<Place> placeList;
-
-
+    private RecyclerView recyclerView;
+    List<Place> placeList =  new ArrayList<Place>();
+    LinearLayout llNoTags;
     public TagsFragment() {
         // Required empty public constructor
     }
@@ -83,9 +89,8 @@ public class TagsFragment extends Fragment {
         } else
             try {
                 view =  inflater.inflate(R.layout.fragment_tags, container, false);
-                placeUtility = new PlaceUtility(getActivity());
-                placeList = placeUtility.getTags();
-                Log.d("tags size",placeList.size()+"");
+                recyclerView = (RecyclerView) view.findViewById(R.id.list);
+                llNoTags = (LinearLayout)view.findViewById(R.id.llNoTags);
 
             }catch (InflateException e) {
 
@@ -95,7 +100,44 @@ public class TagsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
+        final DividerDecoration divider = new DividerDecoration.Builder(this.getActivity())
+
+                .build();
+        placeUtility = new PlaceUtility(getActivity());
+       // placeList = placeUtility.getTags();
+        Place placeHome = new Place();
+        placeHome.setMockName("Home");
+        placeHome.setTitle("Home");
+        placeHome.setVicinity("");
+
+        Place placeOffice = new Place();
+        placeOffice.setMockName("Work");
+        placeOffice.setTitle("Work");
+        placeOffice.setVicinity("");
+        placeList.add(placeHome);
+        placeList.add(placeOffice);
+        placeList.addAll( placeUtility.getTags());
+
+       TagsAdapter mAdapter = new TagsAdapter(placeList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(divider);
+        recyclerView.setAdapter(mAdapter);
+
+
+
+
+        Log.d("tags size", placeList.size() + "");
+       /* if (placeList.size()==0)
+            llNoTags.setVisibility(View.VISIBLE);*/
+
+
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -105,18 +147,4 @@ public class TagsFragment extends Fragment {
 
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

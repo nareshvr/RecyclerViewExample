@@ -4,20 +4,27 @@ package ducere.lechal.pod.adapters;
  * Created by Siva on 27-04-2016.
  */
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.here.android.mpa.urbanmobility.Line;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
+import ducere.lechal.pod.NavigationActivity;
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
 
 public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.ViewHolder> implements
@@ -45,15 +52,31 @@ public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(ViewHolder viewHolder, final int i) {
         viewHolder.title.setText(placeList.get(i).getTitle());
         viewHolder.address.setText(placeList.get(i).getVicinity().replace("<br/>",""));
-        viewHolder.distance.setText(placeList.get(i).getDistance()+"km");
+        viewHolder.distance.setText(placeList.get(i).getDistance()/1000.0+"km");
         if(i<2){
             viewHolder.ivTag.setVisibility(View.GONE);
             viewHolder.address.setVisibility(View.GONE);
             viewHolder.distance.setText(placeList.get(i).getVicinity().replace("<br/>",""));
         }
+        viewHolder.llRow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(i>1){
+                    Intent returnIntent = new Intent(v.getContext(),NavigationActivity.class);
+                    Place placeLink = placeList.get(i);
+                    Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getGeo().getLatitude(),placeLink.getGeo().getLongitude()));
+                    returnIntent.putExtra("place", place);
+                    v.getContext().startActivity(returnIntent);
+                }
+
+
+            }
+        });
+
     }
 
     @Override
@@ -84,9 +107,10 @@ public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.Vi
     }
 
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView title,address,distance;
         public ImageView ivTag;
+        public LinearLayout llRow;
 
 
         public ViewHolder(View itemView) {
@@ -95,16 +119,24 @@ public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.Vi
             address = (TextView)itemView.findViewById(R.id.tvAddress);
             distance = (TextView)itemView.findViewById(R.id.tvDistacne);
             ivTag = (ImageView)itemView.findViewById(R.id.ivTag);
+            llRow = (LinearLayout)itemView.findViewById(R.id.llRow);
         }
+
+
     }
 
-    static class HeaderHolder extends RecyclerView.ViewHolder {
+    static class HeaderHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView header;
 
         public HeaderHolder(View itemView) {
             super(itemView);
 
             header = (TextView) itemView;
+        }
+
+        @Override
+        public void onClick(View v) {
+           // Toast.makeText(v.getContext(),"itemFav",Toast.LENGTH_SHORT).show();
         }
     }
 }

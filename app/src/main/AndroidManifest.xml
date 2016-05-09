@@ -54,13 +54,11 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PodsConnectionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -100,6 +98,7 @@
         <activity
             android:label="@string/edit_daily_goal"
             android:name=".EditDailySession"></activity>
+        <activity android:name=".NearbyListActivity"></activity>
     </application>
 
 </manifest>

@@ -11,10 +11,11 @@
 
         <ImageView
             android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
+            android:visibility="gone"
             android:background="@drawable/poi_list" />
 
         <FrameLayout
@@ -108,4 +109,9 @@
         </FrameLayout>
 
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="16dp"
+        android:background="@color/line"/>
 </LinearLayout>

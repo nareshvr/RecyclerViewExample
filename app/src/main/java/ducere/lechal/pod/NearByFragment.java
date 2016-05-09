@@ -54,10 +54,16 @@ import com.poliveira.parallaxrecyclerview.HeaderLayoutManagerFixed;
 import com.poliveira.parallaxrecyclerview.ParallaxRecyclerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import ca.barrenechea.widget.recyclerview.decoration.DividerDecoration;
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.adapters.POI;
+import ducere.lechal.pod.adapters.POIAdapter;
+import ducere.lechal.pod.beans.POIType;
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import np.TextView;
 
@@ -74,7 +80,7 @@ public class NearByFragment extends Fragment {
     View view;
     FrameLayout menuLayout;
     ArcLayout arcLayout;
-    ImageView btFab;
+    ImageView btFab, ivList;
     RelativeLayout rootLayout;
     View centerItem;
     private boolean isNormalAdapter = false;
@@ -82,11 +88,12 @@ public class NearByFragment extends Fragment {
     final List<PlaceLink> placeLinksList = new ArrayList<PlaceLink>();
 
     boolean isMapEngineInitialize = false;
-    PositioningManager positioningManager= null;
+    PositioningManager positioningManager = null;
     ProgressDialog progressDialog;
     List<String> poiTypes = new ArrayList<String>();
-    int selected=0;
-    boolean flag=false;
+    int selected = 0;
+    boolean flag = false,listFlag=false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,10 +115,13 @@ public class NearByFragment extends Fragment {
                 parent.removeView(view);
         } else
             try {
-                            // Inflate the layout for this fragment
+                // Inflate the layout for this fragment
                 view = inflater.inflate(R.layout.fragment_near_by, container, false);
+                ivList = (ImageView) view.findViewById(R.id.poiList);
 
-                mRecyclerView = (RecyclerView)view. findViewById(R.id.recycler);
+                mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+
+
                 poiTypes.add("eat-play");
                 poiTypes.add("business-services");
                 poiTypes.add("hospital-health-care-facility");
@@ -121,6 +131,23 @@ public class NearByFragment extends Fragment {
                 poiTypes.add("going-out");
                 poiTypes.add("atm-bank-exchange");
 
+                ivList.setOnClickListener(new View.OnClickListener() {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  if (listFlag) {
+                                                      ivList.setBackgroundResource(R.drawable.poi_list);
+                                                      createAdapter(mRecyclerView);
+                                                      listFlag = false;
+                                                  } else {
+                                                      setupList();
+                                                      listFlag = true;
+                                                      ivList.setBackgroundResource(R.drawable.poi_circle);
+                                                  }
+                                              }
+                                          }
+
+                );
+
                 initMapEngine();
 
 
@@ -129,7 +156,8 @@ public class NearByFragment extends Fragment {
             }
 
         return view;
-}
+    }
+
     public void initMapEngine() {
         MapEngine mapEngine = MapEngine.getInstance(getActivity().getApplicationContext());
         mapEngine.init(getActivity(), new OnEngineInitListener() {
@@ -140,7 +168,7 @@ public class NearByFragment extends Fragment {
                     isMapEngineInitialize = true;
                     positioningManager = positioningManager.getInstance();
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
-                 //   progressDialog.show();
+                    //   progressDialog.show();
                     searchPoi("eat-drink");
                 } else {
                     // handle factory initialization failure
@@ -151,15 +179,15 @@ public class NearByFragment extends Fragment {
         });
     }
 
-    public void searchPoi(String poi){
-        LocationManager lm = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+    public void searchPoi(String poi) {
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
-                GeoCoordinate geo;
+            GeoCoordinate geo;
 
-                    geo = new GeoCoordinate(SharedPrefUtil.getDouble(getActivity(),SharedPrefUtil.CURRENT_LAT),SharedPrefUtil.getDouble(getActivity(),SharedPrefUtil.CURRENT_LNG));
+            geo = new GeoCoordinate(SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.CURRENT_LNG));
 
-                AroundRequest request = new AroundRequest().setCategoryFilter(new CategoryFilter().add(poi)).setSearchArea(geo,100000);
+            AroundRequest request = new AroundRequest().setCategoryFilter(new CategoryFilter().add(poi)).setSearchArea(geo, 100000);
 
 
                /* DiscoveryRequest request =
@@ -168,16 +196,16 @@ public class NearByFragment extends Fragment {
                 request.setCollectionSize(20);
                 ErrorCode error = request.execute(new SearchRequestListener());*/
 
-                request.setCollectionSize(50);
-                ErrorCode error = request.execute(new SearchRequestListener());
+            request.setCollectionSize(50);
+            ErrorCode error = request.execute(new SearchRequestListener());
 
-                if (error != ErrorCode.NONE) {
-                    // Handle request error
-                   // progressDialog.cancel();
-                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            if (error != ErrorCode.NONE) {
+                // Handle request error
+                // progressDialog.cancel();
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
 
-                }
-                //listView.expandGroupWithAnimation(groupPositions);
+            }
+            //listView.expandGroupWithAnimation(groupPositions);
 
 
         }
@@ -189,7 +217,7 @@ public class NearByFragment extends Fragment {
         public void onCompleted(DiscoveryResultPage results, ErrorCode error) {
             if (error != ErrorCode.NONE) {
                 // Handle error
-               // progressDialog.cancel();
+                // progressDialog.cancel();
                 Toast.makeText(getActivity(), error.toString() + "error", Toast.LENGTH_SHORT).show();
             } else {
 
@@ -201,7 +229,7 @@ public class NearByFragment extends Fragment {
                 placeLinksList.clear();
 
                 for (DiscoveryResult item : items) {
-						/* A Item can either be a PlaceLink (meta information
+                        /* A Item can either be a PlaceLink (meta information
 						 about a Place) or a DiscoveryLink (which is a reference
 						 to another refined search that is related to the
 						 original search; for example, a search for
@@ -219,13 +247,11 @@ public class NearByFragment extends Fragment {
 
                 createAdapter(mRecyclerView);
 
-               // progressDialog.cancel();
+                // progressDialog.cancel();
 
             }
         }
     }
-
-
 
 
     @Override
@@ -233,7 +259,6 @@ public class NearByFragment extends Fragment {
         super.onDetach();
 
     }
-
 
 
     @SuppressWarnings("NewApi")
@@ -334,7 +359,7 @@ public class NearByFragment extends Fragment {
                 if (viewHolder instanceof ViewHolder) {
                     ((ViewHolder) viewHolder).title.setText(adapter.getData().get(i).getTitle());
                     ((ViewHolder) viewHolder).address.setText(adapter.getData().get(i).getVicinity().replace("<br/>", ", "));
-                    ((ViewHolder) viewHolder).distance.setText(adapter.getData().get(i).getDistance() / 1000.0 + "km");
+                    ((ViewHolder) viewHolder).distance.setText(Convert.metersToKms(adapter.getData().get(i).getDistance()));
                 } else if (viewHolder instanceof HeaderHolder) {
                     ((HeaderHolder) viewHolder).header.setText(adapter.getData().get(i).getTitle());
                 }
@@ -346,10 +371,10 @@ public class NearByFragment extends Fragment {
             public RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, final ParallaxRecyclerAdapter<PlaceLink> adapter, int i) {
 
 
-                if(i == VIEW_TYPES.HEADER ){
+                if (i == VIEW_TYPES.HEADER) {
                     return new HeaderHolder(getActivity().getLayoutInflater().inflate(R.layout.header_history, viewGroup, false));
 
-                }else {
+                } else {
                     return new ViewHolder(getActivity().getLayoutInflater().inflate(R.layout.row_history_layout, viewGroup, false));
 
                 }
@@ -361,12 +386,13 @@ public class NearByFragment extends Fragment {
             public int getItemCountImpl(ParallaxRecyclerAdapter<PlaceLink> adapter) {
                 return placeLinksList.size();
             }
+
             @Override
             public int getItemViewType(int position) {
-                Log.d("ItemView", position+"");
+                Log.d("ItemView", position + "");
 
-                if(position==0)
-                    return  VIEW_TYPES.HEADER ;
+                if (position == 0)
+                    return VIEW_TYPES.HEADER;
 
 
                 return VIEW_TYPES.NORMAL;
@@ -377,7 +403,7 @@ public class NearByFragment extends Fragment {
         adapter.setOnClickEvent(new ParallaxRecyclerAdapter.OnClickEvent() {
             @Override
             public void onClick(View v, int position) {
-             //   Toast.makeText(getActivity(), "You clicked '" + position + "'", Toast.LENGTH_SHORT).show();
+                //   Toast.makeText(getActivity(), "You clicked '" + position + "'", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -385,10 +411,10 @@ public class NearByFragment extends Fragment {
         View header = getActivity().getLayoutInflater().inflate(R.layout.nearby_header, recyclerView, false);
 
         //Arc Animation
-        menuLayout = (FrameLayout)header. findViewById(R.id.menu_layout);
-        arcLayout = (ArcLayout)header. findViewById(R.id.arc_layout);
-        rootLayout = (RelativeLayout)header.findViewById(R.id.rlRoot);
-        centerItem = (View)header.findViewById(R.id.center_item);
+        menuLayout = (FrameLayout) header.findViewById(R.id.menu_layout);
+        arcLayout = (ArcLayout) header.findViewById(R.id.arc_layout);
+        rootLayout = (RelativeLayout) header.findViewById(R.id.rlRoot);
+        centerItem = (View) header.findViewById(R.id.center_item);
         for (int i = 0, size = arcLayout.getChildCount(); i < size; i++) {
             final int finalI = i;
             arcLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -405,20 +431,6 @@ public class NearByFragment extends Fragment {
 
         btFab = (ImageView) header.findViewById(R.id.fab);
         showMenu();
-        btFab.setOnClickListener(new View.OnClickListener() {
-                                     @Override
-                                     public void onClick(View v) {
-                                         if (v.isSelected()) {
-                                             hideMenu();
-                                         } else {
-                                             showMenu();
-                                         }
-                                         v.setSelected(!v.isSelected());
-                                     }
-                                 }
-
-        );
-
 
 
         adapter.setParallaxHeader(header, recyclerView);
@@ -429,18 +441,19 @@ public class NearByFragment extends Fragment {
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        public android.widget.TextView title,address,distance;
+        public android.widget.TextView title, address, distance;
         public ImageView ivTag;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = (android.widget.TextView)itemView.findViewById(R.id.tvTitle);
-            address = (android.widget.TextView)itemView.findViewById(R.id.tvAddress);
-            distance = (android.widget.TextView)itemView.findViewById(R.id.tvDistacne);
-            ivTag = (ImageView)itemView.findViewById(R.id.ivTag);
+            title = (android.widget.TextView) itemView.findViewById(R.id.tvTitle);
+            address = (android.widget.TextView) itemView.findViewById(R.id.tvAddress);
+            distance = (android.widget.TextView) itemView.findViewById(R.id.tvDistacne);
+            ivTag = (ImageView) itemView.findViewById(R.id.ivTag);
         }
     }
+
     static class HeaderHolder extends RecyclerView.ViewHolder {
         public android.widget.TextView header;
 
@@ -450,7 +463,8 @@ public class NearByFragment extends Fragment {
             header = (android.widget.TextView) itemView;
         }
     }
-    public void setDefault(){
+
+    public void setDefault() {
         arcLayout.getChildAt(0).setBackgroundResource(R.drawable.poi_eat_gray);
         arcLayout.getChildAt(1).setBackgroundResource(R.drawable.poi_services_gray);
         arcLayout.getChildAt(2).setBackgroundResource(R.drawable.poi_hospitals_gray);
@@ -460,13 +474,14 @@ public class NearByFragment extends Fragment {
         arcLayout.getChildAt(6).setBackgroundResource(R.drawable.poi_going_out_gray);
         arcLayout.getChildAt(7).setBackgroundResource(R.drawable.poi_atms_gray);
     }
-    public void setClicked(int i){
+
+    public void setClicked(int i) {
         switch (i) {
             case 0:
-            arcLayout.getChildAt(0).setBackgroundResource(R.drawable.poi_eat);
+                arcLayout.getChildAt(0).setBackgroundResource(R.drawable.poi_eat);
                 break;
             case 1:
-             arcLayout.getChildAt(1).setBackgroundResource(R.drawable.poi_service);
+                arcLayout.getChildAt(1).setBackgroundResource(R.drawable.poi_service);
                 break;
             case 2:
                 arcLayout.getChildAt(2).setBackgroundResource(R.drawable.poi_hospital);
@@ -489,6 +504,110 @@ public class NearByFragment extends Fragment {
 
 
         }
+    }
+    void setupList(){
+        POIType allAccom = new POIType("All", "accommodation");
+        POIType hotel = new POIType("Hotel", "hotel");
+        POIType motel = new POIType("Motel", "motel");
+        POIType hostel = new POIType("Hostel", "hostel");
+        POIType camping = new POIType("Camping", "camping");
+
+        POIType allAdmin = new POIType("All", "administrative-areas-buildings");
+        POIType admin = new POIType("Administrative Region", "administrative-region");
+        POIType cityTown = new POIType("City, Town or Village", "city-town-village");
+        POIType outDoor = new POIType("Outdoor Area/Complex", "outdoor-area-complex");
+        POIType building = new POIType("Building", "building");
+
+        POIType allServices = new POIType("All", "business-services");
+        POIType atm = new POIType("ATM/Bank/Exchange", "atm-bank-exchange");
+        POIType police = new POIType("Police/Emergency", "police-emergency");
+        POIType postOffice = new POIType("Post Office", "post-office");
+        POIType tourist = new POIType("Tourist Information", "tourist-information");
+        POIType petrol = new POIType("Petrol Station", "petrol-station");
+        POIType carRental = new POIType("Car Rental", "car-rental");
+        POIType carDealer = new POIType("Car Dealer/Repair", "car-dealer-repair");
+        POIType travel = new POIType("Travel Agency", "travel-agency");
+        POIType communication = new POIType("Communications/Media", "communication-media");
+        POIType business = new POIType("Business/Industry", "business-industry");
+        POIType service = new POIType("Service", "service");
+
+        POIType allEat = new POIType("All", "eat-drink");
+        POIType restaurant = new POIType("Restaurant", "restaurant");
+        POIType snacks = new POIType("Snacks/Fast food", "snacks-fast-food");
+        POIType bar = new POIType("Bar/Pub", "bar-pub");
+        POIType coffee = new POIType("Coffee/Tea", "coffee-tea");
+
+        POIType allFacilities = new POIType("All", "facilities");
+        POIType hospital = new POIType("Hospital or Healthcare Facility", "hospital-health-care-facility");
+        POIType educational = new POIType("Educational Facility", "education-facility");
+        POIType govt = new POIType("Government or Community Facility", "government-community-facility");
+        POIType library = new POIType("Library", "library");
+        POIType expo = new POIType("Expo & Convention Facility", "fair-convention-facility");
+        POIType parking = new POIType("Parking Facility", "parking-facility");
+        POIType publicB = new POIType("Public Bathroom/Rest Area", "toilet-rest-area");
+        POIType sports = new POIType("Sport Facility/Venue", "sports-facility-venue");
+        POIType facility = new POIType("Facility", "facility");
+        POIType religious = new POIType("Religious Place", "religious-place");
+
+        POIType allGoing = new POIType("All", "going-out");
+        POIType dance = new POIType("Dance or Nightclub", "dance-night-club");
+        POIType snacksFast = new POIType("Snacks/Fast food", "cinema");
+        POIType theater = new POIType("Theater, Music & Culture", "theatre-music-culture");
+        POIType casino = new POIType("Casino", "casino");
+
+        POIType allLeisure = new POIType("All", "leisure-outdoor");
+        POIType recreation = new POIType("Recreation", "recreation");
+        POIType theme = new POIType("Theme Park", "amusement-holiday-park");
+
+        POIType allNatural = new POIType("All", "natural-geographical");
+        POIType body = new POIType("Body of Water", "body-of-water");
+        POIType mountain = new POIType("Mountain or Hill", "mountain-hill");
+        POIType underWater = new POIType("Underwater Feature", "undersea-feature");
+        POIType forest = new POIType("Forest, Heath or Other Vegetation", "forest-heath-vegetation");
+
+        POIType allShopping = new POIType("All", "shopping");
+        POIType kiosk = new POIType("Kiosk/24-7/Convenience Store", "kiosk-convenience-store");
+        POIType shopping = new POIType("Shopping Center", "mall");
+        POIType department = new POIType("Department Store", "department-store");
+        POIType food = new POIType("Food & Drink", "food-drink");
+        POIType book = new POIType("Book Shop", "bookshop");
+        POIType pharmacy = new POIType("Pharmacy", "pharmacy");
+        POIType electronics = new POIType("Electronics", "electronics-shop");
+        POIType diy = new POIType("DIY/Garden center", "hardware-house-garden-shop");
+        POIType clothing = new POIType("Clothing & Accessories", "clothing-accessories-shop");
+        POIType outdoor = new POIType("Outdoor Sports", "sport-outdoor-shop");
+        POIType store = new POIType("Store", "shop");
+
+        POIType allSights = new POIType("All", "sights-museums");
+        POIType landmark = new POIType("Landmark/Attraction", "landmark-attraction");
+        POIType museum = new POIType("Museum", "museum");
+
+        POIType allTransport = new POIType("All", "transport");
+        POIType airport = new POIType("Airport", "airport");
+        POIType rail = new POIType("Railway Station", "railway-station");
+        POIType transit = new POIType("Public Transit", "public-transport");
+        POIType ferry = new POIType("Ferry Terminal", "ferry-terminal");
+        POIType taxi = new POIType("Taxi Stand", "taxi-stand");
+
+
+        POI accommodationList = new POI("Accommodation", Arrays.asList(allAccom, hotel, motel, hostel, camping));
+        POI adminList = new POI("Administrative Areas/Buildings", Arrays.asList(allAdmin, admin, cityTown, outDoor, building));
+        POI businessList = new POI("Business & Services", Arrays.asList(allServices, atm, police, postOffice, tourist, petrol, carRental, carDealer, travel, communication, business, service));
+        POI eatList = new POI("Eat & Drink", Arrays.asList(allEat, restaurant, snacks, bar, coffee));
+        POI facilitiesList = new POI("Facilities", Arrays.asList(allFacilities, hospital, educational, govt, library, expo, parking, publicB, sports, facility, religious));
+        POI goingList = new POI("Going Out", Arrays.asList(allGoing, dance, snacksFast, theater, casino));
+        POI leisureList = new POI("Leisure & Outdoor", Arrays.asList(allLeisure, recreation, theme));
+        POI naturalList = new POI("Natural or Geographical", Arrays.asList(allNatural, body, mountain, underWater, forest));
+        POI shoppingList = new POI("Shopping", Arrays.asList(allShopping, kiosk, shopping, department, food, book, pharmacy, electronics, diy, clothing, outdoor, store));
+        POI sightsList = new POI("Sights & Museums", Arrays.asList(allSights, landmark, museum));
+        POI transList = new POI("Transport", Arrays.asList(allTransport, airport, rail, transit, ferry, taxi));
+
+        List<POI> poi = Arrays.asList(accommodationList, adminList,
+                businessList, eatList, facilitiesList, goingList, leisureList,
+                naturalList, shoppingList, sightsList, transList);
+
+        POIAdapter adapter = new POIAdapter(getActivity(), poi);
+        mRecyclerView.setAdapter(adapter);
     }
 }
 

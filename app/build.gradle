@@ -56,5 +56,6 @@ dependencies {
     compile 'com.github.seanzor:shared-preferences-helper:1.0.0'
     compile 'com.android.support:cardview-v7:23.3.0'
     compile 'com.github.kanytu:android-parallax-listview:v1.1'
-    compile 'com.github.neopixl:PixlUI:v1.1.0'
+    compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    compile 'com.bignerdranch.android:expandablerecyclerview:2.1.1'
 }

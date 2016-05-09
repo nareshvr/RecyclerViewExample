@@ -43,7 +43,28 @@ public class PlaceUtility {
     public List<Place> getTags() {
         List<Place> places = new ArrayList<>();
         SQLiteDatabase readableDatabase = getReadableDatabase();
-        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, null, null, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"0"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
+        try {
+            Gson gson = new Gson();
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                do {
+                    Place place = gson.fromJson(cursor.getString(cursor.getColumnIndex(TablesColumns.TagEntry.COLUMN_NAME_JSON)), Place.class);
+                    places.add(place);
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return places;
+    }
+    public List<Place> getHistory() {
+        List<Place> places = new ArrayList<>();
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"1"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
         try {
             Gson gson = new Gson();
             if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
@@ -65,6 +86,7 @@ public class PlaceUtility {
     public long putTag(Place place) {
         SQLiteDatabase writableDatabase = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(TablesColumns.TagEntry.COLUMN_NAME_PLACE_ID, place.getPlaceId());
         values.put(TablesColumns.TagEntry.COLUMN_NAME_TITLE, place.getTitle());
         values.put(TablesColumns.TagEntry.COLUMN_NAME_ADDRESS, place.getVicinity());
         values.put(TablesColumns.TagEntry.COLUMN_NAME_MOCK_TITLE, place.getMockName());
@@ -83,10 +105,10 @@ public class PlaceUtility {
         return id;
     }
 
-    int deleteTag(int placeID) {
+    public int deleteTag(String placeID) {
         SQLiteDatabase writableDatabase = getWritableDatabase();
         try {
-            return writableDatabase.delete(TablesColumns.TagEntry.TABLE_NAME, TablesColumns.TagEntry._ID + "=?", new String[]{String.valueOf(placeID)});
+            return writableDatabase.delete(TablesColumns.TagEntry.TABLE_NAME, TablesColumns.TagEntry.COLUMN_NAME_PLACE_ID + "=?", new String[]{placeID});
         } finally {
             writableDatabase.close();
         }
@@ -96,8 +118,7 @@ public class PlaceUtility {
      * delete place then insert
      */
     public long updateTagWillDeleteAndInsert(Place place) {
-        deleteTag((int) place.getId());
-        place.setId(0);
+        deleteTag(place.getPlaceId());
         return putTag(place);
     }
 }

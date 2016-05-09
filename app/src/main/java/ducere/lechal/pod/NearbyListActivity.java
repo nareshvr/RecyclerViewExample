@@ -117,6 +117,7 @@ public class NearbyListActivity extends AppCompatActivity {
 
 
                     } else if (item.getResultType() == DiscoveryResult.ResultType.DISCOVERY) {
+    
 
                     }
                 }

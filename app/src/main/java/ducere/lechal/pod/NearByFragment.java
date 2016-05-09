@@ -63,6 +63,7 @@ import ducere.lechal.pod.R;
 import ducere.lechal.pod.adapters.POI;
 import ducere.lechal.pod.adapters.POIAdapter;
 import ducere.lechal.pod.beans.POIType;
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import np.TextView;
 
@@ -131,20 +132,19 @@ public class NearByFragment extends Fragment {
                 poiTypes.add("atm-bank-exchange");
 
                 ivList.setOnClickListener(new View.OnClickListener() {
-                                             @Override
-                                             public void onClick(View v) {
-                                                 if (listFlag){
-                                                     ivList.setBackgroundResource(R.drawable.poi_list);
-                                                     createAdapter(mRecyclerView);
-                                                     listFlag=false;
-                                                 }
-                                                 else {
-                                                     setupList();
-                                                     listFlag=true;
-                                                     ivList.setBackgroundResource(R.drawable.poi_circle);
-                                                 }
-                                             }
-                                         }
+                                              @Override
+                                              public void onClick(View v) {
+                                                  if (listFlag) {
+                                                      ivList.setBackgroundResource(R.drawable.poi_list);
+                                                      createAdapter(mRecyclerView);
+                                                      listFlag = false;
+                                                  } else {
+                                                      setupList();
+                                                      listFlag = true;
+                                                      ivList.setBackgroundResource(R.drawable.poi_circle);
+                                                  }
+                                              }
+                                          }
 
                 );
 
@@ -359,7 +359,7 @@ public class NearByFragment extends Fragment {
                 if (viewHolder instanceof ViewHolder) {
                     ((ViewHolder) viewHolder).title.setText(adapter.getData().get(i).getTitle());
                     ((ViewHolder) viewHolder).address.setText(adapter.getData().get(i).getVicinity().replace("<br/>", ", "));
-                    ((ViewHolder) viewHolder).distance.setText(adapter.getData().get(i).getDistance() / 1000.0 + "km");
+                    ((ViewHolder) viewHolder).distance.setText(Convert.metersToKms(adapter.getData().get(i).getDistance()));
                 } else if (viewHolder instanceof HeaderHolder) {
                     ((HeaderHolder) viewHolder).header.setText(adapter.getData().get(i).getTitle());
                 }

@@ -9,10 +9,14 @@ import ducere.lechal.pod.ble.PodsConnectivityService;
  * Created by sunde on 06-04-2016.
  */
 public class FitnessData implements Serializable {
+    long day;
     long steps;
     String distance;
     long time;
     long cal;
+
+    public FitnessData() {
+    }
 
     public FitnessData(byte[] data) {
         if (data != null) {
@@ -23,6 +27,10 @@ public class FitnessData implements Serializable {
             time = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[10], data[11], data[12], data[13]}) / 60.0);
             cal = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[14], data[15], data[16], data[17]}));
         }
+    }
+
+    public long getDay() {
+        return day;
     }
 
     public long getSteps() {

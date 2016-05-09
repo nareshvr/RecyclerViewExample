@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TablesColumns.SQL_CREATE_TAGS);
+        db.execSQL(TablesColumns.SQL_CREATE_FITNESS);
     }
 
     @Override

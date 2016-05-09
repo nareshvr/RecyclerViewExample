@@ -9,6 +9,8 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
+import java.text.SimpleDateFormat;
+
 import ducere.lechal.pod.ble.ActionsToService;
 
 /**
@@ -23,6 +25,17 @@ public class Constants {
     public static final String CURRENT_LOCATION_FORMAT = "%s\n%s";
 
     public static final CharSequence[] INTENSITIES = {" Very High ", " High ", " Medium ", " Low ", " Very Low "};
+    public static final SimpleDateFormat DATE_FORMAT_FITNESS_ID_DATE = new SimpleDateFormat("yyyyMMdd");//20160509
+
+    public interface SearchResultType {
+        int OPTIONS = 0;
+        int SEARCH = 1;
+        int TAG = 2;
+        int FAVOURITES = 4;
+        int HISTORY = 8;
+        int POI = 16;
+        int size = 5;// total types. Options not included
+    }
 
     public static RotateAnimation getRotateAnimation() {
         RotateAnimation rotate = new RotateAnimation(0, 360,

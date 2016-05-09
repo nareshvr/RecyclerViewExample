@@ -13,6 +13,7 @@ import java.util.List;
 
 import ducere.lechal.pod.beans.Place;
 
+import ducere.lechal.pod.podsdata.FitnessData;
 
 /**
  * Created by sunde on 28-04-2016.
@@ -120,5 +121,73 @@ public class PlaceUtility {
     public long updateTagWillDeleteAndInsert(Place place) {
         deleteTag(place.getPlaceId());
         return putTag(place);
+    }
+
+    public List<Place> getPlacesByMockName(String name) {
+        List<Place> places = new ArrayList<>();
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_MOCK_TITLE + " LIKE ?", new String[]{name + "%"}, null, null, null);
+        try {
+            Gson gson = new Gson();
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                do {
+                    Place place = gson.fromJson(cursor.getString(cursor.getColumnIndex(TablesColumns.TagEntry.COLUMN_NAME_JSON)), Place.class);
+                    places.add(place);
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return places;
+    }
+
+    private long putFitnessData(FitnessData fitnessData) {
+        ContentValues values = new ContentValues();
+        values.put(TablesColumns.FitnessEntry.COLUMN_NAME_FITNESS_ID, fitnessData.getDay());
+        values.put(TablesColumns.FitnessEntry.COLUMN_NAME_JSON, new Gson().toJson(fitnessData));
+        values.put(TablesColumns.FitnessEntry.COLUMN_NAME_UPDATED, System.currentTimeMillis());
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        long id = -1;
+        try {
+            id = writableDatabase.insertOrThrow(TablesColumns.FitnessEntry.TABLE_NAME, null, values);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            writableDatabase.close();
+        }
+        return id;
+    }
+
+    public void updateFitnessWillDeleteAndInsert(FitnessData fitnessData) {
+        deleteFitness(fitnessData.getDay());
+        putFitnessData(fitnessData);
+    }
+
+    private int deleteFitness(long fitnessID) {
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        return writableDatabase.delete(TablesColumns.FitnessEntry.TABLE_NAME, TablesColumns.FitnessEntry.COLUMN_NAME_FITNESS_ID + "=?", new String[]{String.valueOf(fitnessID)});
+    }
+
+    public FitnessData getFitness(long fitnessID) {
+        FitnessData fitnessData = new FitnessData();
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.FitnessEntry.TABLE_NAME, null, TablesColumns.FitnessEntry.COLUMN_NAME_FITNESS_ID + "=?", new String[]{String.valueOf(fitnessID)}, null, null, null);
+
+        try {
+            Gson gson = new Gson();
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                fitnessData = gson.fromJson(cursor.getString(cursor.getColumnIndex(TablesColumns.FitnessEntry.COLUMN_NAME_JSON)), FitnessData.class);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return fitnessData;
     }
 }

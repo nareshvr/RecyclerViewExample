@@ -204,7 +204,7 @@
                 android:layout_height="wrap_content"
                 android:text="100cal left"
                 android:layout_marginBottom="2dp"
-                android:id="@+id/textView13" />
+                android:id="@+id/tvCal" />
 
             <np.TextView
                 android:textSize="16dp"
@@ -213,7 +213,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3546 steps taken"
-                android:id="@+id/textView14" />
+                android:id="@+id/tvSteps" />
         </LinearLayout>
     </LinearLayout>
 

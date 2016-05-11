@@ -14,15 +14,17 @@ import ducere.lechal.pod.CheckPodPositionDialogFragment;
 import ducere.lechal.pod.R;
 
 public class StartSessionDialog extends DialogFragment {
+    int mode=0;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.start_session, null);
         builder.setView(view);
+
         builder.setPositiveButton(R.string.next, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                DialogFragment fragment = new SetSessionGoals();
+                DialogFragment fragment = new SetSessionGoals().newInstance(mode);
                 fragment.show(getFragmentManager(),"position");
             }
         })
@@ -40,6 +42,7 @@ public class StartSessionDialog extends DialogFragment {
                 imgWalk.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_walk_red));
                 imgRun.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_run_white));
                 imgCycle.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_cycle_white));
+                mode=1;
             }
         });
         imgRun.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +51,7 @@ public class StartSessionDialog extends DialogFragment {
                 imgRun.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_run_red));
                 imgWalk.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_walk_white));
                 imgCycle.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_cycle_white));
+                mode=2;
             }
         });
         imgCycle.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +60,7 @@ public class StartSessionDialog extends DialogFragment {
                 imgCycle.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_cycle_red));
                 imgRun.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_run_white));
                 imgWalk.setBackgroundDrawable(getResources().getDrawable(R.mipmap.img_walk_white));
+                mode=3;
             }
         });
         // Create the AlertDialog object and return it

@@ -1,9 +1,13 @@
 package ducere.lechal.pod.podsdata;
 
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by sunde on 09-05-2016.
  */
-public class Session {
+public class Session implements Serializable{
     int id;
     String name;
     int activityType;

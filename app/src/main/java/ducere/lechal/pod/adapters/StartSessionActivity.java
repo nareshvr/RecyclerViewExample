@@ -25,7 +25,10 @@ import com.github.clans.fab.FloatingActionButton;
 
 import ducere.lechal.pod.ActivityFragment;
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.podsdata.FitnessData;
+import ducere.lechal.pod.podsdata.Session;
 import ducere.lechal.pod.sqlite.SaveSessionDialog;
 import np.TextView;
 
@@ -36,17 +39,21 @@ import np.TextView;
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener{
 
     Chronometer chronometer;
-    TextView tvHour,tvMin,tvSec;
+    TextView tvHour,tvMin,tvSec,tvSteps,tvCal;
     android.support.design.widget.FloatingActionButton fabPause;
+    Session session;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startserrion);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        session = getIntent().getParcelableExtra("session");
         CardView cwStop = (CardView) findViewById(R.id.cwStop);
         tvHour = (TextView)findViewById(R.id.txtHours);
         tvMin = (TextView)findViewById(R.id.txtMin);
         tvSec = (TextView)findViewById(R.id.txtSec);
+        tvCal = (TextView)findViewById(R.id.tvCal);
+        tvSteps = (TextView)findViewById(R.id.tvSteps);
         fabPause = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fabPause);
 
         chronometer =  (Chronometer)findViewById(R.id.chronometer);
@@ -78,6 +85,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         super.onStart();
         IntentFilter intentFilter = new IntentFilter(ServiceBroadcastActions.BATTERY);
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+        IntentFilter filterToday = new IntentFilter(ServiceBroadcastActions.FITNESS_DATA);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filterToday);
     }
 
     @Override
@@ -92,14 +101,15 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 case ServiceBroadcastActions.BATTERY:
                     int remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
                     Log.d("Battery","Status::"+remainingBattery);
-                    /*if (remainingBattery == -1) {
-                        batteryProgress.setProgress(0);
-                        batteryText.setText("");
-                    } else {
-                        batteryProgress.setProgress(remainingBattery);
-                        batteryText.setText(remainingBattery + "%");
-                    }*/
 
+                    break;
+                case ServiceBroadcastActions.FITNESS_DATA:
+                    FitnessData serializableFit = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_DATA);
+                    if (serializableFit == null) {
+                        return;
+                    }
+                    tvSteps.setText(serializableFit.getSteps()+" steps taken");
+                    tvCal.setText(serializableFit.getCal()+"cal left");
                     break;
             }
         }

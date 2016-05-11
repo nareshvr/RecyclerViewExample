@@ -280,7 +280,20 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
         return view;
     }
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == 111
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Do something with granted permission
+            initMapEngine();
+        }
+        if (requestCode == 112
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Do something with granted permission
+            initMapEngine();
+        }
+    }
     public void toggleTabs() {
         if (MainActivity.tabLayout.getVisibility() == View.VISIBLE) {
             MainActivity.tabLayout.setVisibility(View.GONE);

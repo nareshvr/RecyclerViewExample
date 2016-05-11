@@ -48,4 +48,8 @@ public class FitnessData implements Serializable {
     public long getCal() {
         return cal;
     }
+
+    public void setDay(long day) {
+        this.day = day;
+    }
 }

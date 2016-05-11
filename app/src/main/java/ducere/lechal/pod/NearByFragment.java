@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import com.bignerdranch.expandablerecyclerview.Adapter.ExpandableRecyclerAdapter;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.MapEngine;
 import com.here.android.mpa.common.OnEngineInitListener;
@@ -606,7 +607,23 @@ public class NearByFragment extends Fragment {
                 businessList, eatList, facilitiesList, goingList, leisureList,
                 naturalList, shoppingList, sightsList, transList);
 
-        POIAdapter adapter = new POIAdapter(getActivity(), poi);
+        final POIAdapter adapter = new POIAdapter(getActivity(), poi);
+        adapter.setExpandCollapseListener(new ExpandableRecyclerAdapter.ExpandCollapseListener() {
+            private int lastExpanded = -1;
+            @Override
+            public void onListItemExpanded(int position) {
+                if (lastExpanded != -1)
+                    adapter.collapseParent(lastExpanded); // collapse previous expanded item.
+                lastExpanded = position; // set last expanded parent position.
+            }
+
+            @Override
+            public void onListItemCollapsed(int position) {
+                if (position == lastExpanded) {
+                    lastExpanded = -1;
+                }
+            }
+        });
         mRecyclerView.setAdapter(adapter);
     }
 }

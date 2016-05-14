@@ -27,6 +27,7 @@ import ducere.lechal.pod.ActivityFragment;
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.customViews.CircularSeekBar;
 import ducere.lechal.pod.podsdata.FitnessData;
 import ducere.lechal.pod.podsdata.Session;
 import ducere.lechal.pod.sqlite.SaveSessionDialog;
@@ -42,10 +43,12 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     TextView tvHour,tvMin,tvSec,tvSteps,tvCal;
     android.support.design.widget.FloatingActionButton fabPause;
     Session session;
+    CircularSeekBar circularSeekBar;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startserrion);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Running session");
 
         session = getIntent().getParcelableExtra("session");
         CardView cwStop = (CardView) findViewById(R.id.cwStop);
@@ -54,6 +57,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         tvSec = (TextView)findViewById(R.id.txtSec);
         tvCal = (TextView)findViewById(R.id.tvCal);
         tvSteps = (TextView)findViewById(R.id.tvSteps);
+        circularSeekBar = (CircularSeekBar)findViewById(R.id.progress);
+        circularSeekBar.setMax(session.getGoalValue());
         fabPause = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fabPause);
 
         chronometer =  (Chronometer)findViewById(R.id.chronometer);
@@ -72,6 +77,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     chronometer.setFormat("00:%s");
                 }
                 String[] time = chronometer.getText().toString().split(":");
+
                 tvHour.setText(time[0]);
                 tvMin.setText(time[1]);
                 tvSec.setText(time[2]);
@@ -110,6 +116,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     }
                     tvSteps.setText(serializableFit.getSteps()+" steps taken");
                     tvCal.setText(serializableFit.getCal()+"cal left");
+                    circularSeekBar.setProgress((int)serializableFit.getCal());
                     break;
             }
         }

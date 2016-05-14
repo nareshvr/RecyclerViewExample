@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -91,6 +92,14 @@ public class TagsFragment extends Fragment {
                 view =  inflater.inflate(R.layout.fragment_tags, container, false);
                 recyclerView = (RecyclerView) view.findViewById(R.id.list);
                 llNoTags = (LinearLayout)view.findViewById(R.id.llNoTags);
+                recyclerView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(SearchActivity.etSearch.getWindowToken(), 0);
+                        return false;
+                    }
+                });
 
             }catch (InflateException e) {
 

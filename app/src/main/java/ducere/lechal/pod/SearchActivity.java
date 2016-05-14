@@ -54,7 +54,7 @@ import ducere.lechal.pod.sqlite.PlaceUtility;
 
 public class SearchActivity extends AppCompatActivity implements ActionBar.TabListener {
 
-    EditText etSearch;
+    public static EditText etSearch;
     LinearLayout llSearchResults;
     boolean isMapEngineInitialize = false;
     PositioningManager positioningManager= null;
@@ -330,6 +330,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                                         Intent returnIntent = new Intent(SearchActivity.this,NavigationActivity.class);
 
                                         Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                                       place.setPlaceId(placeLink.getId());
                                         returnIntent.putExtra("place", place);
                                         startActivity(returnIntent);
                                         finish();
@@ -385,7 +386,8 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
             return mFragmentTitleList.get(position);
         }
     }
-    void showDialogSwitchLocation(final PlaceLink placeLink){
+
+    void showDialogSwitchLocation(final PlaceLink placeLink) {
         final Dialog dialog = new Dialog(SearchActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -396,7 +398,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
         TextView cancel = (TextView) dialog.findViewById(R.id.tvCancel);
         TextView ok = (TextView) dialog.findViewById(R.id.tvOk);
         title.setText("Edit your location");
-        description.setText("You have chosen to edit your current location to "+placeLink.getTitle()+".All your searches will refer this new location, Do you want to continue?");
+        description.setText("You have chosen to edit your current location to " + placeLink.getTitle() + ".All your searches will refer this new location, Do you want to continue?");
         ok.setText("Yes");
 
         ok.setOnClickListener(new View.OnClickListener() {
@@ -404,7 +406,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_OK, returnIntent);
-                Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                Place place = new Place(placeLink.getTitle(), placeLink.getVicinity(), placeLink.getDistance(), new GeoCoordinate(placeLink.getPosition().getLatitude(), placeLink.getPosition().getLongitude()));
                 returnIntent.putExtra("place", place);
                 dialog.dismiss();
                 finish();

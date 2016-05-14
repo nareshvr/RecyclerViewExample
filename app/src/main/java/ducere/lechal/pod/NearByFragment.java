@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -121,6 +123,14 @@ public class NearByFragment extends Fragment {
                 ivList = (ImageView) view.findViewById(R.id.poiList);
 
                 mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+                mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(SearchActivity.etSearch.getWindowToken(), 0);
+                        return false;
+                    }
+                });
 
 
                 poiTypes.add("eat-play");

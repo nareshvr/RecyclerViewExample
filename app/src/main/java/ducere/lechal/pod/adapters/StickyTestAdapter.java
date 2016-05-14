@@ -69,6 +69,7 @@ public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.Vi
                     Intent returnIntent = new Intent(v.getContext(),NavigationActivity.class);
                     Place placeLink = placeList.get(i);
                     Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getGeo().getLatitude(),placeLink.getGeo().getLongitude()));
+                    place.setPlaceId(placeLink.getPlaceId());
                     returnIntent.putExtra("place", place);
                     v.getContext().startActivity(returnIntent);
                 }

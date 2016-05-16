@@ -280,6 +280,8 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                 LechalApplication.getInstance().setNavigating(true);
                 navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
                 navigationManager.removeNewInstructionEventListener(newInstructionEventListener);
+                navigationManager.removeRerouteListener(rerouteListener);
+                navigationManager.addRerouteListener(new WeakReference<NavigationManager.RerouteListener>(rerouteListener));
                 navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstructionEventListener));
                 NavigationManager.Error error = navigationManager.simulate(routeResults.get(pager.getCurrentItem()).getRoute(), 20);
                 // navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.ROADVIEW);
@@ -559,6 +561,8 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
         navigationManager.removeNewInstructionEventListener(newInstructionEventListener);
         navigationManager.removeNavigationManagerEventListener(navigationManagerEventListener);
+        navigationManager.removeRerouteListener(rerouteListener);
+        navigationManager.addRerouteListener(new WeakReference<NavigationManager.RerouteListener>(rerouteListener));
         navigationManager.addNavigationManagerEventListener(new WeakReference<NavigationManager.NavigationManagerEventListener>(navigationManagerEventListener));
         navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstructionEventListener));
         map.addMapObject(new MapRoute(LechalApplication.getInstance().getRoute()).setColor(0xFF26A7DF));

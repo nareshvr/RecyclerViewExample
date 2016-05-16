@@ -96,6 +96,7 @@ import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 import ducere.lechal.pod.interfaces.OnUpdateSearchLocation;
 import ducere.lechal.pod.sqlite.PlaceUtility;
+import ducere.lechal.pod.utilities.NavigationFeedback;
 
 
 public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnBackPressed {
@@ -123,7 +124,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
     LinearLayout llCurrentLoc, llSearch, llSearchBg,llTag;
     CardView llSave;
     RelativeLayout rlTransparent;
-    TextView tvLocationName, tvLocationAddress, tvW3w, tvEditLocation;
+    TextView tvLocationName, tvLocationAddress, tvW3w, tvEditLocation,tvNavigatingTo;
     ImageView ivBack, ivMockLocation, ivSwitchCurrentLoc;
     SharedPrefUtil prefUtil;
     EditText etTag;
@@ -181,6 +182,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 tvLocationAddress = (TextView) view.findViewById(R.id.tvLocAddress);
                 tvW3w = (TextView) view.findViewById(R.id.tvW3w);
                 tvEditLocation = (TextView) view.findViewById(R.id.tvEditLocation);
+                tvNavigatingTo = (TextView) view.findViewById(R.id.tvNavigatingTo);
                 llCurrentLoc = (LinearLayout) view.findViewById(R.id.llCurrentLoc);
                 llSearch = (LinearLayout) view.findViewById(R.id.llSearch);
                 llSearchBg = (LinearLayout) view.findViewById(R.id.llSearchBg);
@@ -217,7 +219,12 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 llCurrentLoc.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        toggleTabs();
+                        if (LechalApplication.getInstance().isNavigating()){
+                            startActivity(new Intent(getActivity(),NavigationActivity.class).putExtra("place",LechalApplication.getInstance().getPlace()));
+                        }else {
+
+                            toggleTabs();
+                        }
                     }
                 });
                 ivBack.setOnClickListener(new View.OnClickListener() {
@@ -510,6 +517,10 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                                 milli=System.currentTimeMillis();
                                 flag=false;
                             }
+                    if (LechalApplication.getInstance().isNavigating()){
+                        NavigationFeedback feedback = new NavigationFeedback(geoPosition.getCoordinate(),getActivity());
+                        feedback.findDistanceRange();
+                    }
 
                 }
 
@@ -518,6 +529,16 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
                 }
             };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (LechalApplication.getInstance().isNavigating()){
+            tvNavigatingTo.setText("Navigating to "+LechalApplication.getInstance().getNavigate().getEndTitle());
+        }else{
+            tvNavigatingTo.setText("");
+        }
+    }
 
 
     /**

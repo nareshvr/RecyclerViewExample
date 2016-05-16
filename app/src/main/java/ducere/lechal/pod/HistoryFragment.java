@@ -176,7 +176,7 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
         View view = decor.findHeaderViewUnder(e.getX(), e.getY());
 
         if (view instanceof TextView) {
-            Toast.makeText(this.getActivity(), ((TextView) view).getText() + " clicked", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this.getActivity(), ((TextView) view).getText() + " clicked", Toast.LENGTH_SHORT).show();
         }
     }
 

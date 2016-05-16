@@ -343,6 +343,7 @@
                 </android.support.design.widget.CollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>
         <ImageView
+            android:id="@+id/ivCenter"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
@@ -527,28 +528,43 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-        android:id="@+id/llStop"
-        style="@style/text_card"
-        android:visibility="gone"
-        android:layout_marginRight="80dp"
-        app:cardBackgroundColor="@color/colorPrimaryAlert"
+    <LinearLayout
+        android:id="@+id/llStopMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_anchor="@id/bottom_sheet"
-        app:layout_anchorGravity="right">
+        app:layout_anchorGravity="right"
+        android:visibility="gone"
+        android:orientation="horizontal">
+        <android.support.v7.widget.CardView
+            android:id="@+id/llStop"
+            style="@style/text_card"
+            app:cardBackgroundColor="@color/colorPrimaryAlert">
 
-        <LinearLayout style="@style/icon_text_layout">
+            <LinearLayout style="@style/icon_text_layout">
 
-            <ImageView
-                style="@style/icon_when_text"
-                android:src="@drawable/ic_cross_round_white" />
+                <ImageView
+                    style="@style/icon_when_text"
+                    android:src="@drawable/ic_cross_round_white" />
 
-            <TextView
-                style="@style/text_when_icon"
-                android:text="Stop"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+                <TextView
+                    style="@style/text_when_icon"
+                    android:text="Stop"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@id/bottom_sheet"
+            app:layout_anchorGravity="right"
+            app:backgroundTint="@color/black"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            />
+    </LinearLayout>
 
 
     <com.github.clans.fab.FloatingActionMenu

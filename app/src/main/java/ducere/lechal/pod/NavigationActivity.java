@@ -67,10 +67,12 @@ import ducere.lechal.pod.adapters.DirectionsAdapter;
 import ducere.lechal.pod.adapters.TagsAdapter;
 import ducere.lechal.pod.beans.Navigate;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.sqlite.PlaceUtility;
+import ducere.lechal.pod.utilities.NavigationFeedback;
 
-public class NavigationActivity extends AppCompatActivity implements View.OnClickListener,RouteHeaderFragment.OnClickRoute {
+public class NavigationActivity extends AppCompatActivity implements View.OnClickListener, RouteHeaderFragment.OnClickRoute {
 
     TextView tvSearchLocationHead, tvSearchLocation, tvSearchAddress, tvSearchDistance;
     public boolean isMapEngineInitialize = false;
@@ -90,7 +92,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     CardView cardNavigate, cardStart, cardStop;
     TextView tvFrom, tvTo;
     public static List<MapObject> markers = null;
-    public static MapMarker mapmarker = null;
+    public static MapMarker mapmarker = null, mapMarkerStart = null;
     public static MapRoute mapRoute = null;
     public static MapRoute[] routes;
     List<RouteResult> routeResults;
@@ -98,15 +100,17 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     int routeNumber = 0;
     private RecyclerView recyclerView;
     FloatingActionMenu fam;
+    FloatingActionButton fabMode;
     Navigate navigate;
     TextView dot1, dot2, dot3;
-    LinearLayout llInNavigation, llNavigationHead, llResultHead;
+    LinearLayout llInNavigation, llNavigationHead, llResultHead, llStop;
     TextView tvInstruction, tvSubInstruction, tvDistance, tvEta, tvDistanceLeft, tvTime;
-    ImageView ivTurn;
+    ImageView ivTurn, ivCenter;
     boolean isNavigate = false;
     NavigationManager navigationManager;
     ViewPager pager;
     public static int directionDrawable;
+    DirectionsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +122,11 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
         }
 
-        place = (Place) getIntent().getSerializableExtra("place");
-        initMapEngine();
+        if (getIntent().hasExtra("place")) {
+
+            place = (Place) getIntent().getSerializableExtra("place");
+        }
+
 
         tvSearchLocationHead = (TextView) findViewById(R.id.tvSearchLocationHead);
         tvSearchLocation = (TextView) findViewById(R.id.tvSearchLocation);
@@ -144,11 +151,14 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         tvDistanceLeft = (TextView) findViewById(R.id.tvDistanceLeft);
         tvTime = (TextView) findViewById(R.id.tvTime);
         ivTurn = (ImageView) findViewById(R.id.ivTurn);
+        ivCenter = (ImageView) findViewById(R.id.ivCenter);
 
 
         llInNavigation = (LinearLayout) findViewById(R.id.llInNavigation);
         llNavigationHead = (LinearLayout) findViewById(R.id.llNavigationHead);
         llResultHead = (LinearLayout) findViewById(R.id.llResultHead);
+        llStop = (LinearLayout) findViewById(R.id.llStopMode);
+        fabMode = (FloatingActionButton) findViewById(R.id.fabMode);
 
 
         fam = (FloatingActionMenu) findViewById(R.id.famMode);
@@ -158,6 +168,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         com.github.clans.fab.FloatingActionButton fabWalk = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabWalk);
         com.github.clans.fab.FloatingActionButton fabCar = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDrive);
         com.github.clans.fab.FloatingActionButton fabBus = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabBus);
+
 
         if (!fam.isOpened())
             fam.getMenuIconView().setImageResource(R.drawable.ic_car_white);
@@ -176,6 +187,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         ivBack.setOnClickListener(this);
         ivBackNav.setOnClickListener(this);
 
+        initMapEngine();
 
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean first = true;
@@ -188,24 +200,28 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) cardStart.getLayoutParams();
                     p.setAnchorId(R.id.viewLine);
                     cardStart.setLayoutParams(p);
-                    CoordinatorLayout.LayoutParams pStop = (CoordinatorLayout.LayoutParams) cardStop.getLayoutParams();
+
+                    CoordinatorLayout.LayoutParams pStop = (CoordinatorLayout.LayoutParams) llStop.getLayoutParams();
                     pStop.setAnchorId(R.id.viewLine);
-                    cardStop.setLayoutParams(pStop);
-                    CoordinatorLayout.LayoutParams pp = (CoordinatorLayout.LayoutParams) fam.getLayoutParams();
-                    pp.setAnchorId(R.id.viewLine);
-                    fam.setLayoutParams(pp);
+                    llStop.setLayoutParams(pStop);
+
                     fam.setVisibility(View.GONE);
+
+
                 } else if (newState == 4) {
                     CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) cardStart.getLayoutParams();
                     p.setAnchorId(R.id.bottom_sheet);
                     cardStart.setLayoutParams(p);
-                    CoordinatorLayout.LayoutParams pStop = (CoordinatorLayout.LayoutParams) cardStop.getLayoutParams();
+
+                    CoordinatorLayout.LayoutParams pStop = (CoordinatorLayout.LayoutParams) llStop.getLayoutParams();
                     pStop.setAnchorId(R.id.bottom_sheet);
-                    cardStop.setLayoutParams(pStop);
-                    CoordinatorLayout.LayoutParams pp = (CoordinatorLayout.LayoutParams) fam.getLayoutParams();
-                    pp.setAnchorId(R.id.bottom_sheet);
-                    fam.setLayoutParams(pp);
-                    fam.setVisibility(View.VISIBLE);
+                    llStop.setLayoutParams(pStop);
+
+                    if (!LechalApplication.getInstance().isNavigating()) {
+
+                        fam.setVisibility(View.VISIBLE);
+                    }
+
                 }
 
 
@@ -249,18 +265,22 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                 pager.setVisibility(View.INVISIBLE);
                 showDots(1);
                 cardStart.setVisibility(View.GONE);
-                cardStop.setVisibility(View.VISIBLE);
+                llStop.setVisibility(View.VISIBLE);
                 llInNavigation.setVisibility(View.VISIBLE);
                 llResultHead.setVisibility(View.GONE);
                 llNavigationHead.setVisibility(View.VISIBLE);
-                CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fam.getLayoutParams();
-                p.setAnchorId(R.id.llInNavigation);
-                p.anchorGravity = Gravity.RIGHT | Gravity.TOP;
-                p.setMargins(0, 0, 0, 170);
-                fam.setLayoutParams(p);
+                fam.setVisibility(View.GONE);
+                clearMap();
+                showModeFab();
+                LechalApplication.getInstance().setRoute(routeResults.get(pager.getCurrentItem()).getRoute());
+                map.addMapObject(new MapRoute(routeResults.get(pager.getCurrentItem()).getRoute()).setColor(0xFF26A7DF));
 
                 navigationManager = NavigationManager.getInstance();
-                //   navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.ROADVIEW);
+                LechalApplication.getInstance().setNavigationManager(navigationManager);
+                LechalApplication.getInstance().setNavigating(true);
+                navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
+                navigationManager.removeNewInstructionEventListener(newInstructionEventListener);
+                navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstructionEventListener));
                 NavigationManager.Error error = navigationManager.simulate(routeResults.get(pager.getCurrentItem()).getRoute(), 20);
                 // navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.ROADVIEW);
             }
@@ -268,13 +288,13 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         cardStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               showEndDialog();
+                showCloseDialog();
             }
         });
         llInNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               toggleBottomSheet();
+                toggleBottomSheet();
 
             }
         });
@@ -329,7 +349,27 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
+        ivCenter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+
+    }
+
+    void showModeFab() {
+        switch (navigate.getMode()) {
+            case 0:
+                fabMode.setImageResource(R.drawable.ic_walk_white);
+                break;
+            case 1:
+                fabMode.setImageResource(R.drawable.ic_car_white);
+                break;
+            case 2:
+                fabMode.setImageResource(R.drawable.ic_bus_white);
+                break;
+        }
     }
 
     private void saveInHistory(Place place) {
@@ -344,7 +384,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         navigate.setStartTitle(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_LOCATION));
         navigate.setStartAddress(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_VICINITY));
         navigate.setEndLocation(place.getGeo());
-        navigate.setStartTitle(place.getTitle());
+        navigate.setEndTitle(place.getTitle());
         navigate.setEndAddress(place.getVicinity());
         switch (mode) {
             case PEDESTRIAN:
@@ -359,6 +399,8 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         }
 
 
+        LechalApplication.getInstance().setNavigate(navigate);
+        LechalApplication.getInstance().setPlace(place);
         RouteManager routeManager = RouteManager.getInstance();
 
         RoutePlan routePlan = new RoutePlan();
@@ -402,7 +444,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                             @Override
                             public void onPageSelected(int position) {
                                 drawSelectedRoute(position);
-                                setDirections(position);
+                                setDirections(routeResults.get(position).getRoute());
                                 dotSelected(position);
                             }
 
@@ -416,6 +458,23 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     }
                 }
             };
+    NavigationManager.RerouteListener rerouteListener = new NavigationManager.RerouteListener() {
+        @Override
+        public void onRerouteBegin() {
+            super.onRerouteBegin();
+        }
+
+        @Override
+        public void onRerouteEnd(Route route) {
+            super.onRerouteEnd(route);
+            LechalApplication.getInstance().resetTurns();
+        }
+
+        @Override
+        public void onRerouteFailed() {
+            super.onRerouteFailed();
+        }
+    };
 
     private void showDots(int size) {
         switch (size) {
@@ -459,18 +518,50 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        if (appBarLayout.getVisibility() == View.VISIBLE) {
-            clearMap();
-            rlResultLocation.setVisibility(View.VISIBLE);
-            cardNavigate.setVisibility(View.VISIBLE);
-
-            appBarLayout.setVisibility(View.INVISIBLE);
-            bottomSheet.setVisibility(View.GONE);
-            cardStart.setVisibility(View.GONE);
-            fam.setVisibility(View.GONE);
-        } else {
+        if (LechalApplication.getInstance().isNavigating()) {
             super.onBackPressed();
+        } else {
+            if (appBarLayout.getVisibility() == View.VISIBLE) {
+                clearMap();
+                rlResultLocation.setVisibility(View.VISIBLE);
+                cardNavigate.setVisibility(View.VISIBLE);
+
+                appBarLayout.setVisibility(View.INVISIBLE);
+                bottomSheet.setVisibility(View.GONE);
+                cardStart.setVisibility(View.GONE);
+                fam.setVisibility(View.GONE);
+            } else {
+                super.onBackPressed();
+            }
         }
+
+
+    }
+
+    public void showNavigation() {
+        isNavigate = true;
+        rlResultLocation.setVisibility(View.GONE);
+        cardNavigate.setVisibility(View.GONE);
+
+        appBarLayout.setVisibility(View.VISIBLE);
+        bottomSheet.setVisibility(View.VISIBLE);
+        cardStart.setVisibility(View.GONE);
+        // pager.setVisibility(View.INVISIBLE);
+        showDots(1);
+        llStop.setVisibility(View.VISIBLE);
+        llInNavigation.setVisibility(View.VISIBLE);
+        llResultHead.setVisibility(View.GONE);
+        llNavigationHead.setVisibility(View.VISIBLE);
+        fam.setVisibility(View.GONE);
+        clearMap();
+        setDirections(LechalApplication.getInstance().getRoute());
+        navigationManager = LechalApplication.getInstance().getNavigationManager();
+        navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
+        navigationManager.removeNewInstructionEventListener(newInstructionEventListener);
+        navigationManager.removeNavigationManagerEventListener(navigationManagerEventListener);
+        navigationManager.addNavigationManagerEventListener(new WeakReference<NavigationManager.NavigationManagerEventListener>(navigationManagerEventListener));
+        navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstructionEventListener));
+        map.addMapObject(new MapRoute(LechalApplication.getInstance().getRoute()).setColor(0xFF26A7DF));
 
     }
 
@@ -531,7 +622,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
                     Image myImage = new com.here.android.mpa.common.Image();
                     try {
-                        myImage.setImageResource(R.drawable.ic_flag_blue);
+                        myImage.setImageResource(R.drawable.ic_marker_stop);
                     } catch (IOException e) {
                         Log.d("Exception", e.toString() + "");
                     }
@@ -539,17 +630,15 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     mapmarker = new MapMarker(geo, myImage);
 
 
-                    //mapmarker.setTitle(poiTitle.get(i)+","+poiAddress.get(i));
-                    // mapmarker.setDescription(poiDistance.get(i) + "");
-                    // mapmarker.showInfoBubble();
                     mapcontainer.addMapObject(mapmarker);
-                                  /*  ClusterLayer cl = new ClusterLayer();
-                                    cl.addMarker(mapmarker);*/
+
                     map.addMapObject(mapcontainer);
                     //map.addClusterLayer(cl);
                     map.setCenter(geo, Map.Animation.LINEAR);
                     map.setZoomLevel(17);
-
+                    if (LechalApplication.getInstance().isNavigating()) {
+                        showNavigation();
+                    }
 
                 } else {
                     //gps.showSettingsAlert();
@@ -571,8 +660,12 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                 @Override
                 public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, GeoPosition geoPosition, boolean b) {
                     geoStart = geoPosition.getCoordinate();
-                    if (isNavigate)
+                    if (isNavigate) {
                         updateNavigation();
+                        NavigationFeedback feedback = new NavigationFeedback(geoPosition.getCoordinate(), getApplicationContext());
+                        feedback.findDistanceRange();
+                    }
+
                 }
 
                 @Override
@@ -580,6 +673,51 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
                 }
             };
+
+    NavigationManager.NewInstructionEventListener newInstructionEventListener = new NavigationManager.NewInstructionEventListener() {
+        @Override
+        public void onNewInstructionEvent() {
+            super.onNewInstructionEvent();
+            LechalApplication.getInstance().resetTurns();
+
+        }
+    };
+
+    NavigationManager.NavigationManagerEventListener navigationManagerEventListener = new NavigationManager.NavigationManagerEventListener() {
+        @Override
+        public void onRunningStateChanged() {
+            super.onRunningStateChanged();
+        }
+
+        @Override
+        public void onNavigationModeChanged() {
+            super.onNavigationModeChanged();
+        }
+
+        @Override
+        public void onEnded(NavigationManager.NavigationMode navigationMode) {
+            super.onEnded(navigationMode);
+            navigationManager.stop();
+            LechalApplication.getInstance().setNavigating(false);
+            if (!isFinishing())
+                showEndDialog();
+        }
+
+        @Override
+        public void onMapUpdateModeChanged(NavigationManager.MapUpdateMode mapUpdateMode) {
+            super.onMapUpdateModeChanged(mapUpdateMode);
+        }
+
+        @Override
+        public void onRouteUpdated(Route route) {
+            super.onRouteUpdated(route);
+        }
+
+        @Override
+        public void onCountryInfo(String s, String s1) {
+            super.onCountryInfo(s, s1);
+        }
+    };
 
     private void updateNavigation() {
         com.here.android.mpa.routing.Maneuver currentManeuver = NavigationManager.getInstance().getNextManeuver();
@@ -602,10 +740,10 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             double distanceTotal = navigationManager.getDestinationDistance();
             tvInstruction.setText(turnDirections);
             tvSubInstruction.setText(turnAddress);
-            tvDistance.setText(distanceNext + "m");
+            tvDistance.setText(Convert.metersToKms(distanceNext));
             ivTurn.setBackgroundResource(directionDrawable);
             tvEta.setText(mEta);
-            tvDistanceLeft.setText(distanceTotal / 1000.0 + "km");
+            tvDistanceLeft.setText(Convert.metersToKms(distanceTotal));
         }
 
     }
@@ -635,13 +773,15 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     public void onClick() {
         toggleBottomSheet();
     }
-    void toggleBottomSheet(){
+
+    void toggleBottomSheet() {
         if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         } else {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
+
     private class MyPagerAdapter extends FragmentPagerAdapter {
 
         public MyPagerAdapter(FragmentManager fm) {
@@ -651,7 +791,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         @Override
         public Fragment getItem(int pos) {
             drawSelectedRoute(pos);
-            setDirections(pos);
+            setDirections(routeResults.get(pos).getRoute());
             return RouteHeaderFragment.newInstance(routeResults.get(pos));
 
         }
@@ -663,12 +803,12 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    void setDirections(int pos) {
+    void setDirections(Route route) {
         final DividerDecoration divider = new DividerDecoration.Builder(this)
 
                 .build();
 
-        DirectionsAdapter mAdapter = new DirectionsAdapter(routeResults.get(pos).getRoute());
+        mAdapter = new DirectionsAdapter(route);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -690,6 +830,8 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             mapcontainer.removeAllMapObjects();
         if (mapmarker != null && map != null)
             map.removeMapObject(mapmarker);
+        if (mapMarkerStart != null && map != null)
+            map.removeMapObject(mapMarkerStart);
         if (markers != null && map != null)
             map.removeMapObjects(markers);
     }
@@ -715,6 +857,29 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             map.addMapObject(mapRoute);
 
         }
+        GeoCoordinate geo = new GeoCoordinate(place.getGeo().getLatitude(), place.getGeo().getLongitude());
+        GeoCoordinate geoStart = new GeoCoordinate(navigate.getStartLocation().getLatitude(), navigate.getStartLocation().getLongitude());
+
+        Image myImage = new com.here.android.mpa.common.Image();
+        try {
+            myImage.setImageResource(R.drawable.ic_marker_stop);
+        } catch (IOException e) {
+            Log.d("Exception", e.toString() + "");
+        }
+        Image myImageStart = new com.here.android.mpa.common.Image();
+        try {
+            myImageStart.setImageResource(R.drawable.ic_marker_start);
+        } catch (IOException e) {
+            Log.d("Exception", e.toString() + "");
+        }
+        mapmarker = new MapMarker(geo, myImage);
+        mapMarkerStart = new MapMarker(geoStart, myImageStart);
+
+
+        mapcontainer.addMapObject(mapmarker);
+        mapcontainer.addMapObject(mapMarkerStart);
+
+        map.addMapObject(mapcontainer);
 
 
         GeoBoundingBox gbb = routeResults.get(routeNumber).getRoute().getBoundingBox();
@@ -889,7 +1054,40 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
         return turn;
     }
-    void showEndDialog(){
+
+    void showEndDialog() {
+        final Dialog dialog = new Dialog(NavigationActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_layout);
+
+        TextView title = (TextView) dialog.findViewById(R.id.tvTitle);
+        TextView description = (TextView) dialog.findViewById(R.id.tvDescription);
+        TextView cancel = (TextView) dialog.findViewById(R.id.tvCancel);
+        TextView ok = (TextView) dialog.findViewById(R.id.tvOk);
+        title.setText("Destination Reached");
+        description.setText("Do you want to tag this location?");
+        ok.setText("Yes");
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
+
+    void showCloseDialog() {
         final Dialog dialog = new Dialog(NavigationActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -907,6 +1105,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 navigationManager.stop();
+                LechalApplication.getInstance().setNavigating(false);
                 finish();
 
             }

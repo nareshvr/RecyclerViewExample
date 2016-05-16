@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:style="http://schemas.android.com/tools">
+
+    <ImageView
+        android:scaleType="fitXY"
+        android:src="@mipmap/img_fitness"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgProfile"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+    <android.support.v7.widget.CardView
+        android:id="@+id/cwPodsPosition"
+        style="@style/fitness_card"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/seekBarFitness"
+        android:layout_marginRight="16dp"
+        android:layout_centerInParent="true"
+        app:cardBackgroundColor="@color/blue">
+
+        <LinearLayout
+            android:id="@+id/llStartSession"
+            style="@style/icon_text_layout">
+
+            <ImageView
+                style="@style/icon_when_text"
+                android:src="@mipmap/fab_start_work_out" />
+
+            <np.TextView
+                style="@style/text_when_icon"
+                android:text="Save"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <ImageView
+        android:src="@drawable/ic_menu_camera"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/imgEditProfile"
+        android:layout_marginBottom="50dp"
+        android:layout_above="@+id/cwPodsPosition"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

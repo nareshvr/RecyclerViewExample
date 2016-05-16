@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.DialogFragment;
@@ -37,13 +38,16 @@ import np.TextView;
 /**
  * Created by VR Naresh on 04-05-2016.
  */
-public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener{
+public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
     Chronometer chronometer;
-    TextView tvHour,tvMin,tvSec,tvSteps,tvCal;
+    TextView tvHour, tvMin, tvSec, tvSteps, tvCal;
     android.support.design.widget.FloatingActionButton fabPause;
     Session session;
     CircularSeekBar circularSeekBar;
+    ImageView imgBatteryView;
+    int remainingBattery;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startserrion);
@@ -52,28 +56,28 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
         session = getIntent().getParcelableExtra("session");
         CardView cwStop = (CardView) findViewById(R.id.cwStop);
-        tvHour = (TextView)findViewById(R.id.txtHours);
-        tvMin = (TextView)findViewById(R.id.txtMin);
-        tvSec = (TextView)findViewById(R.id.txtSec);
-        tvCal = (TextView)findViewById(R.id.tvCal);
-        tvSteps = (TextView)findViewById(R.id.tvSteps);
-        circularSeekBar = (CircularSeekBar)findViewById(R.id.progress);
+        tvHour = (TextView) findViewById(R.id.txtHours);
+        tvMin = (TextView) findViewById(R.id.txtMin);
+        tvSec = (TextView) findViewById(R.id.txtSec);
+        tvCal = (TextView) findViewById(R.id.tvCal);
+        tvSteps = (TextView) findViewById(R.id.tvSteps);
+        circularSeekBar = (CircularSeekBar) findViewById(R.id.progress);
         circularSeekBar.setMax(session.getGoalValue());
-        fabPause = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fabPause);
+        fabPause = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fabPause);
 
-        chronometer =  (Chronometer)findViewById(R.id.chronometer);
+        chronometer = (Chronometer) findViewById(R.id.chronometer);
         chronometer.setFormat("00:%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         cwStop.setOnClickListener(this);
-        ImageView imgBatteryStatus  = (ImageView)findViewById(R.id.imgBatteryStatus);
+        ImageView imgBatteryStatus = (ImageView) findViewById(R.id.imgBatteryStatus);
         imgBatteryStatus.setOnClickListener(this);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             public void onChronometerTick(Chronometer cArg) {
-                long elapsedMillis = SystemClock.elapsedRealtime() -chronometer.getBase();
-                if(elapsedMillis > 3600000L){
+                long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                if (elapsedMillis > 3600000L) {
                     chronometer.setFormat("0%s");
-                }else{
+                } else {
                     chronometer.setFormat("00:%s");
                 }
                 String[] time = chronometer.getText().toString().split(":");
@@ -84,6 +88,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             }
         });
         fabPause.setOnClickListener(this);
+        imgBatteryView = (ImageView) findViewById(R.id.imgBatteryView);
+        imgBatteryView.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -100,13 +107,23 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
+
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ServiceBroadcastActions.BATTERY:
                     int remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
-                    Log.d("Battery","Status::"+remainingBattery);
+                    Log.d("Battery", "Status::" + remainingBattery);
+                    remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
+
+                    /*if (remainingBattery == -1) {
+                        batteryProgress.setProgress(0);
+                        batteryText.setText("");
+                    } else {
+                        batteryProgress.setProgress(remainingBattery);
+                        batteryText.setText(remainingBattery + "%");
+                    }*/
 
                     break;
                 case ServiceBroadcastActions.FITNESS_DATA:
@@ -114,9 +131,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     if (serializableFit == null) {
                         return;
                     }
-                    tvSteps.setText(serializableFit.getSteps()+" steps taken");
-                    tvCal.setText(serializableFit.getCal()+"cal left");
-                    circularSeekBar.setProgress((int)serializableFit.getCal());
+                    tvSteps.setText(serializableFit.getSteps() + " steps taken");
+                    tvCal.setText(serializableFit.getCal() + "cal left");
+                    circularSeekBar.setProgress((int) serializableFit.getCal());
                     break;
             }
         }
@@ -124,20 +141,53 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.cwStop:
                 DialogFragment dialogFragment = new SaveSessionDialog();
-                dialogFragment.show(getSupportFragmentManager(),"Position");
+                dialogFragment.show(getSupportFragmentManager(), "Position");
                 break;
             case R.id.fabPause:
                 chronometer.stop();
+            case R.id.imgBatteryStatus:
+                Log.d("Battery", "Status::" + remainingBattery);
+                if (remainingBattery <= 10) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_10));
+                } else if (remainingBattery <= 20) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_20));
+                } else if (remainingBattery <= 30) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_30));
+                } else if (remainingBattery <= 40) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_40));
+                } else if (remainingBattery <= 50) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_50));
+                } else if (remainingBattery <= 60) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_60));
+                } else if (remainingBattery <= 70) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_70));
+                } else if (remainingBattery <= 80) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_80));
+                } else if (remainingBattery <= 90) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_90));
+                } else if (remainingBattery <= 100) {
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.icon_battery_full));
+                }
                 break;
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==android.R.id.home)
+        if (item.getItemId() == android.R.id.home)
             finish();
         return super.onOptionsItemSelected(item);
     }

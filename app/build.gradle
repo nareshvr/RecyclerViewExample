@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-repositories{
+repositories {
     maven {
         url "https://jitpack.io"
     }
@@ -58,4 +58,5 @@ dependencies {
     compile 'com.github.kanytu:android-parallax-listview:v1.1'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     compile 'com.bignerdranch.android:expandablerecyclerview:2.1.1'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
 }

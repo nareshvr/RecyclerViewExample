@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_offlineMode"
+            android:icon="@mipmap/icon_offline_mode"
+            app:actionLayout="@layout/navig_switch_menu"
+            android:title="Offline mode" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_navigationSettings"
+            android:icon="@mipmap/icon_navigation_settings"
+            android:title="Navigation settings" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/nav_fitnessSettings"
+            android:icon="@mipmap/icon_fitness_settings"
+            android:title="Fitness Settings" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title=""
+            android:id="@+id/submenu"
+            android:visible="true"
+            >
+
+        <menu>
+        <item
+            app:actionLayout="@layout/menu_arrow"
+            android:id="@+id/nav_about"
+            android:title="About" />
+        <item
+            app:actionLayout="@layout/menu_arrow"
+            android:id="@+id/nav_help"
+            android:title="Help" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Logout" />
+        </menu>
+        </item>
     </group>
 
-    <item android:title="Communicate">
+    <!--<item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -31,6 +49,6 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="Send" />
         </menu>
-    </item>
+    </item>-->
 
 </menu>

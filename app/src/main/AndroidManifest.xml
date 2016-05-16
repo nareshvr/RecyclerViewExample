@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
 
     <application
         android:allowBackup="true"
@@ -96,11 +97,28 @@
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".NavigationActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditDailySession"
-            android:label="@string/edit_daily_goal"></activity>
-        <activity android:name=".NearbyListActivity"></activity>
+            android:label="@string/edit_daily_goal" />
+        <activity android:name=".NearbyListActivity" />
+        <activity
+            android:name=".ProfileDetailsActivity"
+            android:label="Profile"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ProfileAchievements"
+            android:label="Profile"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".NavigationSettingsActivity" />
+        <activity android:name=".VoiceOptionActivity" />
+        <activity android:name=".FitnessSettingsActivity" />
+        <activity
+
+            android:name=".DownloadMapActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".EditProfileActivity"></activity>
+        <activity android:name=".DownloadMapListActivity"></activity>
     </application>
 
 </manifest>

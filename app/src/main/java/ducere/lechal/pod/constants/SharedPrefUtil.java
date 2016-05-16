@@ -81,4 +81,6 @@ public class SharedPrefUtil {
     public static void setIntensityType(Context context, int index) {
         getPref(context).edit().putInt(INTENSITY_TYPE, index).apply();
     }
+
+
 }

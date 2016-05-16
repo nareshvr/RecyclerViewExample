@@ -2,22 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/colorPrimaryAlert">
-    <np.TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="22sp"
-        android:text="Alert Title"
-        android:layout_margin="8dp"
-        style="@style/AppTheme.Lato_Bold"
-        android:textColor="@color/white"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:background="@color/colorPrimaryAlert">
+        <np.TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="22sp"
+            android:text="Alert Title"
+            android:layout_margin="8dp"
+            style="@style/AppTheme.Lato_Bold"
+            android:textColor="@color/white"/>
+    </LinearLayout>
     <ImageView
         android:id="@+id/ivAlertIcon"
         android:layout_width="wrap_content"

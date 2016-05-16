@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <ListView
+        android:id="@+id/lv_continents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#55939393">
+    </ListView>
+
+    <ListView
+        android:id="@+id/lv_countries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:divider="#55939393">
+    </ListView>
+
+
+    <ListView
+        android:id="@+id/lv_states"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:divider="#55939393">
+    </ListView>
+
+    <ListView
+        android:id="@+id/lv_cities"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:divider="#55939393" >
+    </ListView>
+
+</LinearLayout>

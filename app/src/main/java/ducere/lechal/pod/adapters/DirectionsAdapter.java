@@ -21,6 +21,7 @@ import java.util.List;
 
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.constants.Convert;
 
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.MyViewHolder>  {
 
@@ -73,7 +74,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
        // Place place = placeList.get(position);
         holder.tvTurnInstruction.setText(directions(route.getManeuvers().get(position), route.getManeuvers().get(position).getTurn(), 0));
         holder.tvTurnInstructionDetails.setText( route.getManeuvers().get(position).getNextRoadName() + "" );
-        holder.tvTurnDistance.setText(Math.round(route.getManeuvers().get(position).getDistanceToNextManeuver()/1000.0)+"km");
+        holder.tvTurnDistance.setText(Convert.metersToKms(route.getManeuvers().get(position).getDistanceToNextManeuver()));
         holder.ivTurn.setBackgroundResource(directionDrawable);
 
 

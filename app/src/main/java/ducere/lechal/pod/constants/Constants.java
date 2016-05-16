@@ -55,7 +55,8 @@ public class Constants {
         return fadeOut;
     }
 
-    public static void sendVibrate(Context context, String pattern) {
+    public static void sendVibrate(Context context, String type, String left, String right) {
+        String pattern = type + (SharedPrefUtil.isPodSwapped(context) ? right + left : left + right);
         Intent intent = new Intent(ActionsToService.VIBRATE);
         intent.putExtra(ActionsToService.VIBRATE, pattern);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

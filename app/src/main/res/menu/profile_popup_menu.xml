@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/editProfile"
+        android:orderInCategory="100"
+        android:title="@string/edit_profile"
+        android:icon="@drawable/contacts_action_white"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/clearAchievements"
+        android:orderInCategory="100"
+        android:title="@string/clear_achievements"
+        android:icon="@drawable/contacts_action_white"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        app:actionLayout="@layout/navig_switch_menu"
+        android:id="@+id/allowGlobalTracking"
+        android:orderInCategory="100"
+        android:title="@string/allow_global_tracking"
+        android:icon="@drawable/contacts_action_white"
+        android:visible="true"
+        app:showAsAction="always" />
+
+</menu>

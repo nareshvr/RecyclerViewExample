@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +27,8 @@ import ducere.lechal.pod.sqlite.SaveSessionDialog;
  * Created by VR Naresh on 04-05-2016.
  */
 public class StartSessionActivity extends FragmentActivity implements View.OnClickListener{
+    ImageView imgBatteryView;
+    int remainingBattery;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startserrion);
@@ -33,6 +36,9 @@ public class StartSessionActivity extends FragmentActivity implements View.OnCli
         cwStop.setOnClickListener(this);
         ImageView imgBatteryStatus  = (ImageView)findViewById(R.id.imgBatteryStatus);
         imgBatteryStatus.setOnClickListener(this);
+        imgBatteryView = (ImageView)findViewById(R.id.imgBatteryView);
+        imgBatteryView.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -52,8 +58,8 @@ public class StartSessionActivity extends FragmentActivity implements View.OnCli
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ServiceBroadcastActions.BATTERY:
-                    int remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
-                    Log.d("Battery","Status::"+remainingBattery);
+                    remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
+
                     /*if (remainingBattery == -1) {
                         batteryProgress.setProgress(0);
                         batteryText.setText("");
@@ -75,7 +81,38 @@ public class StartSessionActivity extends FragmentActivity implements View.OnCli
                 dialogFragment.show(getSupportFragmentManager(),"Position");
                 break;
             case R.id.imgBatteryStatus:
-
+                Log.d("Battery","Status::"+remainingBattery);
+                if(remainingBattery<=10){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_10));
+                }else if(remainingBattery<=20){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_20));
+                }else if(remainingBattery<=30){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_30));
+                }else if(remainingBattery<=40){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_40));
+                }else if(remainingBattery<=50){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_50));
+                }else if(remainingBattery<=60){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_60));
+                }else if(remainingBattery<=70){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_70));
+                }else if(remainingBattery<=80){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_80));
+                }else if(remainingBattery<=90){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_90));
+                }else if(remainingBattery<=100){
+                    imgBatteryView.setVisibility(View.VISIBLE);
+                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.icon_battery_full));
+                }
                 break;
         }
     }

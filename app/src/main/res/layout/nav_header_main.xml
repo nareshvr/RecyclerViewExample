@@ -1,34 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/head"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:clickable="true"
+        android:id="@+id/profileImv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@mipmap/img_fitness" />
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/llMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Android Studio"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:layout_alignParentBottom="true"
+        android:background="#55000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:paddingStart="20dp">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="android.studio@android.com" />
+        <ImageView
 
-</LinearLayout>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:paddingEnd="20dp"
+            android:src="@mipmap/icon_navigation_profile" />
+
+        <LinearLayout
+            android:id="@+id/ll_mailid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <np.TextView
+                style="@style/AppTheme.Lato_Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:text="Juliette Being"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="15sp" />
+
+            <np.TextView
+                android:id="@+id/textView"
+                style="@style/AppTheme.Lato_Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="android.studio@android.com" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cwPodsPosition"
+        style="@style/frofile_card"
+        android:layout_above="@+id/llMain"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/seekBarFitness"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        app:cardBackgroundColor="@color/blue">
+
+        <LinearLayout
+            android:id="@+id/llStartSession"
+            style="@style/profile_text_layout">
+
+            <np.TextView
+                style="@style/text_when_icon"
+                android:text="Connected"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

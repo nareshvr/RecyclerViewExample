@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -79,6 +80,14 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
             try {
                 view =  inflater.inflate(R.layout.fragment_history, container, false);
                 mList = (RecyclerView) view.findViewById(R.id.list);
+                mList.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(SearchActivity.etSearch.getWindowToken(), 0);
+                        return false;
+                    }
+                });
                 final DividerDecoration divider = new DividerDecoration.Builder(this.getActivity())
 
                         .build();
@@ -167,7 +176,7 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
         View view = decor.findHeaderViewUnder(e.getX(), e.getY());
 
         if (view instanceof TextView) {
-            Toast.makeText(this.getActivity(), ((TextView) view).getText() + " clicked", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this.getActivity(), ((TextView) view).getText() + " clicked", Toast.LENGTH_SHORT).show();
         }
     }
 

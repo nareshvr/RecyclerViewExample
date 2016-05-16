@@ -4,96 +4,92 @@ package ducere.lechal.pod.constants;
  * Created by Siva on 05-12-2015.
  */
 
-public class Vibrations {
-    public static final String prefix = "VB";
+public interface Vibrations {
+    String VB = "VB";
 
-    public static final String VIBRATE_LEFT_POD = prefix + "0100";
-    public static final String VIBRATE_RIGHT_POD = prefix + "0001";
-
-    //At Turn
-    public String d1_left_right = "35";
-
-    public String d1_keep = "31";
-
-    public String d1_slight = "31";
-
-    public String d1_sharp = "51";
-
-    public String d1_uTurn = "43";
-
-    public String d1_destination = "19";
-
-    // At 200mts Turn
-    public String d2_left_right = "34";
-
-    public String d2_keep = "30";
-
-    public String d2_slight = "30";
-
-    public String d2_sharp = "50";
-
-    public String d2_uTurn = "42";
-
-    public String d2_destination = "34";
-
-    // At 500mts Turn
-    public String d3_left_right = "33";
-
-    public String d3_keep = "29";
-
-    public String d3_slight = "29";
-
-    public String d3_sharp = "49";
-
-    public String d3_uTurn = "41";
-
-    public String d3_destination = "33";
-
-    // At 1Km Turn
-    public String d4_left_right = "32";
-
-    public String d4_keep = "28";
-
-    public String d4_slight = "28";
-
-    public String d4_sharp = "48";
-
-    public String d4_uTurn = "40";
-
-    public String d4_destination = "32";
-
-    public String d1_left_right_suffix = "16";
-
-
-    public String d1_uTurn_suffix = "17";
+    String VIBRATE_LEFT_POD = VB + "0100";
+    String VIBRATE_RIGHT_POD = VB + "0001";
 
     //RoundAbout
-    public String d2_roundAboutRight = "24";
-    public String d2_roundAboutLeft = "23";
+    String roundAboutRight = "24";
+    String roundAboutLeft = "23";
+    String straight = "20";
 
+    interface NOW {
+        String straight = Vibrations.straight;
+        String slightTurn = "31";
+        String normalTurn = "35";
+        String sharpTurn = "51";
+        String keep = "31";
+        String uTurn = "43";
+        String destination = "19";
+        String roundAboutRight = Vibrations.roundAboutRight;
+        String roundAboutLeft = Vibrations.roundAboutLeft;
+    }
 
-    //GoStriaght
-    public String striaght = "20";
+    interface IN_100_MTS {
+        String straight = Vibrations.straight;
+        String anyTurn = "16";
+        String uTurn = "17";
+        String roundAboutRight = Vibrations.roundAboutRight;
+        String roundAboutLeft = Vibrations.roundAboutLeft;
+    }
+
+    interface IN_200_MTS {
+        String straight = Vibrations.straight;
+        String slightTurn = "30";
+        String normalTurn = "34";
+        String sharpTurn = "50";
+        String keep = "30";
+        String uTurn = "42";
+        String destination = "34";
+        String roundAboutRight = Vibrations.roundAboutRight;
+        String roundAboutLeft = Vibrations.roundAboutLeft;
+    }
+
+    interface IN_500_MTS {
+        String straight = Vibrations.straight;
+        String slightTurn = "29";
+        String normalTurn = "33";
+        String sharpTurn = "49";
+        String keep = "29";
+        String uTurn = "41";
+        String destination = "33";
+        String roundAboutRight = Vibrations.roundAboutRight;
+        String roundAboutLeft = Vibrations.roundAboutLeft;
+    }
+
+    interface IN_1000_MTS {
+        String straight = Vibrations.straight;
+        String slightTurn = "28";
+        String normalTurn = "32";
+        String sharpTurn = "48";
+        String keep = "28";
+        String uTurn = "40";
+        String destination = "32";
+        String roundAboutRight = Vibrations.roundAboutRight;
+        String roundAboutLeft = Vibrations.roundAboutLeft;
+    }
 
     //Re_Route
-    public String reRoute_left = "21";
-    public String reRoute_right = "22";
+    String reRoute_left = "21";
+    String reRoute_right = "22";
 
     //Orientation
-    public String orien_left = "01";
-    public String orien_right = "02";
+    String orien_left = "01";
+    String orien_right = "02";
 
     //suffix
-    public String suffix = "01";
+    String suffix = "01";
 
     //Look at mobile
-    public String lookAtMobile = "01";
+    String lookAtMobile = "01";
 
-    public String lowBattery = "46";
+    String lowBattery = "46";
 
     //confirmation
-    public String confirmation = "01";
 
-    public String confirmation_2k = "15";
+    String confirmation = "01";
+    String confirmation_2k = "15";
 
 }

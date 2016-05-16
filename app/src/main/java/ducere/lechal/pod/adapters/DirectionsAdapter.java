@@ -21,6 +21,7 @@ import java.util.List;
 
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.constants.Convert;
 
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.MyViewHolder>  {
 
@@ -73,7 +74,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
        // Place place = placeList.get(position);
         holder.tvTurnInstruction.setText(directions(route.getManeuvers().get(position), route.getManeuvers().get(position).getTurn(), 0));
         holder.tvTurnInstructionDetails.setText( route.getManeuvers().get(position).getNextRoadName() + "" );
-        holder.tvTurnDistance.setText(Math.round(route.getManeuvers().get(position).getDistanceToNextManeuver()/1000.0)+"km");
+        holder.tvTurnDistance.setText(Convert.metersToKms(route.getManeuvers().get(position).getDistanceToNextManeuver()));
         holder.ivTurn.setBackgroundResource(directionDrawable);
 
 
@@ -92,7 +93,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         if (directions == Maneuver.Turn.UNDEFINED || directions == Maneuver.Turn.NO_TURN) {
             turn = "Go Straight up to ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_go_straight;
                 // directionDrawableLock = R.drawable.nav_turn_go_straight_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -100,7 +101,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.KEEP_MIDDLE) {
             turn = "Keep middle ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_keep_middle_blue;
                 //directionDrawableLock = R.drawable.nav_turn_keep_middle_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -108,7 +109,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.LIGHT_RIGHT) {
             turn = "Take Slight Right ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_slight_right_blue;
                 //directionDrawableLock = R.drawable.nav_turn_slight_right_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -117,7 +118,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.KEEP_RIGHT) {
             turn = "Keep Right ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_keep_right_blue;
                 //  directionDrawableLock = R.drawable.nav_turn_keep_right_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -125,7 +126,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.HEAVY_RIGHT) {
             turn = "Take Sharp Right ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_sharp_right_blue;
                 // directionDrawableLock = R.drawable.nav_turn_sharp_right_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -133,7 +134,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.QUITE_RIGHT) {
             turn = "Turn Right ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_right_blue;
                 // directionDrawableLock = R.drawable.nav_turn_right_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -141,7 +142,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.LIGHT_LEFT) {
             turn = "Take Slight Left ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_slight_left_blue;
                 //  directionDrawableLock = R.drawable.nav_turn_slight_left_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -149,7 +150,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.KEEP_LEFT) {
             turn = "Keep Left ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_keep_left_blue;
                 //  directionDrawableLock = R.drawable.nav_turn_keep_left_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -157,7 +158,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.HEAVY_LEFT) {
             turn = "Take Sharp Left ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_sharp_left_blue;
                 // directionDrawableLock = R.drawable.nav_turn_sharp_left_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -165,7 +166,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.QUITE_LEFT) {
             turn = "Turn Left ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_left_blue;
                 //directionDrawableLock = R.drawable.nav_turn_left_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -174,7 +175,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
         } else if (directions == Maneuver.Turn.RETURN) {
             turn = "Take About Turn ";
             if (color == 0) {
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+                directionDrawable = R.drawable.turn_uturn_right_blue;
                 // directionDrawableLock = R.drawable.nav_turn_uturn_right_white_lock;
             } else {
                 directionDrawable = R.drawable.ic_turn_straight_blue;
@@ -182,10 +183,11 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
             }
         } else {
             turn = "Take Round About ";
-            if (directions == Maneuver.Turn.ROUNDABOUT_1) {
+            directionDrawable = R.drawable.turn_uturn_right_blue;
+           /* if (directions == Maneuver.Turn.ROUNDABOUT_1) {
 
                 // directionDrawableLock = R.drawable.nav_round_about_1;
-                directionDrawable = R.drawable.ic_turn_straight_blue;
+
 
             } else if (directions == Maneuver.Turn.ROUNDABOUT_2) {
 
@@ -242,7 +244,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.My
 
                 // directionDrawableLock = R.drawable.nav_round_about_12;
                 directionDrawable = R.drawable.ic_turn_straight_blue;
-            }
+            }*/
 
 
         }

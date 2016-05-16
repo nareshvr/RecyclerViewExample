@@ -26,6 +26,7 @@ import ducere.lechal.pod.NavigationActivity;
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.constants.Convert;
 
 public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.ViewHolder> implements
         StickyHeaderAdapter<StickyTestAdapter.HeaderHolder> {
@@ -55,7 +56,7 @@ public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.Vi
     public void onBindViewHolder(ViewHolder viewHolder, final int i) {
         viewHolder.title.setText(placeList.get(i).getTitle());
         viewHolder.address.setText(placeList.get(i).getVicinity().replace("<br/>",""));
-        viewHolder.distance.setText(placeList.get(i).getDistance()/1000.0+"km");
+        viewHolder.distance.setText(Convert.metersToKms(placeList.get(i).getDistance()));
         if(i<2){
             viewHolder.ivTag.setVisibility(View.GONE);
             viewHolder.address.setVisibility(View.GONE);
@@ -69,6 +70,7 @@ public class StickyTestAdapter extends RecyclerView.Adapter<StickyTestAdapter.Vi
                     Intent returnIntent = new Intent(v.getContext(),NavigationActivity.class);
                     Place placeLink = placeList.get(i);
                     Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getGeo().getLatitude(),placeLink.getGeo().getLongitude()));
+                    place.setPlaceId(placeLink.getPlaceId());
                     returnIntent.putExtra("place", place);
                     v.getContext().startActivity(returnIntent);
                 }

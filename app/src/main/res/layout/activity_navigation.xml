@@ -14,11 +14,13 @@
         android:layout_height="match_parent"
         tools:context="ducere.lechal.pod.NavigationActivity">
 
+
         <fragment
             android:id="@+id/mapfragment"
             class="com.here.android.mpa.mapping.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
        <!-- Show search location-->
         <RelativeLayout
             android:id="@+id/rlResultLocation"
@@ -136,7 +138,8 @@
                 android:id="@+id/appBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="invisible"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:fitsSystemWindows="true">
 
                 <android.support.design.widget.CollapsingToolbarLayout
@@ -148,10 +151,12 @@
                     app:expandedTitleMarginEnd="64dp"
                     android:fitsSystemWindows="true">
                     <LinearLayout
+                        android:id="@+id/llResultHead"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/black"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="visible">
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -244,8 +249,106 @@
                             android:layout_height="48dp"
                             android:background="@drawable/ic_menu_dots"/>
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/llNavigationHead"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/black"
+                        android:layout_margin="16dp"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+                       <LinearLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_weight="1"
+                           android:orientation="vertical">
+                           <LinearLayout
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:orientation="horizontal">
+                               <ImageView
+                                   android:id="@+id/ivTurn"
+                                   android:layout_width="56dp"
+                                   android:layout_height="56dp"
+                                   android:layout_margin="12dp"
+                                   android:background="@drawable/turn_straight"/>
+                             <LinearLayout
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:orientation="vertical">
+                                 <np.TextView
+                                     android:id="@+id/tvInstruction"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     style="@style/AppTheme.Lato_Bold"
+                                     android:textColor="@color/white"
+                                     android:textSize="25sp"
+                                     android:maxLines="2"
+                                     android:text="Head south west"
+                                     />
+                                 <np.TextView
+                                     android:id="@+id/tvSubInstruction"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     style="@style/AppTheme.Lato_Bold"
+                                     android:textColor="@color/white"
+                                     android:textSize="18sp"
+                                     android:visibility="gone"
+                                     android:text="at road no 1"
+                                     />
+                             </LinearLayout>
+
+                           </LinearLayout>
+                           <LinearLayout
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_marginLeft="12dp"
+                               android:orientation="horizontal">
+                                <np.TextView
+                                    android:id="@+id/tvDistance"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/AppTheme.Lato_Bold"
+                                    android:textSize="16sp"
+                                    android:textColor="@color/black"
+                                    android:text="500m"
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp"
+                                    android:background="@drawable/distance_drawable_white"
+                                    />
+                               <np.TextView
+                                   android:layout_width="wrap_content"
+                                   android:layout_height="wrap_content"
+                                   style="@style/AppTheme.Lato_Bold"
+                                   android:textSize="16sp"
+                                   android:textColor="@color/white"
+                                   android:layout_marginLeft="10dp"
+                                   android:text="Then" />
+                               <ImageView
+                                   android:id="@+id/ivThen"
+                                   android:layout_width="32dp"
+                                   android:layout_height="32dp"
+                                   android:background="@drawable/then_left"/>
+
+                           </LinearLayout>
+
+                       </LinearLayout>
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/ic_menu_dots"/>
+                    </LinearLayout>
                 </android.support.design.widget.CollapsingToolbarLayout>
             </android.support.design.widget.AppBarLayout>
+        <ImageView
+            android:id="@+id/ivCenter"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/appBarLayout"
+            android:background="@drawable/nav_current_loc"/>
         </RelativeLayout>
 
 
@@ -287,17 +390,80 @@
             app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
 
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
+            <LinearLayout
+                android:id="@+id/llPager"
                 android:layout_width="match_parent"
-                android:layout_height="120dp">
-            </android.support.v4.view.ViewPager>
+                android:layout_height="120dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/llInNavigation"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:gravity="center_vertical"
+                    android:background="@color/white">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16sp"
+                        android:background="@drawable/ic_menu_send"
+                        android:layout_gravity="center_vertical"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <np.TextView
+                            android:id="@+id/tvEta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:text="30min"
+                            android:textColor="@color/colorPrimaryAlert"
+                            android:textSize="25sp"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <np.TextView
+                                android:id="@+id/tvDistanceLeft"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/AppTheme.Lato_Regular"
+                                android:textColor="@color/text_gray"
+                                android:text="12km"
+                                android:textSize="18sp"/>
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="20dp"
+                                android:layout_margin="5dp"
+                                android:background="@color/text_gray"/>
+                            <np.TextView
+                                android:id="@+id/tvTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/AppTheme.Lato_Regular"
+                                android:textColor="@color/text_gray"
+                                android:text="13:08"
+                                android:textSize="18sp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp">
+
+                </android.support.v4.view.ViewPager>
+
+            </LinearLayout>
+
             <View
                 android:id="@+id/viewLine"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/pager"
+                android:layout_below="@+id/llPager"
                 android:background="@color/text_alert_not_selected"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"
@@ -362,6 +528,43 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
+    <LinearLayout
+        android:id="@+id/llStopMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/bottom_sheet"
+        app:layout_anchorGravity="right"
+        android:visibility="gone"
+        android:orientation="horizontal">
+        <android.support.v7.widget.CardView
+            android:id="@+id/llStop"
+            style="@style/text_card"
+            app:cardBackgroundColor="@color/colorPrimaryAlert">
+
+            <LinearLayout style="@style/icon_text_layout">
+
+                <ImageView
+                    style="@style/icon_when_text"
+                    android:src="@drawable/ic_cross_round_white" />
+
+                <TextView
+                    style="@style/text_when_icon"
+                    android:text="Stop"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@id/bottom_sheet"
+            app:layout_anchorGravity="right"
+            app:backgroundTint="@color/black"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            />
+    </LinearLayout>
 
 
     <com.github.clans.fab.FloatingActionMenu
@@ -369,7 +572,7 @@
         android:layout_width="56dp"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/bottom_sheet"
-        app:layout_anchorGravity="center_vertical"
+        app:layout_anchorGravity="left"
         fab:menu_colorNormal="@color/black"
         fab:menu_colorPressed="@color/black"
         fab:menu_colorRipple="#99FFFFFF"
@@ -417,5 +620,6 @@
         android:elevation="3dp">
 
     </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>
 

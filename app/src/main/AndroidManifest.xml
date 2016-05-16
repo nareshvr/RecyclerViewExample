@@ -91,7 +91,9 @@
             android:label="@string/title_activity_intensity_actity"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".FootwearActity"></activity>
-        <activity android:name=".adapters.StartSessionActivity"></activity>
+        <activity
+            android:name=".adapters.StartSessionActivity"
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".NavigationActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>

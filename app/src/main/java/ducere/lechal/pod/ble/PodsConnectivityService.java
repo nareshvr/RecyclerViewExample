@@ -139,7 +139,7 @@ public class PodsConnectivityService extends Service implements PodCommands {
                 case ActionsToService.CONNECT_TO_DEVICE:
                     BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
                     Log.i(PodsConnectivityService.class.getName(), "Connect to " + device.getAddress());
-                    bluetoothGatt = device.connectGatt(PodsConnectivityService.this, true, gattCallback);
+                    bluetoothGatt = device.connectGatt(PodsConnectivityService.this, false, gattCallback);
                     break;
                 case ActionsToService.INTENSITY:
                     pattern = intent.getStringExtra(ActionsToService.INTENSITY);

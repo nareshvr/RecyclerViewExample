@@ -41,7 +41,10 @@ import java.util.Locale;
 import ducere.lechal.pod.adapters.StartSessionDialog;
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.constants.Constants;
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.podsdata.FitnessData;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 /**
  * Created by VR Naresh on 03-05-2016.
@@ -53,14 +56,14 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     private Flipmeter flipMeter = null;
     String str = "01801";
     int seekBarValue = 50;
-    TextView txtDate;
+    np.TextView txtDate,tvKm,tvCal;
     int mYear, mDay;
     String mMonth;
     Calendar datecal;
     int decrementdate = 1;
     int increment = 1;
     long steps;
-
+    PlaceUtility placeUtility;
     public FitnessFragment() {
         // Required empty public constructor
     }
@@ -79,12 +82,14 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         ParallaxScrollView mScrollView = (ParallaxScrollView) view.findViewById(R.id.view1);
         mScrollView.setParallaxView(getActivity().getLayoutInflater().inflate(R.layout.fitnes_header, mScrollView, false));
 
-
+        placeUtility = new PlaceUtility(getActivity());
         flipMeter = (Flipmeter) view.findViewById(R.id.Flipmeter);
         ProgressBar seekBarFitness = (ProgressBar) view.findViewById(R.id.seekBarFitness);
         seekBarFitness.setProgress(seekBarValue);
         flipMeter.setValue(Integer.parseInt(str), true);
-        txtDate = (TextView) view.findViewById(R.id.txtDate);
+        txtDate = (np.TextView) view.findViewById(R.id.txtDate);
+        tvCal = (np.TextView)view.findViewById(R.id.tvCal);
+        tvKm = (np.TextView)view.findViewById(R.id.tvKm);
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
@@ -105,7 +110,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                 mYear = datecal.get(Calendar.YEAR);
                 mMonth = datecal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
                 mDay = datecal.get(Calendar.DAY_OF_MONTH);
-                txtDate.setText(new StringBuilder().append(mDay).append(" ").append(mMonth).append(",").append(mYear).append(" "));
+                txtDate.setText(new StringBuilder().append(mDay).append(" ").append(mMonth).append(", ").append(mYear).append(" "));
                 decrementdate++;
             }
         });
@@ -120,7 +125,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                 mYear = datecal.get(Calendar.YEAR);
                 mMonth = datecal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
                 mDay = datecal.get(Calendar.DAY_OF_MONTH);
-                txtDate.setText(new StringBuilder().append(mDay).append(" ").append(mMonth).append(",").append(mYear).append(" "));
+                txtDate.setText(new StringBuilder().append(mDay).append(" ").append(mMonth).append(", ").append(mYear).append(" "));
                 decrementdate--;
             }
         });
@@ -129,7 +134,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         imgMenuPop.setOnClickListener(this);
         LinearLayout llStartSession = (LinearLayout) view.findViewById(R.id.llStartSession);
         llStartSession.setOnClickListener(this);
-
+        updateViews(placeUtility.getFitness(getTodayDate()));
         return view;
     }
 
@@ -147,7 +152,9 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter(ServiceBroadcastActions.FITNESS_TODAY_DATA));
+        IntentFilter filterToday = new IntentFilter(ServiceBroadcastActions.FITNESS_DATA);
+        filterToday.addAction(ActionsToService.FITNESS_TODAY_DATA);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filterToday);
     }
 
     @Override
@@ -160,19 +167,49 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (ServiceBroadcastActions.FITNESS_TODAY_DATA.equals(action)) {
-                FitnessData serializable = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_TODAY_DATA);
-                if (serializable == null) {
-                    return;
-                }
-                steps = serializable.getSteps();
-                Log.i("FitnessData", "Today Steps::" + steps);
-                long cal = serializable.getCal();
 
+            switch (action) {
+                case ServiceBroadcastActions.FITNESS_DATA:
+                    FitnessData serializableFit = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_DATA);
+                    if (serializableFit == null) {
+                        return;
+                    }
+                   updateViews(serializableFit);
+
+                    serializableFit.setDay(getTodayDate());
+                    placeUtility.updateFitnessWillDeleteAndInsert(serializableFit);
+                    break;
+                case ServiceBroadcastActions.FITNESS_TODAY_DATA:
+                    FitnessData serializable = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_TODAY_DATA);
+                    if (serializable == null) {
+                        return;
+                    }
+                    updateViews(serializable);
+                    serializable.setDay(getTodayDate());
+                    placeUtility.updateFitnessWillDeleteAndInsert(serializable);
+                    break;
             }
 
         }
     };
+
+    void updateViews(FitnessData serializable){
+        steps = serializable.getSteps();
+        Log.i("FitnessData", "Today Steps::" + steps);
+        long cal = serializable.getCal();
+        tvKm.setText(serializable.getDistance());
+        tvCal.setText(serializable.getCal() + "");
+        flipMeter.setValue((int) serializable.getSteps(), true);
+
+
+    }
+     long getTodayDate(){
+        Calendar c = Calendar.getInstance();
+
+
+        String formattedDate = Constants.DATE_FORMAT_FITNESS_ID_DATE.format(c.getTime());
+        return Integer.parseInt(formattedDate);
+    }
 
     public Date decrementDateByOne(Date date) {
         Calendar c = Calendar.getInstance();
@@ -230,6 +267,9 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                         showSocailMedia();
                         break;
                     case R.id.viewSavedSession:
+                     //   LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_START));
+
                         break;
                 }
 

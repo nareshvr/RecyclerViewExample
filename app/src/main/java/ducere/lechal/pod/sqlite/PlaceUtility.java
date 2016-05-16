@@ -14,6 +14,7 @@ import java.util.List;
 import ducere.lechal.pod.beans.Place;
 
 import ducere.lechal.pod.podsdata.FitnessData;
+import ducere.lechal.pod.podsdata.Session;
 
 /**
  * Created by sunde on 28-04-2016.
@@ -169,7 +170,12 @@ public class PlaceUtility {
 
     private int deleteFitness(long fitnessID) {
         SQLiteDatabase writableDatabase = getWritableDatabase();
-        return writableDatabase.delete(TablesColumns.FitnessEntry.TABLE_NAME, TablesColumns.FitnessEntry.COLUMN_NAME_FITNESS_ID + "=?", new String[]{String.valueOf(fitnessID)});
+        try {
+            return writableDatabase.delete(TablesColumns.FitnessEntry.TABLE_NAME, TablesColumns.FitnessEntry.COLUMN_NAME_FITNESS_ID + "=?", new String[]{String.valueOf(fitnessID)});
+        } finally {
+            writableDatabase.close();
+        }
+
     }
 
     public FitnessData getFitness(long fitnessID) {
@@ -189,5 +195,79 @@ public class PlaceUtility {
             readableDatabase.close();
         }
         return fitnessData;
+    }
+
+    private int deleteSession(long sessionID) {
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        try {
+            return writableDatabase.delete(TablesColumns.SessionEntry.TABLE_NAME, TablesColumns.SessionEntry._ID + "=?", new String[]{String.valueOf(sessionID)});
+        } finally {
+            writableDatabase.close();
+        }
+    }
+
+    public void updateSessionWillDeleteAndInsert(Session session) {
+        deleteSession(session.getId());
+        putSession(session);
+    }
+
+    private long putSession(Session session) {
+        ContentValues values = new ContentValues();
+        values.put(TablesColumns.SessionEntry._ID, session.getId());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_NAME, session.getName());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_ACTIVITY_TYPE, session.getActivityType());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_GOAL_TYPE, session.getGoalType());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_GOAL_VALUE, session.getGoalValue());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_MILESTONE_FREQ, session.getMilestoneFreq());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_STEPS, session.getSteps());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_CALORIES, session.getCalories());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_TIME, session.getTime());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_DISTANCE, session.getDistance());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_STATUS, session.getStatus());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_SYNC, session.isSync());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_START_TIME, session.getStartTime());
+        values.put(TablesColumns.SessionEntry.COLUMN_NAME_END_TIME, session.getEndTime());
+
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        long id = -1;
+        try {
+            id = writableDatabase.insertOrThrow(TablesColumns.SessionEntry.TABLE_NAME, null, values);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            writableDatabase.close();
+        }
+        return id;
+    }
+
+    public Session getSession(long sessionID) {
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.SessionEntry.TABLE_NAME, null, TablesColumns.SessionEntry._ID + "=?", new String[]{String.valueOf(sessionID)}, null, null, null);
+        try {
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                Session session = new Session();
+                session.setId(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry._ID)));
+                session.setName(cursor.getString(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_NAME)));
+                session.setActivityType(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_ACTIVITY_TYPE)));
+                session.setGoalType(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_GOAL_TYPE)));
+                session.setGoalValue(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_GOAL_VALUE)));
+                session.setMilestoneFreq(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_MILESTONE_FREQ)));
+                session.setSteps(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_STEPS)));
+                session.setCalories(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_CALORIES)));
+                session.setTime(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_TIME)));
+                session.setDistance(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_DISTANCE)));
+                session.setStartTime(cursor.getLong(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_START_TIME)));
+                session.setEndTime(cursor.getLong(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_END_TIME)));
+                session.setStatus(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_STATUS)));
+                session.setSync(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_SYNC)) == 0);
+                return session;
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return null;
     }
 }

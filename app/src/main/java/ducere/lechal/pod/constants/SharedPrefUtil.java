@@ -2,6 +2,12 @@ package ducere.lechal.pod.constants;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+
+import com.google.gson.Gson;
+
+import ducere.lechal.pod.location_data_models.Place;
+import ducere.lechal.pod.server_models.User;
 
 /**
  * Created by sunde on 22-04-2016.
@@ -22,9 +28,32 @@ public class SharedPrefUtil {
     public static final String MOCK_LNG = "mockLng";
     public static final String HEIGHT_UNITS = "height units";
     public static final String WEIGHT_UNITS = "weight units";
+    private static final String USER = "user";
+    private static final String USER_ID = "userID";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
+    }
+
+    public static User getUser(Context context) {
+        String string = getPref(context).getString(USER, "");
+        if (TextUtils.isEmpty(string)) {
+            return null;
+        } else {
+            return new Gson().fromJson(string, User.class);
+        }
+    }
+
+    public static void setUser(Context context, User user) {
+        getPref(context).edit().putString(USER, new Gson().toJson(user)).apply();
+    }
+
+    public static String getUserId(Context context) {
+        return getPref(context).getString(USER_ID, null);
+    }
+
+    public static void setUserId(Context context, String userId) {
+        getPref(context).edit().putString(USER_ID, userId).apply();
     }
 
     public static String getPodsMacid(Context context) {

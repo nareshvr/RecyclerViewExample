@@ -7,11 +7,14 @@ import com.here.android.mpa.routing.Route;
 
 import ducere.lechal.pod.beans.Navigate;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.retrofit.LechalService;
 
 /**
  * Created by sunde on 13-05-2016.
  */
 public class LechalApplication extends Application {
+
+    LechalService service;
 
     private static LechalApplication lechalApplication;
 
@@ -20,6 +23,16 @@ public class LechalApplication extends Application {
             lechalApplication = new LechalApplication();
         }
         return lechalApplication;
+    }
+
+    public LechalService getService() {
+        return service;
+    }
+
+            @Override
+    public void onCreate() {
+        super.onCreate();
+
     }
 
     /**

@@ -9,7 +9,9 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import ducere.lechal.pod.ble.ActionsToService;
 
@@ -29,6 +31,33 @@ public class Constants {
 
     public static final int DEFAULT_HEIGHT_UNITS = 0;//"Feet";
     public static final int DEFAULT_WEIGHT_UNITS = 0;
+    public static final String DOMAIN = "http://www.lechal.net/";
+    public static final String USER = "user";
+
+    public static String formatDistance(double distance) {
+        String text;
+        if (distance > 999) {
+            text = new DecimalFormat("#.#km").format((distance / 1000));
+        } else {
+            text = new DecimalFormat("#m").format(distance);
+        }
+        return text;
+    }
+
+    public static String formatTime(long time) {
+        if (time >= 60) {
+            return (int) (time / 60) + " mins";
+        } else {
+            return time + " secs";
+        }
+    }
+
+    public static String getETAFormat(double distanceLeft, int timeLeft) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, timeLeft);
+        return String.format("%s | %s", formatDistance(distanceLeft), simpleDateFormat.format(calendar.getTime()));
+    }
 
     public interface SearchResultType {
         int OPTIONS = 0;

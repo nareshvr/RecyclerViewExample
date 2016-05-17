@@ -2,13 +2,16 @@ package ducere.lechal.pod.constants;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Base64;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +36,14 @@ public class Constants {
     public static final int DEFAULT_WEIGHT_UNITS = 0;
     public static final String DOMAIN = "http://www.lechal.net/";
     public static final String USER = "user";
+
+    public static String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteFormat = stream.toByteArray();
+        // get the base 64 string
+        return Base64.encodeToString(byteFormat, Base64.NO_WRAP);
+    }
 
     public static String formatDistance(double distance) {
         String text;

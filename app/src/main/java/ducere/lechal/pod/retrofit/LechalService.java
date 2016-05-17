@@ -10,6 +10,10 @@ import retrofit2.http.POST;
 
 public interface LechalService {
 
+    String USER_LOGIN_TYPE = "102";
+    String USER_GET_TYPE = "104";
+    String USER_UPLOAD_PROFILE_PICTURE_TYPE = "109";
+
     @FormUrlEncoded
     @POST(Constants.USER)
     Call<ResponseBody> loginUser(@Field("email") String email, @Field("password") String password, @Field("type") String type);
@@ -17,4 +21,9 @@ public interface LechalService {
     @FormUrlEncoded
     @POST(Constants.USER)
     Call<User> getUser(@Field("userId") String email, @Field("type") String type);
+
+    @FormUrlEncoded
+    @POST(Constants.USER)
+    Call<User> uploadProfilePicture(@Field("userId") String userId, @Field("image") String image, @Field("type") String type);
+
 }

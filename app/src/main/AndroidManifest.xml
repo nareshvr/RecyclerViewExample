@@ -109,13 +109,11 @@
         <activity
             android:screenOrientation="portrait"
             android:name=".ProfileAchievements"
-            android:label="Profile"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:label="Profile"/>
         <activity android:name=".NavigationSettingsActivity" />
         <activity android:name=".VoiceOptionActivity" />
         <activity android:name=".FitnessSettingsActivity" />
         <activity
-
             android:name=".DownloadMapActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity

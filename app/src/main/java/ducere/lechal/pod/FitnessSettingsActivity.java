@@ -7,6 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import ducere.lechal.pod.dialoges.DialogClearHistory;
+import ducere.lechal.pod.dialoges.DialogGender;
+import ducere.lechal.pod.dialoges.DialogHeight;
+import ducere.lechal.pod.dialoges.DialogWeight;
+
 /**
  * Created by VR Naresh on 13-05-2016.
  */
@@ -20,6 +25,12 @@ public class FitnessSettingsActivity extends AppCompatActivity implements View.O
 
         LinearLayout llHeight = (LinearLayout)findViewById(R.id.llHeight);
         llHeight.setOnClickListener(this);
+
+        LinearLayout llWeight  = (LinearLayout)findViewById(R.id.llWeight);
+        llWeight.setOnClickListener(this);
+
+        LinearLayout llClearHistory  = (LinearLayout)findViewById(R.id.llClearHistory);
+        llClearHistory.setOnClickListener(this);
     }
 
     @Override
@@ -32,6 +43,14 @@ public class FitnessSettingsActivity extends AppCompatActivity implements View.O
             case R.id.llHeight:
                 DialogFragment height = new DialogHeight();
                 height.show(getSupportFragmentManager(),"position");
+                break;
+            case R.id.llWeight:
+                DialogFragment weight = new DialogWeight();
+                weight.show(getSupportFragmentManager(),"position");
+                break;
+            case R.id.llClearHistory:
+                DialogFragment clear = new DialogClearHistory();
+                clear.show(getSupportFragmentManager(),"position");
                 break;
         }
     }

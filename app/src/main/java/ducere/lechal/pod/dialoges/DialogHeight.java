@@ -1,4 +1,4 @@
-package ducere.lechal.pod;
+package ducere.lechal.pod.dialoges;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import ducere.lechal.pod.R;
 
 /**
  * Created by VR Naresh on 13-05-2016.

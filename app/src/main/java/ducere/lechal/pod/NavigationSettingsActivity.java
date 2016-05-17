@@ -9,6 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import ducere.lechal.pod.dialoges.DialogClearHistory;
+import ducere.lechal.pod.dialoges.DialogDayNight;
+import ducere.lechal.pod.dialoges.DialogMapUnitsDialog;
+import ducere.lechal.pod.dialoges.DialogRoutePerference;
+
 /**
  * Created by VR Naresh on 12-05-2016.
  */
@@ -40,7 +45,7 @@ public class NavigationSettingsActivity extends AppCompatActivity implements Vie
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.llMapUnits:
-                DialogFragment dialogFragment = new DialogMapUnits();
+                DialogFragment dialogFragment = new DialogMapUnitsDialog();
                 dialogFragment.show(getSupportFragmentManager(),"Position");
                 break;
             case R.id.llDayNight:

@@ -1,4 +1,4 @@
-package ducere.lechal.pod;
+package ducere.lechal.pod.dialoges;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+
+import ducere.lechal.pod.R;
 
 /**
  * Created by VR Naresh on 13-05-2016.

@@ -107,6 +107,7 @@
             android:label="Profile"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".ProfileAchievements"
             android:label="Profile"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -117,7 +118,9 @@
 
             android:name=".DownloadMapActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
-        <activity android:name=".EditProfileActivity"></activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".EditProfileActivity"></activity>
         <activity android:name=".DownloadMapListActivity"></activity>
     </application>
 

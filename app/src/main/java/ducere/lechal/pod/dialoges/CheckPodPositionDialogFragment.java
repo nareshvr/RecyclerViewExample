@@ -1,4 +1,4 @@
-package ducere.lechal.pod;
+package ducere.lechal.pod.dialoges;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
+import ducere.lechal.pod.R;
 import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.constants.Vibrations;

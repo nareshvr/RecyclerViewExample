@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryAlert"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <np.TextView
+            android:id="@+id/textView18"
+            style="@style/AppTheme.Lato_Regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Weight"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <np.EditText
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="3"
+            style="@style/AppTheme.Lato_Bold"
+            android:textColor="@color/colorPrimaryAlert"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/bg_edttext"
+            android:id="@+id/edtWeight"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+
+
+
+        <Spinner
+            android:id="@+id/spWeight"
+            android:layout_width="150dp"
+            android:layout_height="60dp" />
+    </LinearLayout>
+</LinearLayout>

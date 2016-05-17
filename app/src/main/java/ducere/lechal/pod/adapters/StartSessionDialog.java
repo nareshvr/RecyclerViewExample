@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 
-import ducere.lechal.pod.CheckPodPositionDialogFragment;
 import ducere.lechal.pod.R;
 
 public class StartSessionDialog extends DialogFragment {

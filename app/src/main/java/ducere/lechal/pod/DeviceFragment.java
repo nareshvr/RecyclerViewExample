@@ -25,12 +25,13 @@ import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.constants.Vibrations;
 import ducere.lechal.pod.customViews.CircleProgressView;
-public class DeviceFragment extends Fragment implements View.OnClickListener {
+import ducere.lechal.pod.dialoges.CheckPodPositionDialogFragment;
+
+public class DeviceFragment extends Fragment implements View.OnClickListener,Vibrations{
 
     private TextView batteryText;
     private CircleProgressView batteryProgress;
     SharedPreferences defaultSharedPreferences;
-    Vibrations vib;
     TextView txtShoeType;
     TextView intensityView;
     View view;
@@ -41,7 +42,6 @@ public class DeviceFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_pods, container, false);
-        vib = new Vibrations();
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         ParallaxScrollView mScrollView = (ParallaxScrollView) view.findViewById(R.id.view);
         mScrollView.setParallaxView(getActivity().getLayoutInflater().inflate(R.layout.pods_header, mScrollView, false));

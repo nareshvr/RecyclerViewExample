@@ -104,7 +104,7 @@
         android:layout_height="1dp"
         android:background="#55000000" />
     <LinearLayout
-        android:id="@+id/llMapUnits"
+        android:id="@+id/llClearHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center|left"

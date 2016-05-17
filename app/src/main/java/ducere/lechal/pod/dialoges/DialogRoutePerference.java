@@ -1,4 +1,4 @@
-package ducere.lechal.pod;
+package ducere.lechal.pod.dialoges;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -3,6 +3,7 @@ package ducere.lechal.pod;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,8 +17,8 @@ public class ProfileAchievements extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_contacts);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("Juliette Bing");
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));

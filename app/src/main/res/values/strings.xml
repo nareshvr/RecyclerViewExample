@@ -80,6 +80,10 @@
         <item>Feet</item>
         <item>Centimeters</item>
     </string-array>
+    <string-array name="weight_array">
+        <item>Kilograms</item>
+        <item>Pounds</item>
+    </string-array>
     <string name="edit_profile">Edit profile</string>
     <string name="clear_achievements">Clear achievements</string>
     <string name="allow_global_tracking">Allow global tracking</string>

@@ -20,7 +20,8 @@ public class SharedPrefUtil {
     public static final String MOCK_VICINITY = "mockVicinity";
     public static final String MOCK_LAT = "mockLat";
     public static final String MOCK_LNG = "mockLng";
-    ;
+    public static final String HEIGHT_UNITS = "height units";
+    public static final String WEIGHT_UNITS = "weight units";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
@@ -82,5 +83,21 @@ public class SharedPrefUtil {
         getPref(context).edit().putInt(INTENSITY_TYPE, index).apply();
     }
 
+    public static int getHeightUnits(Context context) {
+        return getPref(context).getInt(HEIGHT_UNITS, Constants.DEFAULT_HEIGHT_UNITS);
 
+    }
+
+    public static int getWeightUnits(Context context) {
+        return getPref(context).getInt(WEIGHT_UNITS, Constants.DEFAULT_WEIGHT_UNITS);
+
+    }
+
+    public static void setHeightUnits(Context context, int height) {
+        getPref(context).edit().putInt(HEIGHT_UNITS, height).apply();
+    }
+
+    public static void setWeightUnits(Context context, int weight) {
+        getPref(context).edit().putInt(WEIGHT_UNITS, weight).apply();
+    }
 }

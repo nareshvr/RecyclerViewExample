@@ -62,4 +62,12 @@ public class ProfileAchievements extends AppCompatActivity implements View.OnCli
 
         popup.show();//showing popup menu
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

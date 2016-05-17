@@ -25,7 +25,7 @@ import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.constants.Vibrations;
 import ducere.lechal.pod.customViews.CircleProgressView;
-import ducere.lechal.pod.dialoges.CheckPodPositionDialogFragment;
+import ducere.lechal.pod.dialoges.DialogCheckPodPosition;
 
 public class DeviceFragment extends Fragment implements View.OnClickListener,Vibrations{
 
@@ -42,26 +42,39 @@ public class DeviceFragment extends Fragment implements View.OnClickListener,Vib
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_pods, container, false);
+
+        initViews();
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return view;
+    }
+
+    private void initViews() {
         ParallaxScrollView mScrollView = (ParallaxScrollView) view.findViewById(R.id.view);
         mScrollView.setParallaxView(getActivity().getLayoutInflater().inflate(R.layout.pods_header, mScrollView, false));
+
         batteryText = (TextView) view.findViewById(R.id.battery_text);
         batteryProgress = (CircleProgressView) view.findViewById(R.id.battery_progress);
         batteryProgress.setProgress(0);
         batteryProgress.setPaintColor(Color.WHITE);
+
         view.findViewById(R.id.cwPodsPosition).setOnClickListener(this);
+
         LinearLayout llIntensity = (LinearLayout) view.findViewById(R.id.llIntensity);
         llIntensity.setOnClickListener(this);
+
         LinearLayout llTutorials = (LinearLayout) view.findViewById(R.id.llTutorials);
         llTutorials.setOnClickListener(this);
+
         txtShoeType = (TextView) view.findViewById(R.id.txtShoeType);
+
         LinearLayout llFootwearType = (LinearLayout) view.findViewById(R.id.llFootwearType);
         llFootwearType.setOnClickListener(this);
+
         intensityView = (TextView) view.findViewById(R.id.intensity_val);
 
         int intensityType = SharedPrefUtil.getIntensityType(getContext());
         intensityView.setText(Constants.INTENSITIES[intensityType]);
-        return view;
+
     }
 
     @Override
@@ -108,7 +121,7 @@ public class DeviceFragment extends Fragment implements View.OnClickListener,Vib
                 showIntensityPicker();
                 break;
             case R.id.cwPodsPosition:
-                DialogFragment newFragment = new CheckPodPositionDialogFragment();
+                DialogFragment newFragment = new DialogCheckPodPosition();
                 newFragment.show(getFragmentManager(), "position");
                 break;
             case R.id.llTutorials:

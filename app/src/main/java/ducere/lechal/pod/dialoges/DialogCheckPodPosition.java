@@ -14,7 +14,7 @@ import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.constants.Vibrations;
 
-public class CheckPodPositionDialogFragment extends DialogFragment {
+public class DialogCheckPodPosition extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -22,11 +22,13 @@ public class CheckPodPositionDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.check_pods_position, null);
         builder.setView(view).setTitle("Confirm pod position");
+
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
         });
+
         view.findViewById(R.id.leftPod).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +58,7 @@ public class CheckPodPositionDialogFragment extends DialogFragment {
                 Toast.makeText(getActivity(), "Swapped.", Toast.LENGTH_SHORT).show();
             }
         });
+
         return builder.create();
     }
 }

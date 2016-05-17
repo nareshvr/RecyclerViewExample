@@ -13,11 +13,11 @@ import ducere.lechal.pod.R;
  * Created by VR Naresh on 13-05-2016.
  */
 public class DialogGender extends DialogFragment {
-    AlertDialog levelDialog;
+    final CharSequence[] items = {" Male ", " Female "};
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final CharSequence[] items = {" Male ", " Female "};
-        // Creating and Building the Dialog
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
         getActivity().getLayoutInflater().inflate(R.layout.viewpager_fragment, null);
         builder.setTitle(Html.fromHtml("<font color='#F05854'>Gender</font>"));
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
@@ -33,7 +33,7 @@ public class DialogGender extends DialogFragment {
 
             }
         });
-        final AlertDialog alertDialog = builder.create();
-        return alertDialog;
+
+        return builder.create();
     }
 }

@@ -27,6 +27,9 @@ public class Constants {
     public static final CharSequence[] INTENSITIES = {" Very High ", " High ", " Medium ", " Low ", " Very Low "};
     public static final SimpleDateFormat DATE_FORMAT_FITNESS_ID_DATE = new SimpleDateFormat("yyyyMMdd");//20160509
 
+    public static final int DEFAULT_HEIGHT_UNITS = 0;//"Feet";
+    public static final int DEFAULT_WEIGHT_UNITS = 0;
+
     public interface SearchResultType {
         int OPTIONS = 0;
         int SEARCH = 1;
@@ -38,9 +41,7 @@ public class Constants {
     }
 
     public static RotateAnimation getRotateAnimation() {
-        RotateAnimation rotate = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                0.5f);
+        RotateAnimation rotate = new RotateAnimation(0, 360,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,0.5f);
         rotate.setDuration(2000);
         rotate.setRepeatCount(Animation.INFINITE);
         rotate.setInterpolator(new LinearInterpolator());

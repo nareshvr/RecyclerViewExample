@@ -11,11 +11,11 @@ import android.text.Html;
  * Created by VR Naresh on 13-05-2016.
  */
 public class DialogRoutePerference extends DialogFragment {
-    AlertDialog levelDialog;
+    final CharSequence[] items = {" Economical ", " Shortest ", " Fastest "};
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final CharSequence[] items = {" Economical ", " Shortest ", " Fastest "};
-        // Creating and Building the Dialog
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
         builder.setTitle(Html.fromHtml("<font color='#F05854'>Route preference</font>"));
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
@@ -32,6 +32,7 @@ public class DialogRoutePerference extends DialogFragment {
                 }
             }
         });
+
         return builder.create();
     }
 }

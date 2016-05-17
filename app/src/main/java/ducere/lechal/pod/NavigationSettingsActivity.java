@@ -22,6 +22,14 @@ public class NavigationSettingsActivity extends AppCompatActivity implements Vie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_settings);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        initViews();
+
+    }
+
+    private void initViews() {
         LinearLayout llMapUnits = (LinearLayout)findViewById(R.id.llMapUnits);
         llMapUnits.setOnClickListener(this);
 

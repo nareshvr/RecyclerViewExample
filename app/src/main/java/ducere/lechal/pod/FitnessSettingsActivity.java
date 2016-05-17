@@ -20,6 +20,11 @@ public class FitnessSettingsActivity extends AppCompatActivity implements View.O
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fitness_settings);
+
+        initViews();
+    }
+
+    private void initViews() {
         LinearLayout llGender = (LinearLayout)findViewById(R.id.llGender);
         llGender.setOnClickListener(this);
 

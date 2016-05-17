@@ -13,13 +13,10 @@ import android.view.View;
  * Created by VR Naresh on 13-05-2016.
  */
 public class DialogMapUnitsDialog extends DialogFragment {
-    AlertDialog levelDialog;
+    final CharSequence[] items = {" Metric ", " Imperial US (miles/feet) ", " Imperial UK (miles/yards)"};
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final CharSequence[] items = {" Metric ", " Imperial US (miles/feet) ", " Imperial UK (miles/yards)"};
-        // Creating and Building the Dialog
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        /*View view= getActivity().getLayoutInflater().inflate(R.layout.dailog_mapunits,null);
-        builder.setView(view);*/
         builder.setTitle(Html.fromHtml("<font color='#F05854'>Map units</font>"));
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
@@ -37,6 +34,7 @@ public class DialogMapUnitsDialog extends DialogFragment {
 
             }
         });
+
         return builder.create();
     }
 }

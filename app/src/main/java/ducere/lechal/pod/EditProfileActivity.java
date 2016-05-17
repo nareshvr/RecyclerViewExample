@@ -63,35 +63,51 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     static Bitmap resizeimage = null;
     Bitmap bmp;
     ImageView imvProfile;
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        imvCamera = (ImageView) findViewById(R.id.imvCamera);
-        //image.setImageResource(R.mipmap.img_fitness);
-        Spinner spCountry = (Spinner) findViewById(R.id.spCountry);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(EditProfileActivity.this, R.array.country, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCountry.setAdapter(adapter);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle("Collapsing");
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
-        txtDob = (TextView) findViewById(R.id.txtDob);
-        txtDob.setOnClickListener(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        initViews();
+
+        setup();
+    }
+
+    private void setup() {
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         showDate(year, month + 1, day);
 
+    }
+
+    private void initViews() {
+        imvCamera = (ImageView) findViewById(R.id.imvCamera);
+
+        Spinner spCountry = (Spinner) findViewById(R.id.spCountry);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(EditProfileActivity.this, R.array.country, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCountry.setAdapter(adapter);
+
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle("Collapsing");
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.black));
+
+        txtDob = (TextView) findViewById(R.id.txtDob);
+        txtDob.setOnClickListener(this);
+
         ImageView imvCamera = (ImageView) findViewById(R.id.imvCamera);
         imvCamera.setOnClickListener(this);
+
         imvProfile = (ImageView) findViewById(R.id.imvProfile);
         if (bmp != null) {
             imvProfile.setImageBitmap(bmp);
 
         }
+
     }
 
     private void showDate(int year, int month, int day) {
@@ -141,7 +157,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onItemClick(int pos) {
                 dialog.dismiss();
-                //Toast.makeText(EditProfileActivity.this, "pos--->" + pos, Toast.LENGTH_LONG).show();
                 switch (pos) {
                     case 0:
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -248,8 +263,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                             imvProfile.setImageBitmap(bmp);
 
                         }
-                        /*Intent ImageIntent = new Intent (this, FrameEffects.class);
-                        startActivity(ImageIntent);*/
                     } else {
                         return;
                     }
@@ -275,8 +288,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                 imvProfile.setImageBitmap(bmp);
 
                             }
-                            /*Intent ImageIntent = new Intent (this,FrameEffects.class);
-                            startActivity(ImageIntent);*/
                         }
                         break;
                 }
@@ -378,14 +389,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
 
     private float getImageOrientation(String selectedImagePath) {
-
         int orientation = 0;
         float roatation = 0;
 
@@ -411,7 +420,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId()==android.R.id.home)
+        if (item.getItemId() == android.R.id.home)
             finish();
         return super.onOptionsItemSelected(item);
     }

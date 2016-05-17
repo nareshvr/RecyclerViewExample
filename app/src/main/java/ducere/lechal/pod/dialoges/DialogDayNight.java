@@ -11,9 +11,8 @@ import android.text.Html;
  * Created by VR Naresh on 13-05-2016.
  */
 public class DialogDayNight extends DialogFragment {
-    AlertDialog levelDialog;
+    final CharSequence[] items = {" Day view ", " Night view ", " Auto-switch "};
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final CharSequence[] items = {" Day view ", " Night view ", " Auto-switch "};
         // Creating and Building the Dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -34,6 +33,7 @@ public class DialogDayNight extends DialogFragment {
 
             }
         });
+
         return builder.create();
     }
 }

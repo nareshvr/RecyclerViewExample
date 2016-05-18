@@ -71,6 +71,15 @@ public interface Vibrations {
         String roundAboutLeft = Vibrations.roundAboutLeft;
     }
 
+    interface INTENSITY{
+        String intensity_Very_High = "VI5";
+        String intensity_High = "VI4";
+        String intensity_Medium = "VI3";
+        String intensity_Low = "VI2";
+        String intensity_Very_Low = "VI1";
+    }
+
+
     //Re_Route
     String reRoute_left = "21";
     String reRoute_right = "22";

@@ -73,7 +73,6 @@
                 android:paddingTop="5dp">
 
                 <np.EditText
-
                     android:id="@+id/edtFullName"
                     style="@style/AppTheme.Lato_Bold"
                     android:layout_width="match_parent"

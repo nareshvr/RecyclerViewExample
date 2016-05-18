@@ -37,7 +37,10 @@ public class VibrationTutorialActivity extends AppCompatActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vibration);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Vibration Tutorial");
+
         setup();
     }
 

@@ -1,32 +1,22 @@
-package ducere.lechal.pod.adapters;
+package ducere.lechal.pod;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.github.clans.fab.FloatingActionButton;
-
-import ducere.lechal.pod.ActivityFragment;
 import ducere.lechal.pod.R;
-import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.customViews.CircularSeekBar;
 import ducere.lechal.pod.podsdata.FitnessData;
@@ -50,10 +40,16 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.startserrion);
+        setContentView(R.layout.activity_start_session);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Running session");
 
+        initView();
+
+    }
+
+    private void initView() {
         session = getIntent().getParcelableExtra("session");
         CardView cwStop = (CardView) findViewById(R.id.cwStop);
         tvHour = (TextView) findViewById(R.id.txtHours);

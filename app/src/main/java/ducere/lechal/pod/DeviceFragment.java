@@ -43,8 +43,10 @@ public class DeviceFragment extends Fragment implements View.OnClickListener,Vib
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_pods, container, false);
 
-        initViews();
         defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        initViews();
+
         return view;
     }
 
@@ -118,7 +120,8 @@ public class DeviceFragment extends Fragment implements View.OnClickListener,Vib
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.llIntensity:
-                showIntensityPicker();
+                startActivity(new Intent(getActivity(),IntensityActivity1.class));
+                //showIntensityPicker();
                 break;
             case R.id.cwPodsPosition:
                 DialogFragment newFragment = new DialogCheckPodPosition();

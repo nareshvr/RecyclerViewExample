@@ -1,4 +1,4 @@
-package ducere.lechal.pod.adapters;
+package ducere.lechal.pod.dialoges;
 
 
 import android.app.Dialog;
@@ -9,15 +9,15 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
-
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.adapters.SetSessionGoals;
 
-public class StartSessionDialog extends DialogFragment {
+public class DialogStartSession extends DialogFragment {
     int mode=0;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
         View view = getActivity().getLayoutInflater().inflate(R.layout.start_session, null);
         builder.setView(view);
 

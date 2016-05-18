@@ -7,10 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.StartSessionActivity;
 import ducere.lechal.pod.constants.SessionConstants;
 import ducere.lechal.pod.podsdata.Session;
 

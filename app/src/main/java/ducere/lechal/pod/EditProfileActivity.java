@@ -69,6 +69,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_profile);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Profile");
 
         initViews();
 

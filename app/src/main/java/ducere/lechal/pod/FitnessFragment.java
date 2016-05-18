@@ -20,18 +20,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import ducere.lechal.pod.adapters.StartSessionDialog;
+import ducere.lechal.pod.dialoges.DialogStartSession;
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.Constants;
-import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.podsdata.FitnessData;
 import ducere.lechal.pod.sqlite.PlaceUtility;
 
@@ -232,7 +231,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                 popMenuDialog();
                 break;
             case R.id.llStartSession:
-                DialogFragment activityFragment = new StartSessionDialog();
+                DialogFragment activityFragment = new DialogStartSession();
                 activityFragment.show(getFragmentManager(), "Position");
                 break;
         }

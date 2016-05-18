@@ -13,6 +13,7 @@ import android.view.View;
  * Created by VR Naresh on 13-05-2016.
  */
 public class DialogMapUnitsDialog extends DialogFragment {
+
     final CharSequence[] items = {" Metric ", " Imperial US (miles/feet) ", " Imperial UK (miles/yards)"};
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -31,7 +32,6 @@ public class DialogMapUnitsDialog extends DialogFragment {
                         // Your code when 3rd option seletced
                         break;
                 }
-
             }
         });
 

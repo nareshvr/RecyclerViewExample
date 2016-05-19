@@ -98,21 +98,25 @@
         <activity android:name=".NearbyListActivity" />
         <activity
             android:name=".ProfileDetailsActivity"
-            android:label="Profile"/>
+            android:label="Profile" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".ProfileAchievements"
-            android:label="Profile"/>
+            android:label="Profile"
+            android:screenOrientation="portrait" />
         <activity android:name=".NavigationSettingsActivity" />
         <activity android:name=".VoiceOptionActivity" />
         <activity android:name=".FitnessSettingsActivity" />
+        <activity android:name=".DownloadMapActivity"></activity>
         <activity
-            android:name=".DownloadMapActivity"></activity>
-        <activity
-            android:screenOrientation="portrait"
-            android:name=".EditProfileActivity"></activity>
+            android:name=".EditProfileActivity"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".DownloadMapListActivity"></activity>
         <activity android:name=".IntensityActivity1"></activity>
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".RegisterPordsOrBuddyActivity"></activity>
+        <activity android:name=".RegisterBuddyActivity"></activity>
+        <activity android:name=".RegisterProductActivity"></activity>
+        <activity android:name=".ReRegisterAsBuddyActivity"></activity>
     </application>
 
 </manifest>

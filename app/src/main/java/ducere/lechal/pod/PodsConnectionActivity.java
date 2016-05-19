@@ -268,7 +268,8 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                 intent.putExtra(BundleKeys.BLE_DEVICE, podsMacID);
                 LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(intent);
                 findViewById(R.id.splash_walk).setVisibility(View.GONE);
-                startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                //startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                startActivity(new Intent(PodsConnectionActivity.this, LoginActivity.class));
                 finish();
             } else {
                 sendScanPodsAction();
@@ -348,7 +349,8 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                     BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
                     SharedPrefUtil.setPodsMacid(PodsConnectionActivity.this, bluetoothDevice.getAddress());
                     finish();
-                    startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                    //startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+                    startActivity(new Intent(PodsConnectionActivity.this,LoginActivity.class));
                     break;
                 case ServiceBroadcastActions.PODS_DIS_CONNECTED:
                     Snackbar.make(coordinate, "Pods disconnected", Snackbar.LENGTH_LONG).show();

@@ -14,6 +14,7 @@ public interface ActionsToService {
     String RBT = pkg + "RBT";
     String SCAN_PODS = pkg + "scanPods";
     String SCAN_STOP = pkg + "scanStop";
+    String CONNECT_TO_DEVICE_WITH_MAC_ID = pkg + "connectToDeviceWithMacID";
     String CONNECT_TO_DEVICE = pkg + "connectToDevice";
     String INTENSITY = pkg + "intensity";
     String FOOTWEAR_TYPE = pkg + "footwearType";
@@ -25,6 +26,6 @@ public interface ActionsToService {
      * Dont forget to add actions in the array
      */
     String[] actions = {VIBRATE, FITNESS_NOTIFICATION, FITNESS_START, FITNESS_TODAY_DATA, FITNESS_YESTERDAY_DATA, FITNESS_DAY_B4_YESTERDAY_DATA, RBT,
-            SCAN_PODS, SCAN_STOP, CONNECT_TO_DEVICE, INTENSITY, FOOTWEAR_TYPE, GET_BATTERY, VIBRATE_LEFT, VIBRATE_RIGHT};
+            SCAN_PODS, SCAN_STOP, CONNECT_TO_DEVICE, CONNECT_TO_DEVICE_WITH_MAC_ID, INTENSITY, FOOTWEAR_TYPE, GET_BATTERY, VIBRATE_LEFT, VIBRATE_RIGHT};
 
 }

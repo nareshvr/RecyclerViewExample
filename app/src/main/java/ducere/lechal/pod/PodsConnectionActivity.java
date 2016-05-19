@@ -262,13 +262,16 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            sendScanPodsAction();
             if (!TextUtils.isEmpty(podsMacID)) {
                 // Pods already connected, Let the auto connect do the work
+                Intent intent = new Intent(ActionsToService.CONNECT_TO_DEVICE_WITH_MAC_ID);
+                intent.putExtra(BundleKeys.BLE_DEVICE, podsMacID);
+                LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(intent);
                 findViewById(R.id.splash_walk).setVisibility(View.GONE);
                 startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
                 finish();
             } else {
+                sendScanPodsAction();
                 findViewById(R.id.splash_walk).setVisibility(View.GONE);
                 findViewById(R.id.splash_red).setVisibility(View.GONE);
                 findViewById(R.id.icon).setVisibility(View.GONE);

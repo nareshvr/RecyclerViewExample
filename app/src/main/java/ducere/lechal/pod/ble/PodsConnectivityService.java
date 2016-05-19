@@ -75,9 +75,13 @@ public class PodsConnectivityService extends Service implements PodCommands {
     @Override
     public void onCreate() {
         super.onCreate();
-
         handler = new Handler();
         registerReceiverForCommands();
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+            bluetoothAdapter = bluetoothManager.getAdapter();
+            registerForBluetoothStateChange();
+        }
     }
 
     private void startScanOnThread() {
@@ -140,6 +144,15 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     BluetoothDevice device = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
                     Log.i(PodsConnectivityService.class.getName(), "Connect to " + device.getAddress());
                     bluetoothGatt = device.connectGatt(PodsConnectivityService.this, false, gattCallback);
+                    break;
+                case ActionsToService.CONNECT_TO_DEVICE_WITH_MAC_ID:
+                    String macID = intent.getStringExtra(BundleKeys.BLE_DEVICE);
+                    BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(macID);
+                    if (remoteDevice != null) {
+                        Intent connectIntent = new Intent(ActionsToService.CONNECT_TO_DEVICE);
+                        connectIntent.putExtra(BundleKeys.BLE_DEVICE, remoteDevice);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(connectIntent);
+                    }
                     break;
                 case ActionsToService.INTENSITY:
                     pattern = intent.getStringExtra(ActionsToService.INTENSITY);
@@ -244,19 +257,25 @@ public class PodsConnectivityService extends Service implements PodCommands {
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Intent intent = new Intent(ServiceBroadcastActions.PODS_CONNECTED);
-                intent.putExtra(BundleKeys.BLE_DEVICE, gatt.getDevice());
-                LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
-                Log.i(PodsConnectivityService.class.getName(), "Connected to GATT server.");
-                bluetoothGatt = gatt;
-                bluetoothGatt.discoverServices();
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                // TODO broadcast gatt disconnected state to the app
-                Log.i(PodsConnectivityService.class.getName(), "Disconnected from GATT server.");
-                NotificationManager mNotificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.cancel(Constants.NOTIFICATION_ID);
+            switch (newState) {
+                case BluetoothProfile.STATE_CONNECTED:
+                    Intent intent = new Intent(ServiceBroadcastActions.PODS_CONNECTED);
+                    intent.putExtra(BundleKeys.BLE_DEVICE, gatt.getDevice());
+                    LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
+                    Log.i(PodsConnectivityService.class.getName(), "Connected to GATT server.");
+                    bluetoothGatt = gatt;
+                    bluetoothGatt.discoverServices();
+                    break;
+                case BluetoothProfile.STATE_DISCONNECTED:
+                case 133:
+                    // TODO broadcast gatt disconnected state to the app
+                    Log.i(PodsConnectivityService.class.getName(), "Disconnected from GATT server.");
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.cancel(Constants.NOTIFICATION_ID);
+                    // not in range. try to reconnect
+                    connectToMacID();
+                    break;
             }
         }
 
@@ -326,6 +345,13 @@ public class PodsConnectivityService extends Service implements PodCommands {
             handleCharacteristic(characteristic);
         }
     };
+
+    private void connectToMacID() {
+        Intent intent;
+        intent = new Intent(ActionsToService.CONNECT_TO_DEVICE_WITH_MAC_ID);
+        intent.putExtra(BundleKeys.BLE_DEVICE, SharedPrefUtil.getPodsMacid(PodsConnectivityService.this));
+        LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(intent);
+    }
 
     private void showConnectedPodsNotification(int goalCompletedPercent, int remainingBatteryPercent) {
         String info = "";
@@ -402,13 +428,8 @@ public class PodsConnectivityService extends Service implements PodCommands {
                     }
                 }
                 // Ask for battery status after given time
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        sendRBT();
-                    }
-                }, BATTERY_PING_FREQUENCY);
-
+                handler.removeCallbacks(batteryCommandRunnable);
+                handler.postDelayed(batteryCommandRunnable, BATTERY_PING_FREQUENCY);
                 break;
             case PodsServiceCharacteristics.SERVICE_MISC_CHARACTERISTIC_QTR_NOTIFY:
 //                Log.i(PodsConnectivityService.class.getName(), "Found QTR Notify: " + characteristic.getUuid());
@@ -623,6 +644,13 @@ public class PodsConnectivityService extends Service implements PodCommands {
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(ServiceBroadcastActions.BLE_SCAN_STOPPED));
     }
 
+    Runnable batteryCommandRunnable = new Runnable() {
+        @Override
+        public void run() {
+            sendRBT();
+        }
+    };
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -663,8 +691,13 @@ public class PodsConnectivityService extends Service implements PodCommands {
 //                        setButtonText("Turning Bluetooth off...");
                         break;
                     case BluetoothAdapter.STATE_ON:
-                        Log.i(PodsConnectivityService.class.getName(), "Bluetooth turned ON");
-                        LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
+                        String podsMacid = SharedPrefUtil.getPodsMacid(PodsConnectivityService.this);
+                        if (TextUtils.isEmpty(podsMacid)) {
+                            Log.i(PodsConnectivityService.class.getName(), "Bluetooth turned ON");
+                            LocalBroadcastManager.getInstance(PodsConnectivityService.this).sendBroadcast(new Intent(ActionsToService.SCAN_PODS));
+                        } else {
+                            connectToMacID();
+                        }
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
 //                        setButtonText("Turning Bluetooth on...");

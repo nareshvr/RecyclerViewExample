@@ -677,5 +677,18 @@ public class PodsConnectivityService extends Service implements PodCommands {
     public static float byteToFloat(byte[] data) {
         return ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
+    public static int byteToInt(byte[] byteData )  {
+        int val = 0 ;
+        for (int i = 0; i < byteData.length;i++ )
+        {
+            val *= 256 ;
+            int j = byteData[i];
+            if(j<0)
+                j=256+j;
+            val += j ;
+        }
+        return val ;
+
+    }
 
 }

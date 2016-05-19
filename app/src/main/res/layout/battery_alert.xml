@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/Widget.Design.FloatingActionButton"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true">
+        <ducere.lechal.pod.customViews.CircularSeekBar
+            android:paddingBottom="20dp"
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            app:start_angle="0"
+            app:end_angle="360"
+            app:progress="0"
+            app:pointer_radius="0dp"
+            app:pointer_halo_width="0dp"
+            app:circle_color="@color/text_alert_not_selected"
+            app:circle_progress_color="@color/colorPrimary"
+            app:circle_stroke_width="8dp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_centerInParent="true">
+    <np.TextView
+        android:id="@+id/tvPercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.Lato_Bold"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
+        android:text="45%"
+        />
+    <np.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.Lato_Regular"
+        android:textColor="@color/text_gray"
+        android:textSize="16sp"
+        android:text="remaining"
+        />
+</LinearLayout>
+</RelativeLayout>

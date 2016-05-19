@@ -83,4 +83,13 @@
     <string name="walk10000_desc">An average human being walks about 5,500 steps a day.Dot\'t be an average human being.Switch to a healthire lifestyle by incorporating more Lechal steps in your day.</string>
     <string name="cal">Calories burnt are based are base on individual\'s height,weight and gender</string>
 <string name="edit_daily_goals">Edit daily goals</string>
+
+    <string name="action_waypoint">Add a way point</string>
+    <string name="action_trafic">Traffic</string>
+    <string name="action_satellite">Satellite</string>
+    <string name="action_public_transport">Public Transport</string>
+    <string name="action_share_directions">Share Directions</string>
+    <string name="action_voice">Voice</string>
+    <string name="action_normal">Normal</string>
+    <string name="action_terrain">Terrain</string>
 </resources>

@@ -5,6 +5,8 @@ package ducere.lechal.pod.customViews;
  */
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -503,10 +505,17 @@ public class CircularSeekBar extends View {
         canvas.drawPath(mCircleProgressPath, mCircleProgressPaint);
 
         canvas.drawPath(mCirclePath, mCircleFillPaint);
-
+        // add marker
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.fitness_seek_thumb);
+        float width =  mPointerPositionXY[0];
+        float height = mPointerPositionXY[1];
+        float centerX = (width  + bmp.getWidth()) * 0.5f;
+        float centerY = (height + bmp.getHeight()) * 0.5f;
+      //  canvas.drawBitmap(bmp,centerX, centerY, null);
         canvas.drawCircle(mPointerPositionXY[0], mPointerPositionXY[1], mPointerRadius + mPointerHaloWidth, mPointerHaloPaint);
         canvas.drawCircle(mPointerPositionXY[0], mPointerPositionXY[1], mPointerRadius, mPointerPaint);
         if (mUserIsMovingPointer) {
+            //canvas.drawBitmap(bmp,centerX, centerY, null);
             canvas.drawCircle(mPointerPositionXY[0], mPointerPositionXY[1], mPointerRadius + mPointerHaloWidth + (mPointerHaloBorderWidth / 2f), mPointerHaloBorderPaint);
         }
     }

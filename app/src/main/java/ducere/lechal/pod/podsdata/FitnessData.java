@@ -11,7 +11,7 @@ import ducere.lechal.pod.ble.PodsConnectivityService;
 public class FitnessData implements Serializable {
     long day;
     long steps;
-    String distance;
+    float distance;
     long time;
     long cal;
 
@@ -20,12 +20,20 @@ public class FitnessData implements Serializable {
 
     public FitnessData(byte[] data) {
         if (data != null) {
-            steps = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[2], data[3], data[4], data[5]}));
-            DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            distance = decimalFormat.format(PodsConnectivityService.byteToFloat(new byte[]{data[6], data[7], data[8], data[9]}) / 1000.0);
-            distance = distance.replace(",", ".");
-            time = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[10], data[11], data[12], data[13]}) / 60.0);
-            cal = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[14], data[15], data[16], data[17]}));
+            if(data[18]>15){
+                steps = Math.round(PodsConnectivityService.byteToInt(new byte[]{data[2], data[3]}));
+                DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                distance = PodsConnectivityService.byteToFloat(new byte[]{data[6], data[7], data[8], data[9]});
+                time = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[10], data[11], data[12], data[13]}) / 60.0);
+                cal = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[14], data[15], data[16], data[17]}));
+            }else {
+                steps = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[2], data[3], data[4], data[5]}));
+                DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                distance = PodsConnectivityService.byteToFloat(new byte[]{data[6], data[7], data[8], data[9]}) ;
+                time = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[10], data[11], data[12], data[13]}) / 60.0);
+                cal = Math.round(PodsConnectivityService.byteToFloat(new byte[]{data[14], data[15], data[16], data[17]}));
+            }
+
         }
     }
 
@@ -37,7 +45,7 @@ public class FitnessData implements Serializable {
         return steps;
     }
 
-    public String getDistance() {
+    public float getDistance() {
         return distance;
     }
 

@@ -20,7 +20,7 @@ public class SharedPrefUtil {
     public static final String MOCK_VICINITY = "mockVicinity";
     public static final String MOCK_LAT = "mockLat";
     public static final String MOCK_LNG = "mockLng";
-    ;
+    public static final String VOICE_PREFERENCE = "voicePreference";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
@@ -40,6 +40,16 @@ public class SharedPrefUtil {
 
     public static String getString(Context context, String key) {
         return getPref(context).getString(key, null);
+    }
+    public static void commitInt(Context context, String key, int value) {
+        getPref(context).edit().putInt(key, value).apply();
+    }
+
+    public static int getInt(Context context, String key) {
+        return getPref(context).getInt(key, 0);
+    }
+    public static int getVoiceId(Context context, String key) {
+        return getPref(context).getInt(key, 1003);
     }
 
     public static void commitBoolean(Context context, String key, boolean value) {

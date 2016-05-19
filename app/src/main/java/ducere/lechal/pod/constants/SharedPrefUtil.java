@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
-import ducere.lechal.pod.location_data_models.Place;
 import ducere.lechal.pod.server_models.User;
 
 /**
@@ -30,6 +29,7 @@ public class SharedPrefUtil {
     public static final String WEIGHT_UNITS = "weight units";
     private static final String USER = "user";
     private static final String USER_ID = "userID";
+    public static final String VOICE_PREFERENCE = "voicePreference";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
@@ -70,6 +70,16 @@ public class SharedPrefUtil {
 
     public static String getString(Context context, String key) {
         return getPref(context).getString(key, null);
+    }
+    public static void commitInt(Context context, String key, int value) {
+        getPref(context).edit().putInt(key, value).apply();
+    }
+
+    public static int getInt(Context context, String key) {
+        return getPref(context).getInt(key, 0);
+    }
+    public static int getVoiceId(Context context, String key) {
+        return getPref(context).getInt(key, 1003);
     }
 
     public static void commitBoolean(Context context, String key, boolean value) {

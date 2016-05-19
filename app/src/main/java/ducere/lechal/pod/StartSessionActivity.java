@@ -1,9 +1,13 @@
 package ducere.lechal.pod;
 
+
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.DialogFragment;
@@ -13,15 +17,38 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 
-import ducere.lechal.pod.R;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.here.android.mpa.common.GeoPosition;
+import com.here.android.mpa.common.Image;
+import com.here.android.mpa.common.MapEngine;
+import com.here.android.mpa.common.OnEngineInitListener;
+import com.here.android.mpa.common.PositioningManager;
+import com.here.android.mpa.mapping.Map;
+import com.here.android.mpa.mapping.MapContainer;
+import com.here.android.mpa.mapping.MapFragment;
+import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.MapTransitLayer;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+
+
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.customViews.CircularSeekBar;
+import ducere.lechal.pod.customViews.PausableChronometer;
 import ducere.lechal.pod.podsdata.FitnessData;
 import ducere.lechal.pod.podsdata.Session;
 import ducere.lechal.pod.sqlite.SaveSessionDialog;
+import ducere.lechal.pod.utilities.NavigationFeedback;
 import np.TextView;
 
 
@@ -30,13 +57,37 @@ import np.TextView;
  */
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Chronometer chronometer;
-    TextView tvHour, tvMin, tvSec, tvSteps, tvCal;
+
+
+
+    PausableChronometer chronometer;
+    TextView tvHour,tvMin,tvSec,tvSteps,tvCal,tvPercentage;
     android.support.design.widget.FloatingActionButton fabPause;
     Session session;
+    ImageView ivMode;
+    ImageView imgBatteryStatus,ivMap;
+    CardView cwStop;
+    RelativeLayout rlTop;
+    FitnessData fitnessDataInitial=null;
+    float steps=0,cal=0,dist=0;
     CircularSeekBar circularSeekBar;
+
     ImageView imgBatteryView;
     int remainingBattery;
+    int CALORIES=1,STEPS=2,DISTANCE=3,TIME=4;
+    int WALK=1,RUN=2,CYCLE=3;
+    boolean pause=false;
+    int batteryStatus=0;
+    public boolean isMapEngineInitialize = false;
+    // map embedded in the map fragment
+    public static Map map = null;
+    // map fragment embedded in this activity
+    private MapFragment mapFragment = null;
+
+    PositioningManager positioningManager;
+    public static MapContainer mapcontainer = null;
+    public static MapMarker mapmarker = null;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +95,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Running session");
+
 
         initView();
 
@@ -61,13 +113,47 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         circularSeekBar.setMax(session.getGoalValue());
         fabPause = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fabPause);
 
-        chronometer = (Chronometer) findViewById(R.id.chronometer);
+        chronometer = (PausableChronometer) findViewById(R.id.chronometer);
         chronometer.setFormat("00:%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         cwStop.setOnClickListener(this);
         ImageView imgBatteryStatus = (ImageView) findViewById(R.id.imgBatteryStatus);
+
+        session = (Session) getIntent().getSerializableExtra("session");
+        cwStop = (CardView) findViewById(R.id.cwStop);
+        tvHour = (TextView)findViewById(R.id.txtHours);
+        tvMin = (TextView)findViewById(R.id.txtMin);
+        tvSec = (TextView)findViewById(R.id.txtSec);
+        tvCal = (TextView)findViewById(R.id.tvCal);
+        tvSteps = (TextView)findViewById(R.id.tvSteps);
+        rlTop = (RelativeLayout)findViewById(R.id.rlTop);
+        tvPercentage = (TextView)findViewById(R.id.tvPercentage);
+        circularSeekBar = (CircularSeekBar)findViewById(R.id.progress);
+        circularSeekBar.setMax(session.getGoalValue());
+        ivMode = (ImageView)findViewById(R.id.ivMode);
+        fabPause = (android.support.design.widget.FloatingActionButton)findViewById(R.id.fabPause);
+        imgBatteryStatus  = (ImageView)findViewById(R.id.imgBatteryStatus);
+        ivMap  = (ImageView)findViewById(R.id.imgMap);
+        chronometer =  (PausableChronometer)findViewById(R.id.chronometer);
+
+        chronometer.setFormat("00:%s");
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+
+
         imgBatteryStatus.setOnClickListener(this);
+        ivMap.setOnClickListener(this);
+        cwStop.setOnClickListener(this);
+        if (session.getActivityType()==WALK){
+            ivMode.setBackgroundResource(R.mipmap.ic_walk_red_circle);
+        }else if (session.getActivityType()==RUN){
+            ivMode.setBackgroundResource(R.mipmap.ic_run_red_circle);
+        }else if (session.getActivityType()==CYCLE){
+            ivMode.setBackgroundResource(R.mipmap.ic_cycle_red_circle);
+        }
+
+        initMapEngine();
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             public void onChronometerTick(Chronometer cArg) {
                 long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -109,73 +195,94 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ServiceBroadcastActions.BATTERY:
-                    int remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
-                    Log.d("Battery", "Status::" + remainingBattery);
-                    remainingBattery = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
 
-                    /*if (remainingBattery == -1) {
-                        batteryProgress.setProgress(0);
-                        batteryText.setText("");
-                    } else {
-                        batteryProgress.setProgress(remainingBattery);
-                        batteryText.setText(remainingBattery + "%");
-                    }*/
-
+                    batteryStatus = intent.getIntExtra(ServiceBroadcastActions.BATTERY, 0);
+                    Log.d("Battery","Status::"+batteryStatus);
+                    setBatteryStatus(batteryStatus);
                     break;
                 case ServiceBroadcastActions.FITNESS_DATA:
                     FitnessData serializableFit = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_DATA);
                     if (serializableFit == null) {
                         return;
                     }
-                    tvSteps.setText(serializableFit.getSteps() + " steps taken");
-                    tvCal.setText(serializableFit.getCal() + "cal left");
-                    circularSeekBar.setProgress((int) serializableFit.getCal());
+
+                    if (fitnessDataInitial==null)
+                        fitnessDataInitial = serializableFit;
+                    else
+                        updateViews(serializableFit);
+
                     break;
             }
         }
     };
+    void updateViews( FitnessData serializableFit){
+       steps = serializableFit.getSteps()-fitnessDataInitial.getSteps();
+        cal = serializableFit.getCal()-fitnessDataInitial.getCal();
+        dist = serializableFit.getDistance()-fitnessDataInitial.getDistance();
+        float max = circularSeekBar.getMax();
+        if(session.getGoalType()==CALORIES){
+            tvSteps.setText(steps + " steps taken");
+            tvCal.setText(session.getCalories()-cal + "cal left");
+            circularSeekBar.setProgress((int) cal);
+            int percentage = (int)( cal/max)*100;
+            tvPercentage.setText(percentage + "%");
+        }else if(session.getGoalType()==STEPS){
+            tvSteps.setText(cal + " cal burnt");
+            tvCal.setText(session.getSteps()-steps + " steps left");
+            circularSeekBar.setProgress((int) steps);
+            int percentage = (int)(steps/max)*100;
+            tvPercentage.setText(percentage + "%");
+        }else if(session.getGoalType()==DISTANCE){
+            tvSteps.setText(cal + " cal burnt");
+            tvCal.setText(Convert.metersToKms(session.getDistance()-dist )+ " left");
+            circularSeekBar.setProgress((int) dist);
+            int percentage = (int)( dist/max)*100;
+            tvPercentage.setText(percentage+"%");
+        }else if(session.getGoalType()==TIME){
+            tvSteps.setText(serializableFit.getSteps() + " steps taken");
+            tvCal.setText(session.getCalories()-serializableFit.getCal() + "cal left");
+            circularSeekBar.setProgress((int) serializableFit.getCal());
+            int percentage = (int)( cal/max)*100;
+            tvPercentage.setText(percentage+"%");
+        }
+
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cwStop:
+                chronometer.stop();
+                session.setCalories((int) cal);
+                session.setDistance(Math.round(dist));
+                session.setSteps(Math.round(steps));
+                session.setEndTime(System.currentTimeMillis());
+                session.setSync(false);
+                session.setStatus(0);
                 DialogFragment dialogFragment = new SaveSessionDialog();
                 dialogFragment.show(getSupportFragmentManager(), "Position");
                 break;
             case R.id.fabPause:
-                chronometer.stop();
+
+                if (pause==false){
+                    pause=true;
+                    chronometer.stop();
+                    fabPause.setImageResource(R.drawable.icon_play);
+                }else{
+                    pause=false;
+                    chronometer.start();
+                    fabPause.setImageResource(R.mipmap.icon_pause);
+                }
+                break;
             case R.id.imgBatteryStatus:
-                Log.d("Battery", "Status::" + remainingBattery);
-                if (remainingBattery <= 10) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_10));
-                } else if (remainingBattery <= 20) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_20));
-                } else if (remainingBattery <= 30) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_30));
-                } else if (remainingBattery <= 40) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_40));
-                } else if (remainingBattery <= 50) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_50));
-                } else if (remainingBattery <= 60) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_60));
-                } else if (remainingBattery <= 70) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_70));
-                } else if (remainingBattery <= 80) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_80));
-                } else if (remainingBattery <= 90) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.battery_90));
-                } else if (remainingBattery <= 100) {
-                    imgBatteryView.setVisibility(View.VISIBLE);
-                    imgBatteryView.setBackgroundDrawable(getResources().getDrawable(R.mipmap.icon_battery_full));
+               showBatteryDialog(batteryStatus);
+                break;
+            case R.id.imgMap:
+                if (rlTop.getVisibility()==View.VISIBLE){
+                    rlTop.setVisibility(View.GONE);
+                }else{
+                    rlTop.setVisibility(View.VISIBLE);
+
                 }
                 break;
         }
@@ -183,8 +290,193 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-            finish();
+
+        if (item.getItemId()==android.R.id.home){
+            showEndDialog();
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+    void setBatteryStatus(int status){
+
+        if (status <= 10) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_10);
+        } else if (status <= 20) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_20);
+        } else if (status <= 30) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_30);
+        } else if (status <= 40) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_40);
+        } else if (status <= 50) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_50);
+        } else if (status <= 60) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_60);
+        } else if (status <= 70) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_70);
+        } else if (status <= 80) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_80);
+        } else if (status <= 90) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.battery_90);
+        } else if (status >= 90) {
+            imgBatteryStatus.setBackgroundResource(R.drawable.icon_battery_full);
+        }
+
+    }
+    void showBatteryDialog(int status){
+        final Dialog dialog = new Dialog(StartSessionActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.battery_alert);
+
+        TextView tvPercentage = (TextView) dialog.findViewById(R.id.tvPercentage);
+        CircularSeekBar progress = (CircularSeekBar)dialog.findViewById(R.id.progress);
+        progress.setMax(100);
+        progress.setProgress(status);
+        tvPercentage.setText(status+"%");
+
+        dialog.show();
+    }
+    public void initMapEngine() {
+        final MapEngine mapEngine = MapEngine.getInstance(getApplicationContext());
+        mapEngine.init(this, new OnEngineInitListener() {
+            @Override
+            public void onEngineInitializationCompleted(Error error) {
+                // TODO Auto-generated method stub
+                if (error == OnEngineInitListener.Error.NONE) {
+                    isMapEngineInitialize = true;
+                    initMap();
+                    //MapEngine.setOnline(false);
+                } else {
+                    // handle factory initialization failure
+                    Toast.makeText(StartSessionActivity.this, "cannot initialize map engine : " + error.toString() + "", Toast.LENGTH_SHORT).show();
+                    isMapEngineInitialize = false;
+                }
+            }
+        });
+    }
+
+    public void initMap() {
+        // SearchActivity for the map fragment to finish setup by calling init().
+        mapFragment = (com.here.android.mpa.mapping.MapFragment) (getFragmentManager().findFragmentById(
+                R.id.mapfragment));
+
+        mapFragment.init(new OnEngineInitListener() {
+            @Override
+            public void onEngineInitializationCompleted(
+                    OnEngineInitListener.Error error) {
+                if (error == OnEngineInitListener.Error.NONE) {
+                    map = mapFragment.getMap();
+
+                    // Set the zoom level to the average between min and max
+                    map.setZoomLevel(25);
+
+                    //set the map projection
+                    map.setProjectionMode(Map.Projection.GLOBE);
+
+
+                    positioningManager = PositioningManager.getInstance();
+                    positioningManager.addListener(
+                            new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
+                    positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
+                    LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        if (positioningManager.hasValidPosition()) {
+                            map.setCenter(positioningManager.getPosition().getCoordinate(),
+                                    Map.Animation.LINEAR);
+
+                        } else if (positioningManager.getLastKnownPosition().isValid()) {
+                            map.setCenter(positioningManager.getLastKnownPosition().getCoordinate(),
+                                    Map.Animation.LINEAR);
+
+                        } else {
+                            Toast.makeText(StartSessionActivity.this, "Waiting for Gps Fix", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+
+                    }
+
+                    // Display position indicator
+                    map.getPositionIndicator().setVisible(true);
+
+                    Image myImage = new com.here.android.mpa.common.Image();
+                    try {
+                        myImage.setImageResource(R.drawable.ic_marker_location_lechal);
+                    } catch (IOException e) {
+                        Log.d("Exception", e.toString() + "");
+                    }
+
+                    map.getPositionIndicator().setMarker(myImage);
+                    map.getPositionIndicator().setAccuracyIndicatorVisible(true);
+                    // Listen for gesture events. For example tapping on buildings
+
+
+                    map.getMapTransitLayer().setMode(MapTransitLayer.Mode.EVERYTHING);
+
+
+                } else {
+                    //gps.showSettingsAlert();
+                    //Log.d("gps", "4");
+                    Toast.makeText(StartSessionActivity.this, "Cannot initialize map fragment : " +
+                            error.toString(), Toast.LENGTH_SHORT).show();
+                    isMapEngineInitialize = false;
+                    initMapEngine();
+                }
+            }
+
+        });
+    }
+    // Define positioning listener
+    private PositioningManager.OnPositionChangedListener positionListener = new
+            PositioningManager.OnPositionChangedListener() {
+
+                @Override
+                public void onPositionUpdated(PositioningManager.LocationMethod locationMethod, final GeoPosition geoPosition, boolean b) {
+
+                }
+
+                @Override
+                public void onPositionFixChanged(PositioningManager.LocationMethod locationMethod, PositioningManager.LocationStatus locationStatus) {
+
+                }
+            };
+    void showEndDialog() {
+        final Dialog dialog = new Dialog(StartSessionActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_layout);
+
+        android.widget.TextView title = (android.widget.TextView) dialog.findViewById(R.id.tvTitle);
+        android.widget.TextView description = (android.widget.TextView) dialog.findViewById(R.id.tvDescription);
+        android.widget.TextView cancel = (android.widget.TextView) dialog.findViewById(R.id.tvCancel);
+        android.widget.TextView ok = (android.widget.TextView) dialog.findViewById(R.id.tvOk);
+        title.setText("Runing Session");
+        description.setText("Stop current session to exit.");
+        ok.setText("Stop");
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chronometer.stop();
+                session.setCalories((int) cal);
+                session.setDistance(Math.round(dist));
+                session.setSteps(Math.round(steps));
+                session.setEndTime(System.currentTimeMillis());
+                session.setSync(false);
+                session.setStatus(0);
+                DialogFragment dialogFragment = new SaveSessionDialog().newInstance(session);
+                dialogFragment.show(getSupportFragmentManager(),"Position");
+                dialog.dismiss();
+                //finish();
+
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 }

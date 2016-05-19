@@ -33,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ import ducere.lechal.pod.R;
 import ducere.lechal.pod.adapters.POI;
 import ducere.lechal.pod.adapters.POIAdapter;
 import ducere.lechal.pod.beans.POIType;
+import ducere.lechal.pod.beans.Place;
 import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import np.TextView;
@@ -196,7 +198,13 @@ public class NearByFragment extends Fragment {
 
             GeoCoordinate geo;
 
-            geo = new GeoCoordinate(SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.CURRENT_LNG));
+            if (SharedPrefUtil.getBoolean(getActivity(),SharedPrefUtil.IS_MOCK_ENABLE)){
+                geo = new GeoCoordinate(SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.MOCK_LAT), SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.MOCK_LNG));
+
+            }else{
+                geo = new GeoCoordinate(SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getActivity(), SharedPrefUtil.CURRENT_LNG));
+
+            }
 
             AroundRequest request = new AroundRequest().setCategoryFilter(new CategoryFilter().add(poi)).setSearchArea(geo, 100000);
 
@@ -365,12 +373,23 @@ public class NearByFragment extends Fragment {
             private static final int TYPE_ITEM = 1;
 
             @Override
-            public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, ParallaxRecyclerAdapter<PlaceLink> adapter, int i) {
+            public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, final ParallaxRecyclerAdapter<PlaceLink> adapter, final int i) {
 
                 if (viewHolder instanceof ViewHolder) {
                     ((ViewHolder) viewHolder).title.setText(adapter.getData().get(i).getTitle());
                     ((ViewHolder) viewHolder).address.setText(adapter.getData().get(i).getVicinity().replace("<br/>", ", "));
                     ((ViewHolder) viewHolder).distance.setText(Convert.metersToKms(adapter.getData().get(i).getDistance()));
+                    ((ViewHolder) viewHolder).llRow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PlaceLink placeLink = adapter.getData().get(i);
+                            Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new ducere.lechal.pod.beans.GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                            place.setPlaceId(placeLink.getId());
+                            startActivity(new Intent(getActivity(),NavigationActivity.class).putExtra("place",place));
+                        }
+                    });
+
+
                 } else if (viewHolder instanceof HeaderHolder) {
                     ((HeaderHolder) viewHolder).header.setText(adapter.getData().get(i).getTitle());
                 }
@@ -454,6 +473,7 @@ public class NearByFragment extends Fragment {
     static class ViewHolder extends RecyclerView.ViewHolder {
         public android.widget.TextView title, address, distance;
         public ImageView ivTag;
+        LinearLayout llRow;
 
 
         public ViewHolder(View itemView) {
@@ -462,6 +482,7 @@ public class NearByFragment extends Fragment {
             address = (android.widget.TextView) itemView.findViewById(R.id.tvAddress);
             distance = (android.widget.TextView) itemView.findViewById(R.id.tvDistacne);
             ivTag = (ImageView) itemView.findViewById(R.id.ivTag);
+            llRow = (LinearLayout)itemView.findViewById(R.id.llRow);
         }
     }
 

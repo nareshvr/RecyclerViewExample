@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
@@ -20,11 +21,14 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -43,6 +47,8 @@ import com.here.android.mpa.common.MapEngine;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.PositioningManager;
 import com.here.android.mpa.guidance.NavigationManager;
+import com.here.android.mpa.guidance.VoiceCatalog;
+import com.here.android.mpa.guidance.VoicePackage;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapContainer;
 import com.here.android.mpa.mapping.MapFragment;
@@ -60,6 +66,7 @@ import com.here.android.mpa.search.PlaceLink;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.EnumSet;
 import java.util.List;
 
 import ca.barrenechea.widget.recyclerview.decoration.DividerDecoration;
@@ -105,12 +112,13 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     TextView dot1, dot2, dot3;
     LinearLayout llInNavigation, llNavigationHead, llResultHead, llStop;
     TextView tvInstruction, tvSubInstruction, tvDistance, tvEta, tvDistanceLeft, tvTime;
-    ImageView ivTurn, ivCenter;
+    ImageView ivTurn, ivCenter, ivNavDots;
     boolean isNavigate = false;
     NavigationManager navigationManager;
     ViewPager pager;
     public static int directionDrawable;
     DirectionsAdapter mAdapter;
+    FloatingActionButton fabPause;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +160,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         tvTime = (TextView) findViewById(R.id.tvTime);
         ivTurn = (ImageView) findViewById(R.id.ivTurn);
         ivCenter = (ImageView) findViewById(R.id.ivCenter);
+        ivNavDots = (ImageView) findViewById(R.id.ivNavDots);
 
 
         llInNavigation = (LinearLayout) findViewById(R.id.llInNavigation);
@@ -159,15 +168,16 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         llResultHead = (LinearLayout) findViewById(R.id.llResultHead);
         llStop = (LinearLayout) findViewById(R.id.llStopMode);
         fabMode = (FloatingActionButton) findViewById(R.id.fabMode);
+        fabPause = (FloatingActionButton)findViewById(R.id.fabPause);
 
-
+        navigate = new Navigate();
         fam = (FloatingActionMenu) findViewById(R.id.famMode);
         dot1 = (TextView) findViewById(R.id.one);
         dot2 = (TextView) findViewById(R.id.two);
         dot3 = (TextView) findViewById(R.id.three);
-        com.github.clans.fab.FloatingActionButton fabWalk = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabWalk);
-        com.github.clans.fab.FloatingActionButton fabCar = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDrive);
-        com.github.clans.fab.FloatingActionButton fabBus = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabBus);
+        final com.github.clans.fab.FloatingActionButton fabWalk = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabWalk);
+        final com.github.clans.fab.FloatingActionButton fabCar = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDrive);
+        final com.github.clans.fab.FloatingActionButton fabBus = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabBus);
 
 
         if (!fam.isOpened())
@@ -278,11 +288,18 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                 navigationManager = NavigationManager.getInstance();
                 LechalApplication.getInstance().setNavigationManager(navigationManager);
                 LechalApplication.getInstance().setNavigating(true);
-                navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
+                navigationManager.setNaturalGuidanceMode(EnumSet.of(NavigationManager.NaturalGuidanceMode.JUNCTION, NavigationManager.NaturalGuidanceMode.STOP_SIGN));
+                enableHereAudio(false);
+                navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.ROADVIEW);
+                navigationManager.setMap(map);
                 navigationManager.removeNewInstructionEventListener(newInstructionEventListener);
                 navigationManager.removeRerouteListener(rerouteListener);
                 navigationManager.addRerouteListener(new WeakReference<NavigationManager.RerouteListener>(rerouteListener));
+                navigationManager.removeNavigationManagerEventListener(navigationManagerEventListener);
+                navigationManager.addNavigationManagerEventListener(new WeakReference<NavigationManager.NavigationManagerEventListener>(navigationManagerEventListener));
                 navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstructionEventListener));
+                NavigationManager.Error errorVoice = navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(SharedPrefUtil.getVoiceId(NavigationActivity.this, SharedPrefUtil.VOICE_PREFERENCE)));
+
                 NavigationManager.Error error = navigationManager.simulate(routeResults.get(pager.getCurrentItem()).getRoute(), 20);
                 // navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.ROADVIEW);
             }
@@ -333,12 +350,15 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     switch (navigate.getMode()) {
                         case 0:
                             fam.getMenuIconView().setImageResource(R.drawable.ic_walk_white);
+                            fabWalk.setImageResource(R.drawable.ic_walk_circle_blue);
                             break;
                         case 1:
                             fam.getMenuIconView().setImageResource(R.drawable.ic_car_white);
+                            fabCar.setImageResource(R.drawable.ic_car_circle_blue);
                             break;
                         case 2:
                             fam.getMenuIconView().setImageResource(R.drawable.ic_bus_white);
+                            fabBus.setImageResource(R.drawable.ic_bus_circle_blue);
                             break;
                     }
                     fam.setMenuButtonColorNormal(0xff000000);
@@ -347,14 +367,121 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     fam.getMenuIconView().setImageResource(R.drawable.fab_add);
                     fam.setMenuButtonColorNormal(0xff999999);
                     rlMain.setBackgroundColor(0xAA000000);
+                    fabWalk.setImageResource(R.drawable.ic_walk_white);
+                    fabCar.setImageResource(R.drawable.ic_car_circle);
+                    fabBus.setImageResource(R.drawable.ic_bus_white);
+                    switch (navigate.getMode()) {
+                        case 0:
+                            fabWalk.setImageResource(R.drawable.ic_walk_circle_blue);
+                            break;
+                        case 1:
+                            fabCar.setImageResource(R.drawable.ic_car_circle_blue);
+                            break;
+                        case 2:
+                            fabBus.setImageResource(R.drawable.ic_bus_circle_blue);
+                            break;
+                    }
                 }
             }
         });
-
+        fabPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (navigationManager.getRunningState()== NavigationManager.NavigationState.RUNNING){
+                    navigationManager.pause();
+                    fabPause.setImageResource(R.drawable.icon_play);
+                }else  if (navigationManager.getRunningState()== NavigationManager.NavigationState.PAUSED){
+                    navigationManager.resume();
+                    fabPause.setImageResource(R.mipmap.icon_pause);
+                }
+            }
+        });
         ivCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+        final PopupMenu popup = new PopupMenu(NavigationActivity.this, ivNavDots);
+        MenuInflater inflaterMenu = popup.getMenuInflater();
+        inflaterMenu.inflate(R.menu.navigation_menu, popup.getMenu());
+        ivNavDots.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.show();
+            }
+        });
+        popup.getMenu().findItem(R.id.action_traffic).setChecked(true);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_way_point:
+
+                        return true;
+                    case R.id.action_traffic:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.HYBRID_TRAFFIC_DAY);
+                        return true;
+                    case R.id.action_public_transit:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.NORMAL_DAY);
+                        map.setMapScheme(Map.Scheme.HYBRID_DAY_TRANSIT);
+                        return true;
+                    case R.id.action_satellite:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.SATELLITE_DAY);
+                        return true;
+                    case R.id.action_normal:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.NORMAL_DAY);
+                        return true;
+                    case R.id.action_terrain:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.TERRAIN_DAY);
+                        return true;
+                    case R.id.action_voice:
+                        if (item.isChecked()) {
+                            enableHereAudio(false);
+                            item.setChecked(false);
+                        }else{
+                            enableHereAudio(true);
+                            item.setChecked(true);
+                        }
+
+                        return true;
+                    case R.id.action_share_directions:
+
+                        return true;
+
+                    default:
+                        return true;
+                }
             }
         });
 
@@ -381,7 +508,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     }
 
     void calculateRoute(RouteOptions.TransportMode mode) {
-        navigate = new Navigate();
+
         navigate.setStartLocation(new ducere.lechal.pod.beans.GeoCoordinate(SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LNG)));
         navigate.setStartTitle(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_LOCATION));
         navigate.setStartAddress(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_VICINITY));
@@ -407,8 +534,17 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
         RoutePlan routePlan = new RoutePlan();
         RouteOptions routeOptions = new RouteOptions();
+        GeoCoordinate geo;
 
-        routePlan.addWaypoint(new com.here.android.mpa.common.GeoCoordinate(navigate.getStartLocation().getLatitude(), navigate.getStartLocation().getLongitude()));
+        if (SharedPrefUtil.getBoolean(NavigationActivity.this,SharedPrefUtil.IS_MOCK_ENABLE)){
+            geo = new GeoCoordinate(SharedPrefUtil.getDouble(NavigationActivity.this, SharedPrefUtil.MOCK_LAT), SharedPrefUtil.getDouble(NavigationActivity.this, SharedPrefUtil.MOCK_LNG));
+            cardStart.setVisibility(View.GONE);
+            tvFrom.setText(SharedPrefUtil.getString(NavigationActivity.this,SharedPrefUtil.MOCK_LOCATION));
+        }else{
+            geo =new com.here.android.mpa.common.GeoCoordinate(navigate.getStartLocation().getLatitude(), navigate.getStartLocation().getLongitude());
+            cardStart.setVisibility(View.VISIBLE);
+        }
+        routePlan.addWaypoint(geo);
         routePlan.addWaypoint(new com.here.android.mpa.common.GeoCoordinate(navigate.getEndLocation().getLatitude(), navigate.getEndLocation().getLongitude()));
 
         routeOptions.setRouteCount(3);
@@ -555,14 +691,18 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         llResultHead.setVisibility(View.GONE);
         llNavigationHead.setVisibility(View.VISIBLE);
         fam.setVisibility(View.GONE);
+        navigate = LechalApplication.getInstance().getNavigate();
+        showModeFab();
         clearMap();
         setDirections(LechalApplication.getInstance().getRoute());
         navigationManager = LechalApplication.getInstance().getNavigationManager();
-        navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
+        navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.ROADVIEW);
+        navigationManager.setMap(map);
+        navigationManager.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION);
         navigationManager.removeNewInstructionEventListener(newInstructionEventListener);
-        navigationManager.removeNavigationManagerEventListener(navigationManagerEventListener);
         navigationManager.removeRerouteListener(rerouteListener);
         navigationManager.addRerouteListener(new WeakReference<NavigationManager.RerouteListener>(rerouteListener));
+        navigationManager.removeNavigationManagerEventListener(navigationManagerEventListener);
         navigationManager.addNavigationManagerEventListener(new WeakReference<NavigationManager.NavigationManagerEventListener>(navigationManagerEventListener));
         navigationManager.addNewInstructionEventListener(new WeakReference<NavigationManager.NewInstructionEventListener>(newInstructionEventListener));
         map.addMapObject(new MapRoute(LechalApplication.getInstance().getRoute()).setColor(0xFF26A7DF));
@@ -638,7 +778,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
                     map.addMapObject(mapcontainer);
                     //map.addClusterLayer(cl);
-                    map.setCenter(geo, Map.Animation.LINEAR);
+                //    map.setCenter(geo, Map.Animation.LINEAR);
                     map.setZoomLevel(17);
                     if (LechalApplication.getInstance().isNavigating()) {
                         showNavigation();
@@ -666,8 +806,10 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     geoStart = geoPosition.getCoordinate();
                     if (isNavigate) {
                         updateNavigation();
-                        NavigationFeedback feedback = new NavigationFeedback(geoPosition.getCoordinate(), getApplicationContext());
+                        NavigationFeedback feedback = new NavigationFeedback(geoPosition,geoPosition.getCoordinate(), getApplicationContext());
                         feedback.findDistanceRange();
+
+
                     }
 
                 }
@@ -1121,6 +1263,63 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             }
         });
         dialog.show();
+
+    }
+    public  void enableHereAudio(boolean status){
+        if (SharedPrefUtil.getInt(NavigationActivity.this,SharedPrefUtil.VOICE_PREFERENCE)==0){
+            downloadEnglishVoice();
+        }
+        if (status) {
+            navigationManager.setEnabledAudioEvents(EnumSet.of(NavigationManager.AudioEvent.GPS, NavigationManager.AudioEvent.MANEUVER, NavigationManager.AudioEvent.ROUTE));
+            navigationManager.setNaturalGuidanceMode(EnumSet.of(NavigationManager.NaturalGuidanceMode.JUNCTION, NavigationManager.NaturalGuidanceMode.TRAFFIC_LIGHT, NavigationManager.NaturalGuidanceMode.STOP_SIGN));
+        }else{
+            navigationManager.setEnabledAudioEvents(EnumSet.of(NavigationManager.AudioEvent.GPS));
+        }
+
+    }
+    public void downloadEnglishVoice(){
+        VoiceCatalog voiceCatalog = VoiceCatalog.getInstance();
+        voiceCatalog.downloadCatalog(new VoiceCatalog.OnDownloadDoneListener() {
+            @Override
+            public void onDownloadDone(VoiceCatalog.Error error) {
+                if (error == VoiceCatalog.Error.NONE) {
+                // catalog download successful
+                }
+            }
+
+        });
+        // Get the list of voice packages from the voice catalog list
+        List<VoicePackage> voicePackages = VoiceCatalog.getInstance().getCatalogList();
+        long id = -1;
+        // select
+        for (VoicePackage p : voicePackages) {
+            if (p.getMarcCode().compareToIgnoreCase("eng") == 0) {
+                if (p.isTts()) {
+                    id = p.getId();
+                    break;
+                }
+            }
+        }
+
+        if (!voiceCatalog.isLocalVoiceSkin(id))
+        {
+            final long finalId = id;
+            voiceCatalog.downloadVoice(id, new VoiceCatalog.OnDownloadDoneListener() {
+                @Override
+                public void onDownloadDone(VoiceCatalog.Error error) {
+                    if (error == VoiceCatalog.Error.NONE){
+                    //voice skin download successful
+                        Log.d("voiceId", finalId +"");
+                        SharedPrefUtil.commitInt(NavigationActivity.this, SharedPrefUtil.VOICE_PREFERENCE, (int) finalId);
+                        navigationManager.setVoiceSkin(VoiceCatalog.getInstance().getLocalVoiceSkin(SharedPrefUtil.getVoiceId(NavigationActivity.this, SharedPrefUtil.VOICE_PREFERENCE)));
+
+                    }
+                }
+
+
+            });
+        }
+
 
     }
 }

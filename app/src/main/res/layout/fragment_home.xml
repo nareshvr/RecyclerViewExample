@@ -1,11 +1,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:appp="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +20,6 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
-
                 android:id="@+id/rlTransparent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -78,6 +75,7 @@
                         android:orientation="horizontal">
 
                         <np.TextView
+                            android:id="@+id/tvSteps"
                             style="@style/AppTheme.Lato_Bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -97,56 +95,57 @@
                 </LinearLayout>
 
                 <com.github.clans.fab.FloatingActionMenu
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_above="@+id/viewLine"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="-50dp"
-                    appp:layout_anchorGravity="right"
-                    fab:menu_colorNormal="@color/colorPrimary"
-                    fab:menu_colorPressed="@color/colorPrimary"
-                    fab:menu_colorRipple="#99FFFFFF"
-                    fab:menu_fab_size="normal">
+                    app:layout_anchorGravity="right"
+                    android:elevation="4dp"
+                    app:menu_colorNormal="@color/colorPrimary"
+                    app:menu_colorPressed="@color/colorPrimary"
+                    app:menu_colorRipple="#99FFFFFF">
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_menu_camera"
-                        fab:fab_label="Group journey"
-                        fab:fab_size="mini"
-                        fab:menu_colorNormal="@color/transparent"
-                        fab:menu_colorPressed="@color/transparent" />
+                        android:src="@mipmap/fab_group_journey"
+                        app:fab_label="Group journey"
+                        app:fab_size="normal"
+                        app:fab_colorNormal="#01000000"
+                        app:fab_colorPressed="#01000000" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_work_out"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_menu_camera"
-                        fab:fab_label="Start a workout"
-                        fab:fab_size="mini"
-                        fab:menu_colorNormal="@color/transparent"
-                        fab:menu_colorPressed="@color/transparent" />
+                        android:src="@mipmap/fab_start_work_out"
+                        app:fab_label="Start a workout"
+                        app:fab_size="normal"
+                        app:fab_colorNormal="#01000000"
+                        app:fab_colorPressed="#01000000" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_trails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_menu_camera"
-                        fab:fab_label="Record a trail"
-                        fab:fab_size="mini"
-                        fab:menu_colorNormal="@color/transparent"
-                        fab:menu_colorPressed="@color/transparent" />
+                        android:src="@mipmap/fab_record_trail"
+                        app:fab_label="Record a trail"
+                        app:fab_size="normal"
+                        app:fab_colorNormal="#00000000"
+                        app:fab_colorPressed="#00000000" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_geo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_menu_camera"
-                        fab:fab_label="Menu item 1"
-                        fab:fab_size="mini"
-                        fab:menu_colorNormal="@color/transparent"
-                        fab:menu_colorPressed="@color/transparent" />
+                        android:src="@mipmap/fab_geo_reminder"
+                        app:fab_label="Set geo remainder"
+                        app:fab_size="normal"
+                        app:elevation="0dp"
+                        app:fab_colorNormal="#00000000"
+                        app:fab_colorPressed="#00000000" />
 
                 </com.github.clans.fab.FloatingActionMenu>
 

@@ -336,6 +336,7 @@
 
                        </LinearLayout>
                         <ImageView
+                            android:id="@+id/ivNavDots"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/ic_menu_dots"/>
@@ -403,12 +404,16 @@
                     android:visibility="gone"
                     android:gravity="center_vertical"
                     android:background="@color/white">
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPause"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16sp"
-                        android:background="@drawable/ic_menu_send"
-                        android:layout_gravity="center_vertical"/>
+                        app:fab_colorNormal="@color/black"
+                        app:backgroundTint="@color/black"
+                        app:fab_size="mini"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:src="@mipmap/icon_pause" />
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -588,8 +593,8 @@
             android:src="@drawable/ic_walk_white"
             fab:fab_label="Record a trail"
             fab:fab_size="normal"
-            fab:fab_colorNormal="@color/black"
-            fab:fab_colorPressed="@color/black" />
+            fab:fab_colorNormal="#01000000"
+            fab:fab_colorPressed="#01000000" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabDrive"
@@ -598,8 +603,8 @@
             android:src = "@drawable/ic_car_circle"
             fab:fab_label="Start a workout"
             fab:fab_size="normal"
-            fab:fab_colorNormal="@color/black"
-            fab:fab_colorPressed="@color/black"/>
+            fab:fab_colorNormal="#01000000"
+            fab:fab_colorPressed="#01000000"/>
 
 
         <com.github.clans.fab.FloatingActionButton
@@ -609,8 +614,8 @@
             android:src="@drawable/ic_bus_white"
             fab:fab_label="Menu item 1"
             fab:fab_size="normal"
-            fab:fab_colorNormal="@color/black"
-            fab:fab_colorPressed="@color/black"/>
+            fab:fab_colorNormal="#01000000"
+            fab:fab_colorPressed="#01000000"/>
 
     </com.github.clans.fab.FloatingActionMenu>
     <RelativeLayout

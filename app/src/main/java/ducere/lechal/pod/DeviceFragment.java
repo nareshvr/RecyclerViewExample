@@ -27,7 +27,8 @@ import ducere.lechal.pod.constants.Vibrations;
 import ducere.lechal.pod.customViews.CircleProgressView;
 import ducere.lechal.pod.dialoges.DialogCheckPodPosition;
 
-public class DeviceFragment extends Fragment implements View.OnClickListener,Vibrations{
+public class DeviceFragment extends Fragment implements View.OnClickListener,Vibrations {
+
 
     private TextView batteryText;
     private CircleProgressView batteryProgress;

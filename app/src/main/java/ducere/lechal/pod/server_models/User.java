@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
     @SerializedName("email")
     private String email;
@@ -171,4 +171,8 @@ public class User implements Serializable{
         this.img = img;
     }
 
+    @Override
+    public String toString() {
+        return "EMAIL=" + email + "\n" + "First Name =" + firstName + "\n" + "Last Name = " + lastName + "\n" + "phone =" + phone + "\n" + "DOB = " + dob + "\n" + "Gender = " + gender + "\n" + "Emergency Contact = " + emergencyContact + "\n" + "country = " + country + "\n" + "user Source = " + userSource + "\n" + "img = " + img;
+    }
 }

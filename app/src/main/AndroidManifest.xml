@@ -111,7 +111,7 @@
             android:name=".EditProfileActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".DownloadMapListActivity"></activity>
-        <activity android:name=".IntensityActivity1"></activity>
+        <activity android:name=".IntensityActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".RegisterPordsOrBuddyActivity"></activity>
         <activity android:name=".RegisterBuddyActivity"></activity>

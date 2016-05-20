@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
-import ducere.lechal.pod.location_data_models.Place;
 import ducere.lechal.pod.server_models.User;
 
 /**

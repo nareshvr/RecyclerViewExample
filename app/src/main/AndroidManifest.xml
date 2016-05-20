@@ -57,7 +57,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".PodsConnectionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -112,7 +112,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".DownloadMapListActivity"></activity>
         <activity android:name=".IntensityActivity"></activity>
-        <activity android:name=".PodsConnectionActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
         <activity android:name=".RegisterPordsOrBuddyActivity"></activity>
         <activity android:name=".RegisterBuddyActivity"></activity>
         <activity android:name=".RegisterProductActivity"></activity>

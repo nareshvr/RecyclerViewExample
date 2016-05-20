@@ -29,7 +29,7 @@ public class LechalApplication extends Application {
         return service;
     }
 
-            @Override
+    @Override
     public void onCreate() {
         super.onCreate();
 
@@ -43,10 +43,10 @@ public class LechalApplication extends Application {
     Navigate navigate;
     Place place;
     Route route;
-    boolean isTurnTaken1=false,
-            isTurnTaken2=false,
-            isTurnTaken3=false,
-            isTurnTaken4=false;
+    boolean isTurnTaken1 = false,
+            isTurnTaken2 = false,
+            isTurnTaken3 = false,
+            isTurnTaken4 = false;
 
 
     public boolean isNavigating() {
@@ -96,11 +96,12 @@ public class LechalApplication extends Application {
     public void setIsTurnTaken4(boolean isTurnTaken4) {
         this.isTurnTaken4 = isTurnTaken4;
     }
-    public  void resetTurns(){
-        this.isTurnTaken1=false;
-        this.isTurnTaken2=false;
-        this.isTurnTaken3=false;
-        this.isTurnTaken4=false;
+
+    public void resetTurns() {
+        this.isTurnTaken1 = false;
+        this.isTurnTaken2 = false;
+        this.isTurnTaken3 = false;
+        this.isTurnTaken4 = false;
     }
 
     public Place getPlace() {

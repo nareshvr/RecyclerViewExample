@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/home_transparent"
+    android:background="@mipmap/bg"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
@@ -20,18 +20,6 @@
         android:textColor="@color/white"
         android:textSize="31sp" />
 
-    <!--<np.TextView
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        style="@style/AppTheme.Lato_Bold"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:padding="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Please visit www.lechal.com to purchase subscription of buddy service."
-         />-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +39,6 @@
             android:textSize="15sp" />
 
         <np.TextView
-
             android:id="@+id/txtHyp"
             style="@style/AppTheme.Lato_Bold"
             android:layout_width="wrap_content"
@@ -64,12 +51,12 @@
             android:textSize="15sp" />
 
         <np.TextView
-            android:layout_marginLeft="90dp"
             android:id="@+id/txtHyp1"
             style="@style/AppTheme.Lato_Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/txtHyp"
+            android:layout_marginLeft="90dp"
             android:gravity="right"
             android:padding="8dp"
             android:text="to purchase subscription of buddy service."
@@ -109,8 +96,8 @@ which activates your subscription."
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView

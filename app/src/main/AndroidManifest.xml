@@ -3,6 +3,8 @@
     package="ducere.lechal.pod">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -117,7 +119,6 @@
             android:name=".EditProfileActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".DownloadMapListActivity" />
-        <activity android:name=".IntensityActivity1" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterPordsOrBuddyActivity" />
         <activity android:name=".RegisterBuddyActivity" />
@@ -126,7 +127,9 @@
         <activity android:name=".AddFriendsToJourenyActivity" />
         <activity
             android:name=".ResultLocationActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".IntensityActivity"></activity>
     </application>
 
 </manifest>

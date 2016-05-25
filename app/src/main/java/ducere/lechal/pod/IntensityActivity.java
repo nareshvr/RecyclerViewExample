@@ -15,7 +15,7 @@ import ducere.lechal.pod.constants.Vibrations;
 /**
  * Created by VR Naresh on 18-05-2016.
  */
-public class IntensityActivity1 extends AppCompatActivity implements View.OnClickListener, Vibrations {
+public class IntensityActivity extends AppCompatActivity implements View.OnClickListener, Vibrations {
     ImageView imvRotate;
     Context context = this;
 
@@ -47,7 +47,6 @@ public class IntensityActivity1 extends AppCompatActivity implements View.OnClic
 
         CardView intensityLow = (CardView) findViewById(R.id.intensityLow);
         intensityLow.setOnClickListener(this);
-
 
     }
 

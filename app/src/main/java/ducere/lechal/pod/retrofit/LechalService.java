@@ -20,7 +20,8 @@ public interface LechalService {
     String USER_LOGIN_TYPE = "102";
     String USER_GET_TYPE = "104";
     String USER_UPLOAD_PROFILE_PICTURE_TYPE = "109";
-
+    String USER_REGISTER_TYPE = "101";
+    String STATUS_CODE_SUCCESS = "150";
     @FormUrlEncoded
     @POST(Constants.USER)
     Call<ResponseBody> loginUser(@Field("email") String email, @Field("password") String password, @Field("type") String type);
@@ -47,4 +48,8 @@ public interface LechalService {
 
     @GET
     Call<ResponseBody> fetchProfileImage(@Url String url);
+
+    Call<ResponseBody> register(@Field("firstName") String firstName, @Field("lastName") String lastName, @Field("email") String email, @Field("password") String password,@Field("type") String type);
+
+
 }

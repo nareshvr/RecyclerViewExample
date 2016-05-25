@@ -121,7 +121,7 @@ public class DeviceFragment extends Fragment implements View.OnClickListener,Vib
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.llIntensity:
-                startActivity(new Intent(getActivity(),IntensityActivity1.class));
+                startActivity(new Intent(getActivity(),IntensityActivity.class));
                 //showIntensityPicker();
                 break;
             case R.id.cwPodsPosition:

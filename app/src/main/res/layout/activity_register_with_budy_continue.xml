@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/home_transparent"
+    android:background="@mipmap/bg"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:layout_height="match_parent">
 
     <np.TextView
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="24dp"
         style="@style/AppTheme.Lato_Bold"
         android:gravity="center"
         android:textColor="@color/white"
@@ -72,6 +73,7 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:clickable="true"
             android:id="@+id/btnBuddyPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,6 +119,7 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:clickable="true"
             android:id="@+id/btnBuddyRePassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:padding="5dp" >
+
+    <ImageView
+        android:id="@+id/status_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/llCancel"
+        android:layout_toRightOf="@id/status_icon" >
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="#000000"/>a
+
+        <ProgressBar
+            android:id="@+id/status_progress"
+            android:layout_width="fill_parent"
+            android:layout_height="4dp"
+            android:layout_below="@id/status_text"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:indeterminate="false"
+            android:indeterminateOnly="false"
+            android:maxHeight="4dp"
+             />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/llCancel"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="false"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

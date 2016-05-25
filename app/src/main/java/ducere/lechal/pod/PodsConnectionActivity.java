@@ -31,17 +31,14 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.PodsConnectivityService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;

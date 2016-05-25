@@ -20,24 +20,48 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sun.jna.platform.FileUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
-import ducere.lechal.pod.beans.Home;
+import ducere.lechal.pod.async.Utility;
+import ducere.lechal.pod.constants.Constants;
+import ducere.lechal.pod.constants.SharedPrefUtil;
+import ducere.lechal.pod.retrofit.LechalService;
+import ducere.lechal.pod.retrofit.RetroClient;
+import ducere.lechal.pod.server_models.User;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by VR Naresh on 10-05-2016.
@@ -47,7 +71,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     ImageView imvCamera;
     private DatePicker datePicker;
     private Calendar calendar;
-    private TextView txtDob;
     //  private TextView dateView;
     private int year, month, day;
     private static final String shareStr[] = {"Camera", "Gallery", "Remove photo"};
@@ -63,6 +86,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     static Bitmap resizeimage = null;
     Bitmap bmp;
     ImageView imvProfile;
+    EditText edtFullName, edtEmil, edtPhoneNumber, edtEmergencyContact;
+    Context context = this;
+    TextView txtDob;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,11 +134,16 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             imvProfile.setImageBitmap(bmp);
 
         }
-
+        edtFullName = (EditText) findViewById(R.id.edtFullName);
+        edtEmil = (EditText) findViewById(R.id.edtEmil);
+        edtPhoneNumber = (EditText) findViewById(R.id.edtPhoneNumber);
+        edtEmergencyContact = (EditText) findViewById(R.id.edtEmergencyContact);
+        LinearLayout llProfileSave = (LinearLayout) findViewById(R.id.llProfileSave);
+        llProfileSave.setOnClickListener(this);
     }
 
     private void showDate(int year, int month, int day) {
-        txtDob.setText(new StringBuilder().append(day).append("/").append(month).append("/").append(year));
+        txtDob.setText(new StringBuilder().append("0" + month).append("-").append(day).append("-").append(year));
     }
 
     @Override
@@ -120,12 +151,85 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.txtDob:
                 showDialog(999);
-                Toast.makeText(getApplicationContext(), "ca", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.imvCamera:
                 showBSDialog();
                 break;
+            case R.id.llProfileSave:
+                String fullName = edtFullName.getText().toString();
+                String emil = edtEmil.getText().toString();
+                String phno = edtPhoneNumber.getText().toString();
+                String emergencyNo = edtEmergencyContact.getText().toString();
+                String dob = txtDob.getText().toString();
+                String country = "India";
+                String userId = SharedPrefUtil.getUserId(context);
+                String imageView = BitMapToString(bmp);
+                LechalService service = RetroClient.getInstance().getService();
+
+
+                /*if (!TextUtils.isEmpty(fullName)) {
+                    if (!TextUtils.isEmpty(emil)) {
+                        if (!TextUtils.isEmpty(phno)) {
+                            if (!TextUtils.isEmpty(emergencyNo)) {
+                                boolean connected = Utility.isConnected(context);
+                                if (connected) {
+                                    LechalService service = RetroClient.getInstance().getService();
+                                    Call<ResponseBody> responseBodyCall = service.updateProfile(fullName, country, dob, emil, phno, emergencyNo, LechalService.USER_CREATE_OR_UPDATE_TYPE);
+                                    responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                            if (response.isSuccessful()){
+                                                ResponseBody body = response.body();
+                                                try {
+                                                    String string = Utility.getString(body.byteStream());
+                                                    JSONObject jsonObject = new JSONObject(string);
+                                                    String status = jsonObject.optString("status", "");
+                                                    String error = jsonObject.optString("error", "");
+                                                    String userId = jsonObject.optString("userId", "");
+                                                    Log.v("updateProfile","InFO::"+"status="+status+"\n"+"error="+error+"\n"+"userId="+userId);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                Log.e("updateProfile","InFO::"+body);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(context, "Plase check internet connection", Toast.LENGTH_LONG).show();
+                                }
+
+                            } else {
+                                edtEmergencyContact.setError("Please enter Emergency contact");
+                            }
+                        } else {
+                            edtPhoneNumber.setError("Please enter PhoneNumber");
+                        }
+                    } else {
+                        edtEmil.setError("Please enter EmailId");
+                    }
+                } else {
+                    edtFullName.setError("Please enter FullName");
+                }
+                */
+
+                break;
         }
+    }
+
+    public String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.NO_WRAP);
+        return temp;
     }
 
     @Override
@@ -253,7 +357,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (resultCode == RESULT_OK) {
             if (requestCode == RESULT_LOAD_IMAGE) {
                 Uri selectedImageUri = data.getData();
-                try {
+                uploadFile(selectedImageUri);
+
+                /*try {
                     if (selectedImageUri != null) {
                         selectedImagePath = getPath(selectedImageUri);
                         Orientation = getImageOrientation(selectedImagePath);
@@ -270,10 +376,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
                 } catch (Exception e) {
                     return;
-                }
+                }*/
 
-            }
-            if (requestCode == CAMERA_PIC_REQUEST) {
+            } else if (requestCode == CAMERA_PIC_REQUEST) {
                 switch (resultCode) {
                     case 0:
                         break;
@@ -297,6 +402,72 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         }
 
+    }
+
+
+    public String getUriPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        startManagingCursor(cursor);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+
+    private void uploadFile(Uri fileUri) {
+        // create upload service client
+        LechalService service = RetroClient.getInstance().getService();
+
+        // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+        // use the FileUtils to get the actual file by uri
+        File file = new File(getUriPath(fileUri));
+
+        // create RequestBody instance from file
+        final RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+        // add another part within the multipart request
+        String userIdString = SharedPrefUtil.getUserId(context);
+        RequestBody userId =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), userIdString);
+
+        // add another part within the multipart request
+        String typeString = String.valueOf(LechalService.USER_UPLOAD_PROFILE_PICTURE_TYPE);
+        RequestBody type =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), typeString);
+
+
+        // finally, execute the request
+        Call<ResponseBody> call = service.uploadProfilePicture(userId,type,body);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call,
+                                   Response<ResponseBody> response) {
+                InputStream stream;
+                if (response.isSuccessful()) {
+                    stream = response.body().byteStream();
+                } else {
+                    stream = response.errorBody().byteStream();
+                }
+                try {
+                    Log.v("Upload", "success" + Utility.getString(stream));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Upload error:", t.getMessage());
+            }
+        });
     }
 
     private Bitmap getResizedOriginalBitmap() {

@@ -16,12 +16,11 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 
-import ducere.lechal.pod.R;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.customViews.CircularSeekBar;
 import ducere.lechal.pod.podsdata.FitnessData;
 import ducere.lechal.pod.podsdata.Session;
-import ducere.lechal.pod.sqlite.SaveSessionDialog;
+import ducere.lechal.pod.dialoges.SaveSessionDialog;
 import np.TextView;
 
 

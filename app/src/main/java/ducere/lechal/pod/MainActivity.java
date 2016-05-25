@@ -1,5 +1,6 @@
 package ducere.lechal.pod;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -23,20 +25,26 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.customViews.CustomViewPager;
 import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
+import ducere.lechal.pod.server_models.User;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,CustomViewPager.OnPageChangeListener,OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, CustomViewPager.OnPageChangeListener, OnFragmentInteractionListener {
 
     public static TabLayout tabLayout;
     CustomViewPager viewPager;
     public static Toolbar toolbar;
-    MenuItem item_contacts,item_notifications,item_add_pods;
+    MenuItem item_contacts, item_notifications, item_add_pods;
+    Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,24 +59,42 @@ public class MainActivity extends AppCompatActivity
 
 
         //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-       // navigationView.setNavigationItemSelectedListener(this);
+        // navigationView.setNavigationItemSelectedListener(this);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        ImageView profileImv = (ImageView)navigationView.getHeaderView(0).findViewById(R.id.profileImv);
+        ImageView profileImv = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.profileImv);
         profileImv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //  Log.e("Navigation","clicked::");
-                startActivity(new Intent(MainActivity.this,ProfileAchievements.class));
+                //  Log.e("Navigation","clicked::");
+                startActivity(new Intent(MainActivity.this, ProfileAchievements.class));
             }
         });
-
+        TextView txtEmailId = (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtEmailId);
+        TextView txtUserName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.txtUserName);
         viewPager = (CustomViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons0();
+
+        String userId = SharedPrefUtil.getUserId(getApplicationContext());
+        if (!TextUtils.isEmpty(userId)) {
+            User user = SharedPrefUtil.getUser(getApplicationContext());
+            Log.e("User InFo", "MainActivity::" + user.toString());
+            String img = user.getImg();
+            //Picasso.with(context).load(img).into(profileImv);
+            Picasso.with(context)
+                    .load(img)
+                    .resize(300, 300)
+                    .centerCrop()
+                    .into(profileImv);
+            txtUserName.setText(user.getFirstName());
+            txtEmailId.setText(user.getEmail());
+        } else {
+            Log.e("User InFo", "UserData Null::");
+        }
 
     }
 
@@ -77,22 +103,24 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if(toolbar.getVisibility()==View.GONE){
+        } else if (toolbar.getVisibility() == View.GONE) {
             List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
             if (fragmentList != null) {
                 //TODO: Perform your logic to pass back press here
-                for(Fragment fragment : fragmentList){
-                    if(fragment instanceof OnBackPressed){
-                        ((OnBackPressed)fragment).onBackPressed();
+                for (Fragment fragment : fragmentList) {
+                    if (fragment instanceof OnBackPressed) {
+                        ((OnBackPressed) fragment).onBackPressed();
                     }
                 }
             }
-        } else{
+        } else {
             super.onBackPressed();
         }
     }
+
     /**
      * Adding fragments to ViewPager
+     *
      * @param viewPager
      */
     private void setupViewPager(CustomViewPager viewPager) {
@@ -133,21 +161,19 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        switch (id)
-        {
+        switch (id) {
             case R.id.nav_offlineMode:
                 break;
             case R.id.nav_navigationSettings:
-                startActivity(new Intent(MainActivity.this,NavigationSettingsActivity.class));
+                startActivity(new Intent(MainActivity.this, NavigationSettingsActivity.class));
                 break;
             case R.id.profileImv:
-                startActivity(new Intent(MainActivity.this,ProfileAchievements.class));
+                startActivity(new Intent(MainActivity.this, ProfileAchievements.class));
                 break;
             case R.id.nav_fitnessSettings:
-                startActivity(new Intent(MainActivity.this,FitnessSettingsActivity.class));
+                startActivity(new Intent(MainActivity.this, FitnessSettingsActivity.class));
                 break;
         }
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -163,7 +189,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPageSelected(int position) {
 
-        switch (position){
+        switch (position) {
             case 0:
                 setupTabIcons0();
                 break;
@@ -173,7 +199,6 @@ public class MainActivity extends AppCompatActivity
             case 2:
                 setupTabIcons2();
                 break;
-
 
 
         }
@@ -209,7 +234,7 @@ public class MainActivity extends AppCompatActivity
 
         public void addFrag(Fragment fragment, String title) {
             mFragmentList.add(fragment);
-             mFragmentTitleList.add(title);
+            mFragmentTitleList.add(title);
         }
 
         @Override
@@ -219,6 +244,7 @@ public class MainActivity extends AppCompatActivity
             return mFragmentTitleList.get(position);
         }
     }
+
     private void setupTabIcons0() {
 
 
@@ -239,7 +265,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(1).setContentDescription("FitnessFragment Home page ");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page");
 
-        if(item_add_pods!=null){
+        if (item_add_pods != null) {
             item_contacts.setVisible(true);
             item_notifications.setVisible(false);
             item_add_pods.setVisible(false);
@@ -247,6 +273,7 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
     private void setupTabIcons1() {
 
 
@@ -265,13 +292,14 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page ");
         tabLayout.getTabAt(1).setContentDescription("FitnessFragment Home page selected");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page");
-        if(item_add_pods!=null){
+        if (item_add_pods != null) {
             item_contacts.setVisible(false);
             item_notifications.setVisible(true);
             item_add_pods.setVisible(false);
         }
 
     }
+
     private void setupTabIcons2() {
 
 
@@ -291,7 +319,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page ");
         tabLayout.getTabAt(1).setContentDescription("FitnessFragment Home page ");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page selected");
-        if(item_add_pods!=null){
+        if (item_add_pods != null) {
             item_contacts.setVisible(false);
             item_notifications.setVisible(false);
             item_add_pods.setVisible(true);

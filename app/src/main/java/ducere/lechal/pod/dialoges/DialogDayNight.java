@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
 
+import ducere.lechal.pod.constants.SharedPrefUtil;
+
 /**
  * Created by VR Naresh on 13-05-2016.
  */
@@ -15,10 +17,11 @@ public class DialogDayNight extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Creating and Building the Dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
+        int dayNight = SharedPrefUtil.getDayNight(getContext());
         builder.setTitle(Html.fromHtml("<font color='#F05854'>Day/Night view</font>"));
-        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(items, dayNight, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
+                SharedPrefUtil.setDayNightType(getContext(),item);
                 switch (item) {
                     case 0:
                         // Your code when first option seletced

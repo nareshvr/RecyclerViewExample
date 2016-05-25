@@ -1,4 +1,4 @@
-package ducere.lechal.pod.sqlite;
+package ducere.lechal.pod.dialoges;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

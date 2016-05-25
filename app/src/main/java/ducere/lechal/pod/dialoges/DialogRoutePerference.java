@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
 
+import ducere.lechal.pod.constants.SharedPrefUtil;
+
 /**
  * Created by VR Naresh on 13-05-2016.
  */
@@ -15,10 +17,11 @@ public class DialogRoutePerference extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
+        int routePerference = SharedPrefUtil.getRoutePerference(getContext());
         builder.setTitle(Html.fromHtml("<font color='#F05854'>Route preference</font>"));
-        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(items, routePerference, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
+                SharedPrefUtil.setRoutePerference(getContext(),item);
                 switch (item) {
                     case 0:
                         // Your code when first option seletced

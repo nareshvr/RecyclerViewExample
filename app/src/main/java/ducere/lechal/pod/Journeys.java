@@ -35,7 +35,8 @@ import np.TextView;
 public class Journeys extends Fragment {
 
     View view;
-    TextView tvLocation,tvAddress;
+    TextView tvLocation;
+    //TextView tvAddress;
     private boolean isMapEngineInitialize=false;
     private MapFragment mapFragment;
     private Map map;
@@ -60,9 +61,9 @@ public class Journeys extends Fragment {
 
 
         tvLocation = (TextView)view.findViewById(R.id.tvPlace);
-        tvAddress = (TextView)view.findViewById(R.id.tvAddress);
+        //tvAddress = (TextView)view.findViewById(R.id.tvAddress);
         tvLocation.setText(SharedPrefUtil.getString(getActivity(),SharedPrefUtil.CURRENT_LOCATION));
-        tvAddress.setText(SharedPrefUtil.getString(getActivity(),SharedPrefUtil.CURRENT_VICINITY).replace("<br/>" , ", "));
+       // tvAddress.setText(SharedPrefUtil.getString(getActivity(),SharedPrefUtil.CURRENT_VICINITY).replace("<br/>" , ", "));
         cardGroupJourney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

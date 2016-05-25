@@ -56,10 +56,6 @@ import np.TextView;
  * Created by VR Naresh on 04-05-2016.
  */
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
-
-
-
-
     PausableChronometer chronometer;
     TextView tvHour,tvMin,tvSec,tvSteps,tvCal,tvPercentage;
     android.support.design.widget.FloatingActionButton fabPause;

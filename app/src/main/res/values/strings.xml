@@ -89,7 +89,7 @@
     <string name="allow_global_tracking">Allow global tracking</string>
     <string name="edit_daily_goal">Edit daily goals</string>
     <string name="share_completed_steps">Share completed steps</string>
-    <string name="view_saved_session">View clear_achievementssaved session</string>
+    <string name="view_saved_session">View saved session</string>
     <string name="daily_steps_count">Daily step count</string>
     <string name="walk10000_desc">An average human being walks about 5,500 steps a day.Dot\'t be an average human being.Switch to a healthire lifestyle by incorporating more Lechal steps in your day.</string>
     <string name="cal">Calories burnt are based are base on individual\'s height,weight and gender</string>

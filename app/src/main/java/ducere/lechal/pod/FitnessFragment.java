@@ -22,6 +22,7 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,7 +47,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     private Flipmeter flipMeter = null;
     String str = "01801";
     int seekBarValue = 50;
-    np.TextView txtDate,tvKm,tvCal;
+    np.TextView txtDate, tvKm, tvCal;
     int mYear, mDay;
     String mMonth;
     Calendar datecal;
@@ -54,6 +55,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     int increment = 1;
     long steps;
     PlaceUtility placeUtility;
+
     public FitnessFragment() {
         // Required empty public constructor
     }
@@ -78,8 +80,8 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         seekBarFitness.setProgress(seekBarValue);
         flipMeter.setValue(Integer.parseInt(str), true);
         txtDate = (np.TextView) view.findViewById(R.id.txtDate);
-        tvCal = (np.TextView)view.findViewById(R.id.tvCal);
-        tvKm = (np.TextView)view.findViewById(R.id.tvKm);
+        tvCal = (np.TextView) view.findViewById(R.id.tvCal);
+        tvKm = (np.TextView) view.findViewById(R.id.tvKm);
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
@@ -165,7 +167,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                     if (serializableFit == null) {
                         return;
                     }
-                   updateViews(serializableFit);
+                    updateViews(serializableFit);
 
                     serializableFit.setDay(getTodayDate());
                     placeUtility.updateFitnessWillDeleteAndInsert(serializableFit);
@@ -187,7 +189,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    void updateViews(FitnessData serializable){
+    void updateViews(FitnessData serializable) {
         steps = serializable.getSteps();
         Log.i("FitnessData", "Today Steps::" + steps);
         long cal = serializable.getCal();
@@ -197,7 +199,8 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
 
 
     }
-     long getTodayDate(){
+
+    long getTodayDate() {
         Calendar c = Calendar.getInstance();
 
 
@@ -253,15 +256,15 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.dailyGoals:
-                        startActivity(new Intent(getActivity(),EditDailySession.class));
+                        startActivity(new Intent(getActivity(), EditDailySession.class));
                         break;
                     case R.id.shareCompletedSteps:
                         showSocailMedia();
                         break;
                     case R.id.viewSavedSession:
-
+                        startActivity(new Intent(getActivity(), ViewSavedSession.class));
                         break;
                 }
 

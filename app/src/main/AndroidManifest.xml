@@ -130,6 +130,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".IntensityActivity"></activity>
+        <activity android:name=".ViewSavedSession"></activity>
     </application>
 
 </manifest>

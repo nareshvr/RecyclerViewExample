@@ -106,7 +106,8 @@
         <activity android:name=".NavigationSettingsActivity" />
         <activity android:name=".VoiceOptionActivity" />
         <activity android:name=".FitnessSettingsActivity" />
-        <activity android:name=".DownloadMapActivity"
+        <activity
+            android:name=".DownloadMapActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".EditProfileActivity"
@@ -118,12 +119,11 @@
         <activity android:name=".RegisterBuddyActivity"></activity>
         <activity android:name=".RegisterProductActivity"></activity>
         <activity android:name=".ReRegisterAsBuddyActivity"></activity>
+        <activity android:name=".DownloadMap"></activity>
         <activity
-            android:name=".DownloadMap"
-            ></activity>
-        <activity
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:name=".DownlaodMapNew"></activity>
+            android:name=".DownlaodMapNew"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <activity android:name=".ViewSavedSessionActivity"></activity>
     </application>
 
 </manifest>

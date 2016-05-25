@@ -27,12 +27,14 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import ducere.lechal.pod.dialoges.DialogStartSession;
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
@@ -51,7 +53,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     private Flipmeter flipMeter = null;
     String str = "01801";
     int seekBarValue = 50;
-    np.TextView txtDate,tvKm,tvCal;
+    np.TextView txtDate, tvKm, tvCal;
     int mYear, mDay;
     String mMonth;
     Calendar datecal;
@@ -59,7 +61,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     int increment = 1;
     long steps;
     PlaceUtility placeUtility;
-   // private List<Movie> movieList = new ArrayList<>();
+    // private List<Movie> movieList = new ArrayList<>();
     private RecyclerView recyclerView;
     private SessionAdapter mAdapter;
 
@@ -87,8 +89,8 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         seekBarFitness.setProgress(seekBarValue);
         flipMeter.setValue(Integer.parseInt(str), true);
         txtDate = (np.TextView) view.findViewById(R.id.txtDate);
-        tvCal = (np.TextView)view.findViewById(R.id.tvCal);
-        tvKm = (np.TextView)view.findViewById(R.id.tvKm);
+        tvCal = (np.TextView) view.findViewById(R.id.tvCal);
+        tvKm = (np.TextView) view.findViewById(R.id.tvKm);
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
@@ -136,101 +138,12 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         llStartSession.setOnClickListener(this);
 
         updateViews(placeUtility.getFitness(getTodayDate()));
-        List<Session> allSessions = placeUtility.getAllSessions();
-        Log.e("Session", "Data::" + allSessions.size());
-        for (int i=0;i<allSessions.size();i++) {
-            Log.e("Session", "Data::" + allSessions.get(i));
-        }
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
 
-        mAdapter = new SessionAdapter(allSessions);
-
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
-
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-               // Movie movie = movieList.get(position);
-                //Toast.makeText(getActivity(), movie.getTitle() + " is selected!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
-
-       // prepareMovieData();
+        // prepareMovieData();
 
 
         return view;
     }
-    /*private void prepareMovieData() {
-        Movie movie = new Movie("Mad Max: Fury Road", "Action & Adventure", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Inside Out", "Animation, Kids & Family", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Star Wars: Episode VII - The Force Awakens", "Action", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Shaun the Sheep", "Animation", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("The Martian", "Science Fiction & Fantasy", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Mission: Impossible Rogue Nation", "Action", "2015");
-        movieList.add(movie);
-
-        movie = new Movie("Up", "Animation", "2009");
-        movieList.add(movie);
-
-        movie = new Movie("Star Trek", "Science Fiction", "2009");
-        movieList.add(movie);
-
-        movie = new Movie("The LEGO Movie", "Animation", "2014");
-        movieList.add(movie);
-
-        movie = new Movie("Iron Man", "Action & Adventure", "2008");
-        movieList.add(movie);
-
-        movie = new Movie("Aliens", "Science Fiction", "1986");
-        movieList.add(movie);
-
-        movie = new Movie("Chicken Run", "Animation", "2000");
-        movieList.add(movie);
-
-        movie = new Movie("Back to the Future", "Science Fiction", "1985");
-        movieList.add(movie);
-
-        movie = new Movie("Raiders of the Lost Ark", "Action & Adventure", "1981");
-        movieList.add(movie);
-
-        movie = new Movie("Goldfinger", "Action & Adventure", "1965");
-        movieList.add(movie);
-
-        movie = new Movie("Guardians of the Galaxy", "Science Fiction & Fantasy", "2014");
-        movieList.add(movie);
-
-        mAdapter.notifyDataSetChanged();
-    }*/
-   /* @Override
-    public void onResume() {
-        super.onResume();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }, 5000);
-    }*/
 
     @Override
     public void onStart() {
@@ -257,7 +170,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                     if (serializableFit == null) {
                         return;
                     }
-                   updateViews(serializableFit);
+                    updateViews(serializableFit);
 
                     serializableFit.setDay(getTodayDate());
                     placeUtility.updateFitnessWillDeleteAndInsert(serializableFit);
@@ -276,7 +189,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    void updateViews(FitnessData serializable){
+    void updateViews(FitnessData serializable) {
         steps = serializable.getSteps();
         Log.i("FitnessData", "Today Steps::" + steps);
         long cal = serializable.getCal();
@@ -286,7 +199,8 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
 
 
     }
-     long getTodayDate(){
+
+    long getTodayDate() {
         Calendar c = Calendar.getInstance();
 
 
@@ -341,17 +255,17 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.dailyGoals:
-                        startActivity(new Intent(getActivity(),EditDailySession.class));
+                        startActivity(new Intent(getActivity(), EditDailySession.class));
                         break;
                     case R.id.shareCompletedSteps:
                         showSocailMedia();
                         break;
                     case R.id.viewSavedSession:
-                     //   LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
+                        //   LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_START));
-
+                        startActivity(new Intent(getActivity(), ViewSavedSessionActivity.class));
                         break;
                 }
 
@@ -393,53 +307,13 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                             }).create()).show();
         }
     }
+
     public interface ClickListener {
         void onClick(View view, int position);
 
         void onLongClick(View view, int position);
     }
 
-    public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-        private GestureDetector gestureDetector;
-        private FitnessFragment.ClickListener clickListener;
-
-        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final FitnessFragment.ClickListener clickListener) {
-            this.clickListener = clickListener;
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child, rv.getChildPosition(child));
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-        }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-        }
-    }
 
 }

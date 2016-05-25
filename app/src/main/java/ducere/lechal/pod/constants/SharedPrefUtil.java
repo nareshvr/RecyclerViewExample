@@ -33,7 +33,9 @@ public class SharedPrefUtil {
     public static final String GENDER = "gender";
     public static final String MAP_UNITS = "mapUnits";
     public static final String DAY_NIGHT_TYPE = "dayNight";
-public static final String ROUTE_PERFERENCE = "setRoutePerference";
+    public static final String ROUTE_PERFERENCE = "setRoutePerference";
+    public static final String SESSION_GOALS = "sessionGoals";
+
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
     }
@@ -165,12 +167,21 @@ public static final String ROUTE_PERFERENCE = "setRoutePerference";
         return getPref(context).getString(GENDER, Constants.DEFAULT_GENDER);
     }
 
-    public static void setRoutePerference(Context context,int index){
-        getPref(context).edit().putInt(ROUTE_PERFERENCE,index).apply();
+    public static void setRoutePerference(Context context, int index) {
+        getPref(context).edit().putInt(ROUTE_PERFERENCE, index).apply();
 
     }
 
-    public static int getRoutePerference(Context context){
-        return getPref(context).getInt(ROUTE_PERFERENCE,-1);
+    public static int getRoutePerference(Context context) {
+        return getPref(context).getInt(ROUTE_PERFERENCE, -1);
+    }
+
+    public static void setSessionGoals(Context context, int goals) {
+        getPref(context).edit().putInt(SESSION_GOALS, goals).apply();
+
+    }
+
+    public static int getSessionGoals(Context context) {
+        return getPref(context).getInt(SESSION_GOALS, 1000);
     }
 }

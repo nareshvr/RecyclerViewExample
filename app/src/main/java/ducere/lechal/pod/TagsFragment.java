@@ -118,17 +118,16 @@ public class TagsFragment extends Fragment {
                 .build();
         placeUtility = new PlaceUtility(getActivity());
        // placeList = placeUtility.getTags();
-        Place placeHome = new Place();
-        placeHome.setMockName("Home");
-        placeHome.setTitle("Home");
-        placeHome.setVicinity("");
+        List<Place> placeHome = placeUtility.getHome();
+        if(placeHome.size()>0){
+            placeList.add(placeHome.get(0));
+        }
+        List<Place> placeWork = placeUtility.getWork();
+        if(placeWork.size()>0){
+            placeList.add(placeWork.get(0));
+        }
 
-        Place placeOffice = new Place();
-        placeOffice.setMockName("Work");
-        placeOffice.setTitle("Work");
-        placeOffice.setVicinity("");
-        placeList.add(placeHome);
-        placeList.add(placeOffice);
+
         placeList.addAll( placeUtility.getTags());
 
        TagsAdapter mAdapter = new TagsAdapter(placeList);
@@ -138,12 +137,8 @@ public class TagsFragment extends Fragment {
         recyclerView.addItemDecoration(divider);
         recyclerView.setAdapter(mAdapter);
 
-
-
-
-        Log.d("tags size", placeList.size() + "");
-       /* if (placeList.size()==0)
-            llNoTags.setVisibility(View.VISIBLE);*/
+        if (placeList.size()==0)
+            llNoTags.setVisibility(View.VISIBLE);
 
 
     }

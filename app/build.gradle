@@ -63,5 +63,6 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'com.github.clans:fab:1.6.3'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.google.android.gms:play-services-gcm:8.1.0'
 }

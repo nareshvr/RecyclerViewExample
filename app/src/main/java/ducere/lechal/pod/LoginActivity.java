@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.llLogin:
-                startActivity(new Intent(LoginActivity.this,RegisterPordsOrBuddyActivity.class));
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
                 break;
             case R.id.llRegistarion:
                 startActivity(new Intent(LoginActivity.this,RegisterProductActivity.class));

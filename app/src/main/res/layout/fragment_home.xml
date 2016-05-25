@@ -113,8 +113,8 @@
                         android:src="@mipmap/fab_group_journey"
                         app:fab_label="Group journey"
                         app:fab_size="normal"
-                        app:fab_colorNormal="#01000000"
-                        app:fab_colorPressed="#01000000" />
+                        app:fab_colorNormal="@color/black"
+                        app:fab_colorPressed="@color/black" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_work_out"
@@ -123,8 +123,8 @@
                         android:src="@mipmap/fab_start_work_out"
                         app:fab_label="Start a workout"
                         app:fab_size="normal"
-                        app:fab_colorNormal="#01000000"
-                        app:fab_colorPressed="#01000000" />
+                        app:fab_colorNormal="@color/black"
+                        app:fab_colorPressed="@color/black" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_trails"
@@ -133,8 +133,8 @@
                         android:src="@mipmap/fab_record_trail"
                         app:fab_label="Record a trail"
                         app:fab_size="normal"
-                        app:fab_colorNormal="#00000000"
-                        app:fab_colorPressed="#00000000" />
+                        app:fab_colorNormal="@color/black"
+                        app:fab_colorPressed="@color/black"  />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/menu_geo"
@@ -144,8 +144,8 @@
                         app:fab_label="Set geo remainder"
                         app:fab_size="normal"
                         app:elevation="0dp"
-                        app:fab_colorNormal="#00000000"
-                        app:fab_colorPressed="#00000000" />
+                        app:fab_colorNormal="@color/black"
+                        app:fab_colorPressed="@color/black"  />
 
                 </com.github.clans.fab.FloatingActionMenu>
 

@@ -107,6 +107,16 @@
         <item>India</item>
         <item>Indonesia</item>
     </string-array>
+    <string-array name="avoid">
+        <item>Ferry</item>
+        <item>Dirty Roads</item>
+        <item>Highway</item>
+        <item>Park</item>
+        <item>Toll Road</item>
+        <item>Tunnel</item>
+        <item>Shuttle Train</item>
+        <item>Car Pool</item>
+    </string-array>
     <string name="title_activity_download_map">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -179,9 +189,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-<string name="manage_maps">Manage maps</string>
+    <string name="manage_maps">Manage maps</string>
     <string name="yes">YES</string>
-<string name="edit_daily_goals">Edit daily goals</string>
+    <string name="edit_daily_goals">Edit daily goals</string>
 
     <string name="action_waypoint">Add a way point</string>
     <string name="action_trafic">Traffic</string>
@@ -191,4 +201,7 @@
     <string name="action_voice">Voice</string>
     <string name="action_normal">Normal</string>
     <string name="action_terrain">Terrain</string>
+    <string name="action_reverse">Reverse</string>
+    <string name="action_add_friend_journey">Add a friend to the journey</string>
+    <string name="action_route_options">Route Options</string>
 </resources>

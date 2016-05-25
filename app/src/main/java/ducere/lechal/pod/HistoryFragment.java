@@ -99,15 +99,27 @@ public class HistoryFragment extends Fragment implements RecyclerView.OnItemTouc
 
                 PlaceUtility placeUtility = new PlaceUtility(getActivity());
                 // placeList = placeUtility.getTags();
+                List<Place> placeHomeList = placeUtility.getHome();
                 Place placeHome = new Place();
-                placeHome.setMockName("Home");
-                placeHome.setTitle("Home");
-                placeHome.setVicinity("");
-
                 Place placeOffice = new Place();
-                placeOffice.setMockName("Work");
-                placeOffice.setTitle("Work");
-                placeOffice.setVicinity("");
+                if(placeHomeList.size()>0){
+                    placeHome = placeHomeList.get(0);
+                }else {
+                    placeHome.setMockName("Home");
+                    placeHome.setTitle("Home");
+                    placeHome.setVicinity("add address");
+                }
+                List<Place> placeWorkList = placeUtility.getWork();
+                if(placeWorkList.size()>0){
+                   placeOffice = placeWorkList.get(0);
+                }else {
+                    placeOffice.setMockName("Work");
+                    placeOffice.setTitle("Work");
+                    placeOffice.setVicinity("add address");
+                }
+
+
+
                 placeList.add(placeHome);
                 placeList.add(placeOffice);
                 placeList.addAll( placeUtility.getHistory());

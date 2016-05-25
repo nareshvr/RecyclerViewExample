@@ -3,6 +3,7 @@ package ducere.lechal.pod;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.media.AudioManager;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -39,8 +41,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
+import com.here.android.mpa.cluster.ClusterLayer;
 import com.here.android.mpa.common.GeoBoundingBox;
 import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.GeoPolyline;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.MapEngine;
@@ -54,6 +58,7 @@ import com.here.android.mpa.mapping.MapContainer;
 import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
+import com.here.android.mpa.mapping.MapOverlay;
 import com.here.android.mpa.mapping.MapRoute;
 import com.here.android.mpa.mapping.MapTransitLayer;
 import com.here.android.mpa.routing.Maneuver;
@@ -62,10 +67,17 @@ import com.here.android.mpa.routing.RouteManager;
 import com.here.android.mpa.routing.RouteOptions;
 import com.here.android.mpa.routing.RoutePlan;
 import com.here.android.mpa.routing.RouteResult;
+import com.here.android.mpa.search.AroundRequest;
+import com.here.android.mpa.search.CategoryFilter;
+import com.here.android.mpa.search.DiscoveryResult;
+import com.here.android.mpa.search.DiscoveryResultPage;
+import com.here.android.mpa.search.ErrorCode;
 import com.here.android.mpa.search.PlaceLink;
+import com.here.android.mpa.search.ResultListener;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -77,6 +89,7 @@ import ducere.lechal.pod.beans.Place;
 import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.sqlite.PlaceUtility;
+import ducere.lechal.pod.utilities.GetWayPoints;
 import ducere.lechal.pod.utilities.NavigationFeedback;
 
 public class NavigationActivity extends AppCompatActivity implements View.OnClickListener, RouteHeaderFragment.OnClickRoute {
@@ -112,14 +125,21 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     TextView dot1, dot2, dot3;
     LinearLayout llInNavigation, llNavigationHead, llResultHead, llStop;
     TextView tvInstruction, tvSubInstruction, tvDistance, tvEta, tvDistanceLeft, tvTime;
-    ImageView ivTurn, ivCenter, ivNavDots;
+    ImageView ivTurn, ivCenter, ivNavDots,ivRouteMenu;
     boolean isNavigate = false;
     NavigationManager navigationManager;
     ViewPager pager;
     public static int directionDrawable;
     DirectionsAdapter mAdapter;
     FloatingActionButton fabPause;
-
+    boolean reverse = false;
+    RouteOptions routeOptions;
+    List<Integer> selected;
+    ImageView ivWayPointsCancel;
+    LinearLayout llRestaurant;
+    RelativeLayout rlWayPoints;
+    ClusterLayer clusterLayer;
+    LinearLayout llClearWaypoints;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +181,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         ivTurn = (ImageView) findViewById(R.id.ivTurn);
         ivCenter = (ImageView) findViewById(R.id.ivCenter);
         ivNavDots = (ImageView) findViewById(R.id.ivNavDots);
+        ivRouteMenu = (ImageView) findViewById(R.id.routeMenu);
 
 
         llInNavigation = (LinearLayout) findViewById(R.id.llInNavigation);
@@ -169,6 +190,11 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         llStop = (LinearLayout) findViewById(R.id.llStopMode);
         fabMode = (FloatingActionButton) findViewById(R.id.fabMode);
         fabPause = (FloatingActionButton)findViewById(R.id.fabPause);
+
+        ivWayPointsCancel = (ImageView)findViewById(R.id.ivCancel);
+        llRestaurant = (LinearLayout)findViewById(R.id.llRestaurant);
+        llClearWaypoints = (LinearLayout)findViewById(R.id.llClearWaypoints);
+        rlWayPoints = (RelativeLayout)findViewById(R.id.rlWaypoints);
 
         navigate = new Navigate();
         fam = (FloatingActionMenu) findViewById(R.id.famMode);
@@ -193,7 +219,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         tvSearchLocationHead.setText(place.getTitle());
         tvSearchLocation.setText(place.getTitle());
         tvSearchAddress.setText(place.getVicinity().replace("<br/>", ", ") + "");
-        tvSearchDistance.setText(place.getDistance() / 1000.0 + "km");
+        tvSearchDistance.setText(Convert.metersToKms(place.getDistance()));
         ivBack.setOnClickListener(this);
         ivBackNav.setOnClickListener(this);
 
@@ -206,7 +232,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             public void onStateChanged(View bottomSheet, int newState) {
                 // React to state change
                 Log.e("onStateChanged", "onStateChanged:" + newState);
-                if (newState == 1) {
+                if (newState == 1 || newState == 3) {
                     CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) cardStart.getLayoutParams();
                     p.setAnchorId(R.id.viewLine);
                     cardStart.setLayoutParams(p);
@@ -256,10 +282,8 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
                 appBarLayout.setVisibility(View.VISIBLE);
                 bottomSheet.setVisibility(View.VISIBLE);
-                cardStart.setVisibility(View.VISIBLE);
+
                 fam.setVisibility(View.VISIBLE);
-                tvFrom.setText("Current Location");
-                tvTo.setText(place.getTitle());
 
 
                 calculateRoute(RouteOptions.TransportMode.CAR);
@@ -402,6 +426,30 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
             }
         });
+        ivWayPointsCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlWayPoints.setVisibility(View.GONE);
+            }
+        });
+        llRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlWayPoints.setVisibility(View.GONE);
+                llClearWaypoints.setVisibility(View.VISIBLE);
+                showWayPoints("eat-drink");
+            }
+        });
+        llClearWaypoints.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                llClearWaypoints.setVisibility(View.GONE);
+                if (clusterLayer!=null){
+
+                    map.removeClusterLayer(clusterLayer);
+                }
+            }
+        });
         final PopupMenu popup = new PopupMenu(NavigationActivity.this, ivNavDots);
         MenuInflater inflaterMenu = popup.getMenuInflater();
         inflaterMenu.inflate(R.menu.navigation_menu, popup.getMenu());
@@ -417,7 +465,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_way_point:
-
+                        rlWayPoints.setVisibility(View.VISIBLE);
                         return true;
                     case R.id.action_traffic:
                         if (item.isChecked()) {
@@ -485,6 +533,86 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
+        final PopupMenu popupRoute = new PopupMenu(NavigationActivity.this, ivRouteMenu);
+        MenuInflater inflaterMenuRoute = popupRoute.getMenuInflater();
+        inflaterMenuRoute.inflate(R.menu.routes_menu, popupRoute.getMenu());
+        ivRouteMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupRoute.show();
+            }
+        });
+        popupRoute.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_group_journey:
+                        startActivity(new Intent(NavigationActivity.this,AddFriendsToJourenyActivity.class));
+                        return true;
+                    case R.id.action_reverse:
+
+                        if (reverse){
+                            reverse=false;
+                            calculateRoute(RouteOptions.TransportMode.CAR);
+                        }
+                        else {
+                            reverse = true;
+                            calculateRoute(RouteOptions.TransportMode.CAR);
+                        }
+
+                        return true;
+
+                    case R.id.action_satellite:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.SATELLITE_DAY);
+                        return true;
+                    case R.id.action_normal:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.NORMAL_DAY);
+                        return true;
+                    case R.id.action_terrain:
+                        if (item.isChecked()) {
+                            item.setChecked(false);
+
+                        } else {
+                            item.setChecked(true);
+                        }
+                        map.setMapScheme(Map.Scheme.TERRAIN_DAY);
+                        return true;
+
+                    case R.id.action_route_options:
+                            showRouteOptions();
+                        return true;
+
+                    default:
+                        return true;
+                }
+            }
+        });
+
+    }
+
+    private void showWayPoints(String poi) {
+        if (clusterLayer!=null){
+            map.removeClusterLayer(clusterLayer);
+        }
+      //  GeoCoordinate  geo = new GeoCoordinate(SharedPrefUtil.getDouble(NavigationActivity.this, SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(NavigationActivity.this, SharedPrefUtil.CURRENT_LNG));
+
+
+        AroundRequest request = new AroundRequest().setCategoryFilter(new CategoryFilter().add(poi)).setSearchArea(geoStart, routeResults.get(routeNumber).getRoute().getLength());
+
+        request.setCollectionSize(99);
+        ErrorCode error = request.execute(new SearchRequestListener());
     }
 
     void showModeFab() {
@@ -509,12 +637,29 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
 
     void calculateRoute(RouteOptions.TransportMode mode) {
 
-        navigate.setStartLocation(new ducere.lechal.pod.beans.GeoCoordinate(SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LNG)));
-        navigate.setStartTitle(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_LOCATION));
-        navigate.setStartAddress(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_VICINITY));
-        navigate.setEndLocation(place.getGeo());
-        navigate.setEndTitle(place.getTitle());
-        navigate.setEndAddress(place.getVicinity());
+        if (reverse){
+            tvTo.setText("Current Location");
+            tvFrom.setText(place.getTitle());
+            navigate.setEndLocation(new ducere.lechal.pod.beans.GeoCoordinate(SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LNG)));
+            navigate.setEndTitle(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_LOCATION));
+            navigate.setEndAddress(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_VICINITY));
+            navigate.setStartLocation(place.getGeo());
+            navigate.setStartTitle(place.getTitle());
+            navigate.setStartAddress(place.getVicinity());
+
+        }else {
+            tvFrom.setText("Current Location");
+            tvTo.setText(place.getTitle());
+            navigate.setStartLocation(new ducere.lechal.pod.beans.GeoCoordinate(SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(getApplicationContext(), SharedPrefUtil.CURRENT_LNG)));
+            navigate.setStartTitle(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_LOCATION));
+            navigate.setStartAddress(SharedPrefUtil.getString(getApplicationContext(), SharedPrefUtil.CURRENT_VICINITY));
+            navigate.setEndLocation(place.getGeo());
+            navigate.setEndTitle(place.getTitle());
+            navigate.setEndAddress(place.getVicinity());
+
+        }
+
+
         switch (mode) {
             case PEDESTRIAN:
                 navigate.setMode(0);
@@ -533,7 +678,8 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         RouteManager routeManager = RouteManager.getInstance();
 
         RoutePlan routePlan = new RoutePlan();
-        RouteOptions routeOptions = new RouteOptions();
+       routeOptions = new RouteOptions();
+        setRouteOptions();
         GeoCoordinate geo;
 
         if (SharedPrefUtil.getBoolean(NavigationActivity.this,SharedPrefUtil.IS_MOCK_ENABLE)){
@@ -542,12 +688,16 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
             tvFrom.setText(SharedPrefUtil.getString(NavigationActivity.this,SharedPrefUtil.MOCK_LOCATION));
         }else{
             geo =new com.here.android.mpa.common.GeoCoordinate(navigate.getStartLocation().getLatitude(), navigate.getStartLocation().getLongitude());
-            cardStart.setVisibility(View.VISIBLE);
+           if (reverse)
+                cardStart.setVisibility(View.GONE);
+            else
+               cardStart.setVisibility(View.VISIBLE);
         }
         routePlan.addWaypoint(geo);
         routePlan.addWaypoint(new com.here.android.mpa.common.GeoCoordinate(navigate.getEndLocation().getLatitude(), navigate.getEndLocation().getLongitude()));
 
         routeOptions.setRouteCount(3);
+        setRouteOptions();
         routeOptions.setTransportMode(mode);
         routePlan.setRouteOptions(routeOptions);
         RouteManager.Error error =
@@ -740,7 +890,7 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
                     OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
                     map = mapFragment.getMap();
-
+                    clusterLayer = new ClusterLayer();
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(17);
 
@@ -1321,5 +1471,112 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         }
 
 
+    }
+    void setRouteOptions(){
+        routeOptions.setFerriesAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.FERRY));
+        routeOptions.setDirtRoadsAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.DIRT_ROAD));
+        routeOptions.setHighwaysAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.HIGHWAY));
+        routeOptions.setParksAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.PARK));
+        routeOptions.setTollRoadsAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.TOLL_ROAD));
+        routeOptions.setTunnelsAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.TUNNEL));
+        routeOptions.setCarShuttleTrainsAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.SHUTTLE_TRAIN));
+        routeOptions.setCarpoolAllowed(SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.CAR_POOL));
+    }
+    public void showRouteOptions(){
+       selected = new ArrayList<>();
+        boolean isSelected[] = {SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.FERRY),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.DIRT_ROAD),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.HIGHWAY),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.PARK),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.TOLL_ROAD),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.TUNNEL),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.SHUTTLE_TRAIN),
+                SharedPrefUtil.getBoolean(getApplicationContext(),SharedPrefUtil.CAR_POOL)
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(NavigationActivity.this);
+        builder.setTitle("AVOID");
+        builder.setMultiChoiceItems(R.array.avoid, isSelected, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if(isChecked){
+                    toggleOptions(which,true);
+                }else {
+                    toggleOptions(which,false);
+                }
+            }
+        });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                calculateRoute(RouteOptions.TransportMode.CAR);
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+    void toggleOptions(int which,boolean value){
+        switch (which){
+            case 0:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.FERRY,value);
+                break;
+            case 1:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.DIRT_ROAD,value);
+                break;
+            case 2:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.HIGHWAY,value);
+                break;
+            case 3:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.PARK,value);
+                break;
+            case 4:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.TOLL_ROAD,value);
+                break;
+            case 5:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.TUNNEL,value);
+                break;
+            case 6:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.SHUTTLE_TRAIN,value);
+                break;
+            case 7:
+                SharedPrefUtil.commitBoolean(getApplicationContext(),SharedPrefUtil.CAR_POOL,value);
+                break;
+        }
+    }
+    class SearchRequestListener implements ResultListener<DiscoveryResultPage> {
+        @Override
+        public void onCompleted(DiscoveryResultPage results, ErrorCode error) {
+            if (error != ErrorCode.NONE) {
+                // Handle error
+                // progressDialog.cancel();
+                Toast.makeText(getApplicationContext(), error.toString() + "error", Toast.LENGTH_SHORT).show();
+            } else {
+
+                List<DiscoveryResult> items = results.getItems();
+                GeoPolyline geoPolyline = new GeoPolyline();
+                geoPolyline.add(LechalApplication.getInstance().getRoute().getRouteGeometry());
+                GetWayPoints getWayPoints = new GetWayPoints(geoPolyline,items);
+                List<PlaceLink> placeLinkList = getWayPoints.getPlaceLinkList();
+                for (PlaceLink place : placeLinkList) {
+
+
+                        Image myImage = new com.here.android.mpa.common.Image();
+                        try {
+                            myImage.setImageResource(R.drawable.ic_marker_stop);
+                        } catch (IOException e) {
+                            Log.d("Exception", e.toString() + "");
+                        }
+                        MapMarker mm = new MapMarker(place.getPosition(),myImage);
+
+                        mm.setDescription(place.getTitle());
+                        clusterLayer.addMarker(mm);
+
+                }
+
+                map.addClusterLayer(clusterLayer);
+            }
+        }
     }
 }

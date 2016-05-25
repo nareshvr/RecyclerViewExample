@@ -374,6 +374,8 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             MainActivity.tabLayout.setVisibility(View.GONE);
             llSearchBg.setVisibility(View.VISIBLE);
             MainActivity.toolbar.setVisibility(View.GONE);
+            map.setCenter(positioningManager.getPosition().getCoordinate(),
+                    Map.Animation.NONE);
             map.setZoomLevel(17);
 
             final Animation slideUp = AnimationUtils.loadAnimation(getContext(),
@@ -409,6 +411,8 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
             ivBack.setImageResource(R.drawable.search_nav_white);
             tvEditLocation.setText("Enter destination");
+            map.setCenter(positioningManager.getPosition().getCoordinate(),
+                    Map.Animation.NONE);
             map.setZoomLevel(25);
             ivMockLocation.setVisibility(View.GONE);
             viewVisible(rlTransparent);
@@ -726,7 +730,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                     ivSwitchCurrentLoc.setVisibility(View.GONE);
                     map.setCenter(positioningManager.getPosition().getCoordinate(),
                             Map.Animation.LINEAR);
-                    map.setZoomLevel(21);
+                    map.setZoomLevel(25);
 
                     setCurrentLocationTexts();
                 }
@@ -913,7 +917,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         etTag.setText(title);
         placeTag = new Place(title, address, 0, new ducere.lechal.pod.beans.GeoCoordinate(geo.getLatitude(),geo.getLongitude())) ;
         placeTag.setMockName(etTag.getText().toString());
-        placeTag.setType(0);
+        placeTag.setType(2);
         placeTag.setIsSynced(false);
     }
 

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="ducere.lechal.pod.NavigationActivity">
+
+
+        <fragment
+            android:id="@+id/mapfragment"
+            class="com.here.android.mpa.mapping.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Show search location-->
+        <RelativeLayout
+            android:id="@+id/rlResultLocation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black">
+
+                <LinearLayout
+                    android:id="@+id/llSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/edittext_bg20_home_drawable"
+                    android:clickable="false">
+
+                    <ImageView
+                        android:id="@+id/ivBack"
+                        android:layout_width="42dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_search_icon_drawable"
+                        android:padding="6.6dp"
+                        android:src="@drawable/ic_back_white" />
+
+                    <np.TextView
+                        android:id="@+id/tvSearchLocationHead"
+                        style="@style/AppTheme.Lato_Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="12dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ivMockLocation"
+                        android:layout_width="33dp"
+                        android:layout_height="33dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:background="@drawable/ic_cross_round_white"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <np.TextView
+                        android:id="@+id/tvSearchLocation"
+                        style="@style/AppTheme.Lato_Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Title"
+                        android:textColor="@color/text_gray"
+                        android:textSize="18sp" />
+
+                    <np.TextView
+                        android:id="@+id/tvSearchAdress"
+                        style="@style/AppTheme.Lato_Regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textColor="@color/text_gray"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginRight="16dp"
+                    android:gravity="bottom">
+
+                    <np.TextView
+                        android:id="@+id/tvSearchDistance"
+                        style="@style/AppTheme.Lato_Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="16km"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+        <!--Show route options-->
+
+
+
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/llAddFriends"
+        style="@style/text_card"
+        android:visibility="visible"
+        android:layout_marginRight="20dp"
+        app:cardBackgroundColor="@color/blue"
+        app:layout_anchor="@id/llResult"
+        app:layout_anchorGravity="right">
+
+        <LinearLayout style="@style/icon_text_layout">
+
+            <ImageView
+                style="@style/icon_when_text"
+                android:src="@drawable/ic_navigate_white" />
+
+            <TextView
+                style="@style/text_when_icon"
+                android:text="Add friends"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>
+

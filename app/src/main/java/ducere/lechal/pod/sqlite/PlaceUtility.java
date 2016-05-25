@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import ducere.lechal.pod.beans.GroupJourney;
 import ducere.lechal.pod.beans.Place;
 
 import ducere.lechal.pod.podsdata.FitnessData;
@@ -41,11 +42,53 @@ public class PlaceUtility {
     SQLiteDatabase getWritableDatabase() {
         return new DatabaseHelper(context).getWritableDatabase();
     }
-
     public List<Place> getTags() {
         List<Place> places = new ArrayList<>();
         SQLiteDatabase readableDatabase = getReadableDatabase();
-        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"0"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=? OR "+TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"2","3"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
+        try {
+            Gson gson = new Gson();
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                do {
+                    Place place = gson.fromJson(cursor.getString(cursor.getColumnIndex(TablesColumns.TagEntry.COLUMN_NAME_JSON)), Place.class);
+                    places.add(place);
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return places;
+    }
+    public List<Place> getHome() {
+        List<Place> places = new ArrayList<>();
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"4"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
+        try {
+            Gson gson = new Gson();
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                do {
+                    Place place = gson.fromJson(cursor.getString(cursor.getColumnIndex(TablesColumns.TagEntry.COLUMN_NAME_JSON)), Place.class);
+                    places.add(place);
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return places;
+    }
+
+    public List<Place> getWork() {
+        List<Place> places = new ArrayList<>();
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"5"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
         try {
             Gson gson = new Gson();
             if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
@@ -66,7 +109,7 @@ public class PlaceUtility {
     public List<Place> getHistory() {
         List<Place> places = new ArrayList<>();
         SQLiteDatabase readableDatabase = getReadableDatabase();
-        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?", new String[]{"1"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
+        Cursor cursor = readableDatabase.query(TablesColumns.TagEntry.TABLE_NAME, null, TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=? OR "+TablesColumns.TagEntry.COLUMN_NAME_TYPE+"=?" , new String[]{"1","3"}, null, null, TablesColumns.TagEntry.COLUMN_NAME_UPDATED + " DESC");
         try {
             Gson gson = new Gson();
             if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
@@ -115,6 +158,22 @@ public class PlaceUtility {
             writableDatabase.close();
         }
     }
+    public int deleteHome() {
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        try {
+            return writableDatabase.delete(TablesColumns.TagEntry.TABLE_NAME, TablesColumns.TagEntry.COLUMN_NAME_TYPE+ "=?", new String[]{"4"});
+        } finally {
+            writableDatabase.close();
+        }
+    }
+    public int deleteWork() {
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        try {
+            return writableDatabase.delete(TablesColumns.TagEntry.TABLE_NAME, TablesColumns.TagEntry.COLUMN_NAME_TYPE+ "=?", new String[]{"5"});
+        } finally {
+            writableDatabase.close();
+        }
+    }
 
     /**
      * delete place then insert
@@ -155,6 +214,22 @@ public class PlaceUtility {
         long id = -1;
         try {
             id = writableDatabase.insertOrThrow(TablesColumns.FitnessEntry.TABLE_NAME, null, values);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            writableDatabase.close();
+        }
+        return id;
+    }
+    public long putGroupJourney(GroupJourney groupJourney) {
+        ContentValues values = new ContentValues();
+        values.put(TablesColumns.GroupJourney.COLUMN_NAME_GROUP_ID, groupJourney.getGroupId());
+        values.put(TablesColumns.GroupJourney.COLUMN_NAME_JSON, new Gson().toJson(groupJourney));
+        values.put(TablesColumns.GroupJourney.COLUMN_NAME_CREATED, System.currentTimeMillis());
+        SQLiteDatabase writableDatabase = getWritableDatabase();
+        long id = -1;
+        try {
+            id = writableDatabase.insertOrThrow(TablesColumns.GroupJourney.TABLE_NAME, null, values);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

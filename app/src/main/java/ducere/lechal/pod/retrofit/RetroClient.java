@@ -1,8 +1,8 @@
 package ducere.lechal.pod.retrofit;
 
 import ducere.lechal.pod.constants.Constants;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by sunde on 16-05-2016.

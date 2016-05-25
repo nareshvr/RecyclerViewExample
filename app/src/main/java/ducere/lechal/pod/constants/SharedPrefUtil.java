@@ -30,6 +30,14 @@ public class SharedPrefUtil {
     private static final String USER = "user";
     private static final String USER_ID = "userID";
     public static final String VOICE_PREFERENCE = "voicePreference";
+    public  static final String FERRY = "ferry";
+    public static final String DIRT_ROAD = "dirt_road";
+    public static final String HIGHWAY = "highway";
+    public static final String PARK = "park";
+    public static final String TOLL_ROAD = "toll_road";
+    public static final String TUNNEL = "tunnel";
+    public static final String SHUTTLE_TRAIN = "shuttle_train";
+    public static final String CAR_POOL = "car_pool";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
@@ -49,7 +57,7 @@ public class SharedPrefUtil {
     }
 
     public static String getUserId(Context context) {
-        return getPref(context).getString(USER_ID, null);
+        return getPref(context).getString(USER_ID, "HJu1NiYg72bPEqSoQ6aT");
     }
 
     public static void setUserId(Context context, String userId) {
@@ -88,6 +96,9 @@ public class SharedPrefUtil {
 
     public static boolean getBoolean(Context context, String key) {
         return getPref(context).getBoolean(key, false);
+    }
+    public static boolean getOptions(Context context, String key) {
+        return getPref(context).getBoolean(key, true);
     }
 
     public static void commitDouble(Context context, String key, float value) {

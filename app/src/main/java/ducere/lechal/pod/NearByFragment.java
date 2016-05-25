@@ -135,7 +135,7 @@ public class NearByFragment extends Fragment {
                 });
 
 
-                poiTypes.add("eat-play");
+                poiTypes.add("eat-drink");
                 poiTypes.add("business-services");
                 poiTypes.add("hospital-health-care-facility");
                 poiTypes.add("petrol-station");
@@ -438,32 +438,36 @@ public class NearByFragment extends Fragment {
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        View header = getActivity().getLayoutInflater().inflate(R.layout.nearby_header, recyclerView, false);
+        if (!getActivity().isFinishing()){
+            View header = getActivity().getLayoutInflater().inflate(R.layout.nearby_header, recyclerView, false);
+            //Arc Animation
+            menuLayout = (FrameLayout) header.findViewById(R.id.menu_layout);
+            arcLayout = (ArcLayout) header.findViewById(R.id.arc_layout);
+            rootLayout = (RelativeLayout) header.findViewById(R.id.rlRoot);
+            centerItem = (View) header.findViewById(R.id.center_item);
+            for (int i = 0, size = arcLayout.getChildCount(); i < size; i++) {
+                final int finalI = i;
+                arcLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selected = finalI;
+                        searchPoi(poiTypes.get(finalI));
+                    }
+                });
+            }
 
-        //Arc Animation
-        menuLayout = (FrameLayout) header.findViewById(R.id.menu_layout);
-        arcLayout = (ArcLayout) header.findViewById(R.id.arc_layout);
-        rootLayout = (RelativeLayout) header.findViewById(R.id.rlRoot);
-        centerItem = (View) header.findViewById(R.id.center_item);
-        for (int i = 0, size = arcLayout.getChildCount(); i < size; i++) {
-            final int finalI = i;
-            arcLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selected = finalI;
-                    searchPoi(poiTypes.get(finalI));
-                }
-            });
+            setDefault();
+            setClicked(selected);
+
+            btFab = (ImageView) header.findViewById(R.id.fab);
+            showMenu();
+
+
+            adapter.setParallaxHeader(header, recyclerView);
         }
 
-        setDefault();
-        setClicked(selected);
-
-        btFab = (ImageView) header.findViewById(R.id.fab);
-        showMenu();
 
 
-        adapter.setParallaxHeader(header, recyclerView);
 
         adapter.setData(placeLinksList);
         recyclerView.setAdapter(adapter);

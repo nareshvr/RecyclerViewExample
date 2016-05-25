@@ -91,7 +91,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_session);
+        setContentView(R.layout.startserrion);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Running session");
@@ -102,7 +102,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void initView() {
-        session = getIntent().getParcelableExtra("session");
+       /* session = (Session) getIntent().getSerializableExtra("session");
         CardView cwStop = (CardView) findViewById(R.id.cwStop);
         tvHour = (TextView) findViewById(R.id.txtHours);
         tvMin = (TextView) findViewById(R.id.txtMin);
@@ -118,7 +118,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         cwStop.setOnClickListener(this);
-        ImageView imgBatteryStatus = (ImageView) findViewById(R.id.imgBatteryStatus);
+        ImageView imgBatteryStatus = (ImageView) findViewById(R.id.imgBatteryStatus);*/
 
         session = (Session) getIntent().getSerializableExtra("session");
         cwStop = (CardView) findViewById(R.id.cwStop);
@@ -170,8 +170,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             }
         });
         fabPause.setOnClickListener(this);
-        imgBatteryView = (ImageView) findViewById(R.id.imgBatteryView);
-        imgBatteryView.setVisibility(View.GONE);
+
 
     }
 

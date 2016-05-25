@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.dialoges.DialogStartSession;
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;

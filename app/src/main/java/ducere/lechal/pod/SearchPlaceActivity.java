@@ -53,7 +53,7 @@ import ducere.lechal.pod.beans.Place;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.sqlite.PlaceUtility;
 
-public class SearchActivity extends AppCompatActivity implements ActionBar.TabListener {
+public class SearchPlaceActivity extends AppCompatActivity implements ActionBar.TabListener {
 
     public static EditText etSearch;
     LinearLayout llSearchResults;
@@ -61,10 +61,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
     PositioningManager positioningManager= null;
     List<DiscoveryResult> items;
     ScrollView scrollView;
-    private ViewPager viewPager;
-    private TabsPagerAdapter mAdapter;
     int from=0;
-    private TabLayout tabLayout;
     ImageView ivW3w,ivBack;
 
     @Override
@@ -84,12 +81,10 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
         ivW3w = (ImageView)findViewById(R.id.ivW3w);
         ivBack = (ImageView)findViewById(R.id.ivBack);
         scrollView = (ScrollView)findViewById(R.id.scrollView);
-        // Initilization
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        setupViewPager(viewPager);
+        scrollView.setVisibility(View.VISIBLE);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        // Initilization
+
 
 
 
@@ -135,7 +130,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
             public void afterTextChanged(Editable s) {
                 if (s.toString().length() == 0) {
 
-                scrollView.setVisibility(View.GONE);
+                    scrollView.setVisibility(View.GONE);
                 } else {
                     scrollView.setVisibility(View.VISIBLE);
 
@@ -150,8 +145,8 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
 
                                     SearchRequest request;
                                     com.here.android.mpa.common.GeoCoordinate geo;
-                                    if (SharedPrefUtil.getBoolean(SearchActivity.this, SharedPrefUtil.IS_MOCK_ENABLE)){
-                                        geo = new com.here.android.mpa.common.GeoCoordinate(SharedPrefUtil.getDouble(SearchActivity.this, SharedPrefUtil.MOCK_LAT), SharedPrefUtil.getDouble(SearchActivity.this, SharedPrefUtil.MOCK_LNG));
+                                    if (SharedPrefUtil.getBoolean(SearchPlaceActivity.this, SharedPrefUtil.IS_MOCK_ENABLE)){
+                                        geo = new com.here.android.mpa.common.GeoCoordinate(SharedPrefUtil.getDouble(SearchPlaceActivity.this, SharedPrefUtil.MOCK_LAT), SharedPrefUtil.getDouble(SearchPlaceActivity.this, SharedPrefUtil.MOCK_LNG));
 
                                     }else{
                                         geo = positioningManager.getPosition().getCoordinate();
@@ -201,13 +196,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
         });
 
     }
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HistoryFragment(), "History");
-        adapter.addFragment(new TagsFragment(), "Tags");
-        adapter.addFragment(new NearByFragment(), "Nearby");
-        viewPager.setAdapter(adapter);
-    }
+
     public void initMapEngine() {
         MapEngine mapEngine = MapEngine.getInstance(getApplicationContext());
         mapEngine.init(getApplicationContext(), new OnEngineInitListener() {
@@ -229,12 +218,12 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
     }
 
 
-        /**
-         * Function to show settings alert dialog
-         * On pressing Settings button will lauch Settings Options
-         * */
+    /**
+     * Function to show settings alert dialog
+     * On pressing Settings button will lauch Settings Options
+     * */
     public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SearchActivity.this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SearchPlaceActivity.this);
 
         // Setting Dialog Title
         alertDialog.setTitle("GPS is settings");
@@ -290,7 +279,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                  The results is a DiscoveryResultPage which represents a
                  paginated collection of items. **/
 
-                 items = results.getItems();
+                items = results.getItems();
 
                 llSearchResults.removeAllViews();
                 // Iterate through the found place items.
@@ -302,62 +291,52 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                 for (DiscoveryResult item : items) {
                     if (item.getResultType() == DiscoveryResult.ResultType.PLACE) {
                         final PlaceLink placeLink = (PlaceLink) item;
-                      //  if (placeLink.getDistance() < 100000 ) {
+                        //  if (placeLink.getDistance() < 100000 ) {
 
-                            LayoutInflater inflater = (LayoutInflater) getApplicationContext()
-                                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            View rowView = inflater.inflate(R.layout.search_item_layout, llSearchResults, false);
+                        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View rowView = inflater.inflate(R.layout.search_item_layout, llSearchResults, false);
 
-                            final TextView tvName = (TextView) rowView.findViewById(R.id.tvName);
-                            final TextView tvAddress = (TextView) rowView.findViewById(R.id.tvAddress);
-                            final TextView tvDistance = (TextView) rowView.findViewById(R.id.tvDistance);
-                            final ImageView ivTag = (ImageView)rowView.findViewById(R.id.ivTag);
+                        final TextView tvName = (TextView) rowView.findViewById(R.id.tvName);
+                        final TextView tvAddress = (TextView) rowView.findViewById(R.id.tvAddress);
+                        final TextView tvDistance = (TextView) rowView.findViewById(R.id.tvDistance);
+                        final ImageView ivTag = (ImageView)rowView.findViewById(R.id.ivTag);
 
-                            tvName.setText(placeLink.getTitle() + "");
-                            tvAddress.setVisibility(View.VISIBLE);
-                            tvAddress.setText(placeLink.getVicinity().replace("<br/>", ", ") + "");
-                            tvDistance.setText(placeLink.getDistance()/1000.0+" km");
-                            ivTag.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    PlaceUtility placeUtility = new PlaceUtility(SearchActivity.this);
+                        tvName.setText(placeLink.getTitle() + "");
+                        tvAddress.setVisibility(View.VISIBLE);
+                        tvAddress.setText(placeLink.getVicinity().replace("<br/>", ", ") + "");
+                        tvDistance.setText(placeLink.getDistance()/1000.0+" km");
+
+
+                        rowView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (from == 0) {//for home
+
                                     Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
-                                    place.setType(0);
-                                    place.setMockName(placeLink.getTitle());
                                     place.setPlaceId(placeLink.getId());
-                                    placeUtility.putTag(place);
-                                    Toast.makeText(getApplicationContext(),"Tag added.",Toast.LENGTH_SHORT).show();
+                                    place.setTitle("Home");
+                                    place.setMockName("Home");
+                                    place.setType(4);
+                                    new PlaceUtility(SearchPlaceActivity.this).deleteHome();
+                                    new PlaceUtility(SearchPlaceActivity.this).updateTagWillDeleteAndInsert(place);
+                                    finish();
+                                } else {//for Work
+                                    Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                                    place.setPlaceId(placeLink.getId());
+                                    place.setTitle("Work");
+                                    place.setMockName("Work");
+                                    place.setType(5);
+                                    new PlaceUtility(SearchPlaceActivity.this).deleteWork();
+                                    new PlaceUtility(SearchPlaceActivity.this).updateTagWillDeleteAndInsert(place);
+                                    finish();
+
                                 }
-                            });
-
-                            rowView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (from == 0) {//for search
-                                        Intent returnIntent = new Intent(SearchActivity.this,NavigationActivity.class);
-
-                                        Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
-                                       place.setPlaceId(placeLink.getId());
-                                        returnIntent.putExtra("place", place);
-                                        startActivity(returnIntent);
-                                        finish();
-                                    } else if(from==1){//for mock location set
-                                        showDialogSwitchLocation(placeLink);
+                            }
+                        });
 
 
-                                    }else if(from==2){
-                                        Intent returnIntent = new Intent(SearchActivity.this,ResultLocationActivity.class);
-                                        Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
-                                        place.setPlaceId(placeLink.getId());
-                                        returnIntent.putExtra("place", place);
-                                        startActivity(returnIntent);
-                                        finish();
-                                    }
-                                }
-                            });
-
-
-                            llSearchResults.addView(rowView);
+                        llSearchResults.addView(rowView);
                         /*}else{
 
                         }*/
@@ -372,68 +351,6 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
             }
         }
     }
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
 
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
-
-    void showDialogSwitchLocation(final PlaceLink placeLink) {
-        final Dialog dialog = new Dialog(SearchActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.setContentView(R.layout.dialog_layout);
-
-        TextView title = (TextView) dialog.findViewById(R.id.tvTitle);
-        TextView description = (TextView) dialog.findViewById(R.id.tvDescription);
-        TextView cancel = (TextView) dialog.findViewById(R.id.tvCancel);
-        TextView ok = (TextView) dialog.findViewById(R.id.tvOk);
-        title.setText("Edit your location");
-        description.setText("You have chosen to edit your current location to " + placeLink.getTitle() + ".All your searches will refer this new location, Do you want to continue?");
-        ok.setText("Yes");
-
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_OK, returnIntent);
-                Place place = new Place(placeLink.getTitle(), placeLink.getVicinity(), placeLink.getDistance(), new GeoCoordinate(placeLink.getPosition().getLatitude(), placeLink.getPosition().getLongitude()));
-                returnIntent.putExtra("place", place);
-                dialog.dismiss();
-                finish();
-
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-
-    }
 }

@@ -15,9 +15,12 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import ducere.lechal.pod.R;
+import ducere.lechal.pod.podsdata.Session;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 
 public class SaveSessionDialog extends DialogFragment {
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -39,13 +42,18 @@ public class SaveSessionDialog extends DialogFragment {
         edtSessionTime.setText(title);
         builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+
+                Session session = (Session ) getArguments().getSerializable("session");
+                PlaceUtility placeUtility = new PlaceUtility(getActivity());
+                placeUtility.updateSessionWillDeleteAndInsert(session);
                 dialog.dismiss();
+                getActivity().finish();
             }
         });
         builder.setNegativeButton("DON\'t SAVE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                getActivity().finish();
             }
         });
 
@@ -72,5 +80,15 @@ public class SaveSessionDialog extends DialogFragment {
 
         return dateAsString;
 
+    }
+    public static SaveSessionDialog newInstance(Session session ) {
+        SaveSessionDialog f = new SaveSessionDialog();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putSerializable("session",session);
+        f.setArguments(args);
+
+        return f;
     }
 }

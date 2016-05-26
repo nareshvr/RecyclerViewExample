@@ -34,6 +34,12 @@ public class TablesColumns {
         public static final String COLUMN_NAME_JSON = "json";
         public static final String COLUMN_NAME_UPDATED = "updated";
     }
+    public static abstract class GroupJourney implements BaseColumns {
+        public static final String TABLE_NAME = "GroupJourney";
+        public static final String COLUMN_NAME_GROUP_ID = "groupId";
+        public static final String COLUMN_NAME_JSON = "json";
+        public static final String COLUMN_NAME_CREATED = "created";
+    }
 
     public static abstract class SessionEntry implements BaseColumns {
         public static final String TABLE_NAME = "Session";
@@ -90,6 +96,11 @@ public class TablesColumns {
                     SessionEntry.COLUMN_NAME_STATUS + INT_TYPE + COMMA_SEP +
                     SessionEntry.COLUMN_NAME_SYNC + INT_TYPE +
                     " )";
-
+    static final String SQL_CREATE_GROUP =
+            CREATE_TABLE + GroupJourney.TABLE_NAME + " (" +
+                    GroupJourney.COLUMN_NAME_GROUP_ID + TEXT_TYPE + PRIMARY_KEY + COMMA_SEP +
+                    GroupJourney.COLUMN_NAME_JSON + TEXT_TYPE  + COMMA_SEP +
+                    GroupJourney.COLUMN_NAME_CREATED + BIGINT_TYPE +
+                    " )";
 
 }

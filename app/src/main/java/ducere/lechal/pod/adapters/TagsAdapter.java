@@ -31,7 +31,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.MyViewHolder> 
     private List<Place> placeList;
     private int expandedPosition = -1,prevPosition=-1;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView title, address, distance;
         LinearLayout llMenu,llDetails,llNavigate,llEdit,llDelete;
 
@@ -47,6 +47,7 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.MyViewHolder> 
             llDelete = (LinearLayout) view.findViewById(R.id.llDelete);
 
             llDetails.setOnClickListener(this);
+           // llDetails.setOnLongClickListener(this);
 
         }
 
@@ -65,6 +66,8 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.MyViewHolder> 
 
            // Toast.makeText(v.getContext(), "Clicked: "+expandedPosition, Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
 
@@ -83,7 +86,11 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         Place place = placeList.get(position);
-        holder.title.setText(place.getMockName());
+        if (place.getMockName()==null){
+            holder.title.setText(place.getTitle());
+        }else {
+            holder.title.setText(place.getMockName());
+        }
         holder.address.setText(place.getVicinity().replace("<br/>", ", "));
 
             if (prevPosition == position) {
@@ -140,7 +147,13 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.MyViewHolder> 
         alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 PlaceUtility placeUtility = new PlaceUtility(v.getContext());
-                placeUtility.deleteTag(updatePlace.getPlaceId());
+
+                if (updatePlace.getType()==3){
+                    updatePlace.setType(1);
+                    placeUtility.updateTagWillDeleteAndInsert(updatePlace);
+                }else {
+                    placeUtility.deleteTag(updatePlace.getPlaceId());
+                }
                 notifyItemRemoved(pos);
                 dialog.dismiss();
             }

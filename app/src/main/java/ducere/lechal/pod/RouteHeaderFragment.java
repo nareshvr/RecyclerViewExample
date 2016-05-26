@@ -39,6 +39,8 @@ public class RouteHeaderFragment extends Fragment {
         tvVia = (TextView)v.findViewById(R.id.tvVia);
         tvDistance.setText("("+Math.round(routeResult.getRoute().getLength()/1000.0) + "Km)");
         tvTime.setText(Math.round((routeResult.getRoute().getTta(Route.TrafficPenaltyMode.OPTIMAL, Route.WHOLE_ROUTE).getDuration()) / 60) + " min");
+        tvVia.setText( routeResult.getRoute().getManeuvers().get(routeResult.getRoute().getManeuvers().size() / 2).getRoadName() );
+
     v.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {

@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.dialoges.DialogStartSession;
 import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
@@ -61,7 +62,6 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     int increment = 1;
     long steps;
     PlaceUtility placeUtility;
-    // private List<Movie> movieList = new ArrayList<>();
     private RecyclerView recyclerView;
     private SessionAdapter mAdapter;
 
@@ -149,7 +149,8 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     public void onStart() {
         super.onStart();
         IntentFilter filterToday = new IntentFilter(ServiceBroadcastActions.FITNESS_DATA);
-        filterToday.addAction(ActionsToService.FITNESS_TODAY_DATA);
+        filterToday.addAction(ServiceBroadcastActions.FITNESS_TODAY_DATA);
+        filterToday.addAction(ServiceBroadcastActions.PODS_CONNECTED);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filterToday);
     }
 
@@ -184,6 +185,9 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                     serializable.setDay(getTodayDate());
                     placeUtility.updateFitnessWillDeleteAndInsert(serializable);
                     break;
+                case ServiceBroadcastActions.PODS_CONNECTED:
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
+                    break;
             }
 
         }
@@ -193,7 +197,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         steps = serializable.getSteps();
         Log.i("FitnessData", "Today Steps::" + steps);
         long cal = serializable.getCal();
-        tvKm.setText(serializable.getDistance());
+        tvKm.setText(Convert.metersToKms(serializable.getDistance()));
         tvCal.setText(serializable.getCal() + "");
         flipMeter.setValue((int) serializable.getSteps(), true);
 
@@ -263,6 +267,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                         showSocailMedia();
                         break;
                     case R.id.viewSavedSession:
+                        startActivity(new Intent(getActivity(), ViewSavedSession.class));
                         //   LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
                         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_START));
                         startActivity(new Intent(getActivity(), ViewSavedSessionActivity.class));

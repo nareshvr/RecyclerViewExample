@@ -30,6 +30,15 @@ public class SharedPrefUtil {
     public static final String WEIGHT_UNITS = "weightUnits";
     private static final String USER = "user";
     private static final String USER_ID = "userID";
+    public static final String VOICE_PREFERENCE = "voicePreference";
+    public  static final String FERRY = "ferry";
+    public static final String DIRT_ROAD = "dirt_road";
+    public static final String HIGHWAY = "highway";
+    public static final String PARK = "park";
+    public static final String TOLL_ROAD = "toll_road";
+    public static final String TUNNEL = "tunnel";
+    public static final String SHUTTLE_TRAIN = "shuttle_train";
+    public static final String CAR_POOL = "car_pool";
     public static final String GENDER = "gender";
     public static final String MAP_UNITS = "mapUnits";
     public static final String DAY_NIGHT_TYPE = "dayNight";
@@ -54,7 +63,7 @@ public class SharedPrefUtil {
     }
 
     public static String getUserId(Context context) {
-        return getPref(context).getString(USER_ID, null);
+        return getPref(context).getString(USER_ID, "HJu1NiYg72bPEqSoQ6aT");
     }
 
     public static void setUserId(Context context, String userId) {
@@ -76,6 +85,16 @@ public class SharedPrefUtil {
     public static String getString(Context context, String key) {
         return getPref(context).getString(key, null);
     }
+    public static void commitInt(Context context, String key, int value) {
+        getPref(context).edit().putInt(key, value).apply();
+    }
+
+    public static int getInt(Context context, String key) {
+        return getPref(context).getInt(key, 0);
+    }
+    public static int getVoiceId(Context context, String key) {
+        return getPref(context).getInt(key, 1003);
+    }
 
     public static void commitBoolean(Context context, String key, boolean value) {
         getPref(context).edit().putBoolean(key, value).apply();
@@ -83,6 +102,9 @@ public class SharedPrefUtil {
 
     public static boolean getBoolean(Context context, String key) {
         return getPref(context).getBoolean(key, false);
+    }
+    public static boolean getOptions(Context context, String key) {
+        return getPref(context).getBoolean(key, true);
     }
 
     public static void commitDouble(Context context, String key, float value) {

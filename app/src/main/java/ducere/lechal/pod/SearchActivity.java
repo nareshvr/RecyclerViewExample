@@ -50,6 +50,7 @@ import java.util.List;
 
 import ducere.lechal.pod.beans.GeoCoordinate;
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.sqlite.PlaceUtility;
 
 public class SearchActivity extends AppCompatActivity implements ActionBar.TabListener {
@@ -148,9 +149,15 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                                 try {
 
                                     SearchRequest request;
+                                    com.here.android.mpa.common.GeoCoordinate geo;
+                                    if (SharedPrefUtil.getBoolean(SearchActivity.this, SharedPrefUtil.IS_MOCK_ENABLE)){
+                                        geo = new com.here.android.mpa.common.GeoCoordinate(SharedPrefUtil.getDouble(SearchActivity.this, SharedPrefUtil.MOCK_LAT), SharedPrefUtil.getDouble(SearchActivity.this, SharedPrefUtil.MOCK_LNG));
 
+                                    }else{
+                                        geo = positioningManager.getPosition().getCoordinate();
+                                    }
                                     request =
-                                            new SearchRequest(etSearch.getText().toString()).setSearchCenter(positioningManager.getPosition().getCoordinate());
+                                            new SearchRequest(etSearch.getText().toString()).setSearchCenter(geo);
 
                                     // }
                                     // limit number of items in each result page to 10
@@ -295,7 +302,7 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                 for (DiscoveryResult item : items) {
                     if (item.getResultType() == DiscoveryResult.ResultType.PLACE) {
                         final PlaceLink placeLink = (PlaceLink) item;
-                        if (placeLink.getDistance() < 100000 ) {
+                      //  if (placeLink.getDistance() < 100000 ) {
 
                             LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -334,19 +341,26 @@ public class SearchActivity extends AppCompatActivity implements ActionBar.TabLi
                                         returnIntent.putExtra("place", place);
                                         startActivity(returnIntent);
                                         finish();
-                                    } else {//for mock location set
+                                    } else if(from==1){//for mock location set
                                         showDialogSwitchLocation(placeLink);
 
 
+                                    }else if(from==2){
+                                        Intent returnIntent = new Intent(SearchActivity.this,ResultLocationActivity.class);
+                                        Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                                        place.setPlaceId(placeLink.getId());
+                                        returnIntent.putExtra("place", place);
+                                        startActivity(returnIntent);
+                                        finish();
                                     }
                                 }
                             });
 
 
                             llSearchResults.addView(rowView);
-                        }else{
+                        /*}else{
 
-                        }
+                        }*/
 
                     } else if (item.getResultType() == DiscoveryResult.ResultType.DISCOVERY) {
                         PlaceLink placeLink = (PlaceLink) item;

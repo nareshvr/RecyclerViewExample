@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.llLogin:
+
                 username = edtUserName.getText().toString();
                 pwd = edtPassword.getText().toString();
                 if (!TextUtils.isEmpty(username)) {

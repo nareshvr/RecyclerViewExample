@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <fragment
+        android:id="@+id/mapfragment"
+        class="com.here.android.mpa.mapping.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/llBottom"/>
+
+    <RelativeLayout
+        android:layout_above="@+id/llBottom"
+        android:background="@mipmap/fitness_start_session"
+        android:id="@+id/rlTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        >
+        <LinearLayout
+            android:id="@+id/llStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:layout_alignParentRight="true">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@mipmap/icon_battery_full" />
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_margin="6dp"
+                android:background="@mipmap/icon_map" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/halfCircle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/llStatus">
+
+            <ducere.lechal.pod.customViews.CircularSeekBar
+                android:paddingBottom="20dp"
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                app:start_angle="180"
+                app:end_angle="0"
+                app:progress="0"
+                app:circle_progress_color="@color/colorPrimaryAlert"
+                app:circle_stroke_width="16dp"
+                android:layout_gravity="center" />
+            <LinearLayout
+                android:id="@+id/dummy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+            </LinearLayout>
+            <np.TextView
+                android:id="@+id/tvPercentage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="50dp"
+                android:layout_above="@+id/dummy"
+                style="@style/AppTheme.Lato_Bold"
+                android:layout_centerHorizontal="true"
+                android:text="0%"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/dummy"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp">
+
+                <LinearLayout
+                    android:id="@+id/llTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <np.TextView
+                            android:id="@+id/txtHours"
+                            android:background="@drawable/boarder_red"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textSize="32dp"
+                            android:padding="8dp"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/textView12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HRS"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <np.TextView
+                            android:id="@+id/txtMin"
+                            android:background="@drawable/boarder_red"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textSize="32dp"
+                            android:padding="8dp"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:textColor="@color/white" />
+
+                        <np.TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MIN"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <np.TextView
+                            android:id="@+id/txtSec"
+                            android:background="@drawable/boarder_red"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textSize="32dp"
+                            android:padding="8dp"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:textColor="@color/white" />
+
+                        <np.TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SEC"
+                            style="@style/AppTheme.Lato_Bold"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true">
+        <ImageView
+            android:id="@+id/imgBatteryStatus"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@mipmap/icon_battery_full" />
+
+        <ImageView
+            android:id="@+id/imgMap"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_margin="6dp"
+            android:background="@mipmap/icon_map" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+        <ImageView
+            android:layout_margin="16dp"
+            android:background="@mipmap/ic_walk_red_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/ivMode" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content">
+
+            <np.TextView
+                android:textColor="@color/colorPrimaryAlert"
+                android:textSize="20dp"
+                style="@style/AppTheme.Lato_Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginBottom="2dp"
+                android:id="@+id/tvCal" />
+
+            <np.TextView
+                android:textSize="16dp"
+                android:textColor="@color/text_gray"
+                style="@style/AppTheme.Lato_Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/tvSteps" />
+        </LinearLayout>
+    </LinearLayout>
+
+       </RelativeLayout>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cwStop"
+        android:layout_alignParentEnd="true"
+        style="@style/text_card"
+        app:layout_anchor="@id/llBottom"
+        app:layout_anchorGravity="right"
+        android:layout_marginRight="80dp"
+        app:cardBackgroundColor="@color/colorPrimaryAlert">
+
+        <LinearLayout style="@style/icon_text_layout">
+
+            <ImageView
+                style="@style/icon_when_text"
+                android:src="@mipmap/icon_stop" />
+
+            <TextView
+                style="@style/text_when_icon"
+                android:text="Stop"
+                android:textSize="18sp"
+                android:paddingRight="5dp"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/llBottom"
+        app:layout_anchorGravity="right"
+        android:layout_marginRight="16dp"
+        app:fab_colorNormal="@color/black"
+        app:backgroundTint="@color/black"
+        android:src="@mipmap/icon_pause" />
+    <ducere.lechal.pod.customViews.PausableChronometer
+        android:id="@+id/chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+</android.support.design.widget.CoordinatorLayout>

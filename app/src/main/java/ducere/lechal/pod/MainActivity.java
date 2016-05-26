@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons0();
+        viewPager.setOnPageChangeListener(this);
 
         String userId = SharedPrefUtil.getUserId(getApplicationContext());
         if (!TextUtils.isEmpty(userId)) {
@@ -241,7 +242,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         public CharSequence getPageTitle(int position) {
 
-
             return mFragmentTitleList.get(position);
         }
     }
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(1).setText("Activity");
         tabLayout.getTabAt(2).setText("Device");
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page selected");
-        tabLayout.getTabAt(1).setContentDescription("FitnessFragment Home page ");
+        tabLayout.getTabAt(1).setContentDescription("Fitness Home page ");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page");
 
         if (item_add_pods != null) {
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(1).setText("");
         tabLayout.getTabAt(2).setText("Device");
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page ");
-        tabLayout.getTabAt(1).setContentDescription("FitnessFragment Home page selected");
+        tabLayout.getTabAt(1).setContentDescription("Fitness Home page selected");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page");
         if (item_add_pods != null) {
             item_contacts.setVisible(false);
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(1).setText("Activity");
         tabLayout.getTabAt(2).setText("");
         tabLayout.getTabAt(0).setContentDescription("Navigation Home page ");
-        tabLayout.getTabAt(1).setContentDescription("FitnessFragment Home page ");
+        tabLayout.getTabAt(1).setContentDescription("Fitness Home page ");
         tabLayout.getTabAt(2).setContentDescription("Profile Home page selected");
         if (item_add_pods != null) {
             item_contacts.setVisible(false);

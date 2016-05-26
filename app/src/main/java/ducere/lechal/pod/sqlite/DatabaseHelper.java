@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TablesColumns.SQL_CREATE_TAGS);
         db.execSQL(TablesColumns.SQL_CREATE_FITNESS);
         db.execSQL(TablesColumns.SQL_CREATE_SESSIONS);
+        db.execSQL(TablesColumns.SQL_CREATE_GROUP);
     }
 
     @Override

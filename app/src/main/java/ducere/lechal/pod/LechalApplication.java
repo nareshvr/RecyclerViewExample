@@ -43,10 +43,12 @@ public class LechalApplication extends Application {
     Navigate navigate;
     Place place;
     Route route;
-    boolean isTurnTaken1 = false,
-            isTurnTaken2 = false,
-            isTurnTaken3 = false,
-            isTurnTaken4 = false;
+    boolean isTurnTaken1=false,
+            isTurnTaken2=false,
+            isTurnTaken3=false,
+            isTurnTaken4=false,
+            isDestinationReached=false;
+
 
 
     public boolean isNavigating() {
@@ -91,6 +93,14 @@ public class LechalApplication extends Application {
 
     public boolean isTurnTaken4() {
         return isTurnTaken4;
+    }
+
+    public boolean isDestinationReached() {
+        return isDestinationReached;
+    }
+
+    public void setIsDestinationReached(boolean isDestinationReached) {
+        this.isDestinationReached = isDestinationReached;
     }
 
     public void setIsTurnTaken4(boolean isTurnTaken4) {

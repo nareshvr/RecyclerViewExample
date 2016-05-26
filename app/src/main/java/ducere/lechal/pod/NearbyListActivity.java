@@ -1,6 +1,7 @@
 package ducere.lechal.pod;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import np.TextView;
 
@@ -50,8 +52,13 @@ public class NearbyListActivity extends AppCompatActivity {
 
             GeoCoordinate geo;
 
-            geo = new GeoCoordinate(SharedPrefUtil.getDouble(NearbyListActivity.this, SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(NearbyListActivity.this, SharedPrefUtil.CURRENT_LNG));
+            if (SharedPrefUtil.getBoolean(NearbyListActivity.this,SharedPrefUtil.IS_MOCK_ENABLE)){
+                geo = new GeoCoordinate(SharedPrefUtil.getDouble(NearbyListActivity.this, SharedPrefUtil.MOCK_LAT), SharedPrefUtil.getDouble(NearbyListActivity.this, SharedPrefUtil.MOCK_LNG));
 
+            }else{
+                geo = new GeoCoordinate(SharedPrefUtil.getDouble(NearbyListActivity.this, SharedPrefUtil.CURRENT_LAT), SharedPrefUtil.getDouble(NearbyListActivity.this, SharedPrefUtil.CURRENT_LNG));
+
+            }
             AroundRequest request = new AroundRequest().setCategoryFilter(new CategoryFilter().add(poi)).setSearchArea(geo, 100000);
 
 
@@ -102,7 +109,7 @@ public class NearbyListActivity extends AppCompatActivity {
                     if (item.getResultType() == DiscoveryResult.ResultType.PLACE) {
 
                         placeLinksList.add((PlaceLink) item);
-                        PlaceLink place = (PlaceLink) item;
+                        final PlaceLink place = (PlaceLink) item;
                         LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View itemView = inflater.inflate(R.layout.row_history_layout, llList, false);
@@ -112,8 +119,18 @@ public class NearbyListActivity extends AppCompatActivity {
                         ImageView ivTag = (ImageView) itemView.findViewById(R.id.ivTag);
                         title.setText(place.getTitle());
                         address.setText(place.getVicinity().replace("<br/>", ", "));
-                        distance.setText(place.getDistance() / 1000.0 + "km");
+                        distance.setText(Convert.metersToKms(place.getDistance()));
                         llList.addView(itemView);
+                        itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PlaceLink placeLink = place;
+                                Place place = new Place(placeLink.getTitle(),placeLink.getVicinity(),placeLink.getDistance(),new ducere.lechal.pod.beans.GeoCoordinate(placeLink.getPosition().getLatitude(),placeLink.getPosition().getLongitude()));
+                                place.setPlaceId(placeLink.getId());
+                                startActivity(new Intent(NearbyListActivity.this,NavigationActivity.class).putExtra("place",place));
+                                finish();
+                            }
+                        });
 
 
                     } else if (item.getResultType() == DiscoveryResult.ResultType.DISCOVERY) {

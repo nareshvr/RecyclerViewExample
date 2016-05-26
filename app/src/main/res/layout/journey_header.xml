@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:orientation="vertical">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:layout_marginBottom="30dp"
+        android:background="@color/home_transparent">
+
+        <LinearLayout
+            android:id="@+id/llLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="20dp">
+
+            <np.TextView
+                style="@style/AppTheme.Lato_Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOUR CURRENT LOCATION"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <np.TextView
+                android:id="@+id/tvPlace"
+                style="@style/AppTheme.Lato_Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <np.TextView
+                android:id="@+id/tvAddress"
+                style="@style/AppTheme.Lato_Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardGroup"
+        style="@style/fitness_card"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:elevation="2dp"
+        app:cardBackgroundColor="@color/blue">
+
+        <LinearLayout
+            android:id="@+id/llStartSession"
+            style="@style/icon_text_layout">
+
+            <ImageView
+                style="@style/icon_when_text"
+                android:src="@mipmap/fab_start_work_out" />
+
+            <TextView
+                style="@style/text_when_icon"
+                android:text="Group journey"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

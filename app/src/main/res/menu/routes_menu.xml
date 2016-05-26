@@ -1,0 +1,48 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ducere.lechal.pod.settingsactivity.NavigationSettings">
+    <item
+        android:id="@+id/action_reverse"
+        android:orderInCategory="100"
+        android:title="@string/action_reverse"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_share_directions"
+        android:orderInCategory="100"
+        android:title="@string/action_share_directions"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_group_journey"
+        android:orderInCategory="100"
+        android:title="@string/action_add_friend_journey"
+        app:showAsAction="never" />
+
+    <group android:id="@+id/group"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/action_normal"
+            android:orderInCategory="100"
+            android:title="@string/action_normal"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_satellite"
+            android:orderInCategory="100"
+            android:title="@string/action_satellite"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_terrain"
+            android:orderInCategory="100"
+            android:title="@string/action_terrain"
+            app:showAsAction="never" />
+
+
+    </group>
+    <item
+        android:id="@+id/action_route_options"
+        android:orderInCategory="100"
+        android:title="@string/action_route_options"
+        app:showAsAction="never" />
+
+</menu>

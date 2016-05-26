@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/search_nav_white"
+        android:title="TITLE"
+        app:actionViewClass="ducere.lechal.pod.adapters.ArrayAdapterSearchView"
+        app:showAsAction="ifRoom|collapseActionView"/>
+
+</menu>

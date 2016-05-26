@@ -9,9 +9,11 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -22,6 +24,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.InflateException;
@@ -62,6 +65,7 @@ import com.here.android.mpa.mapping.MapContainer;
 import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapGesture;
 import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.MapOverlay;
 import com.here.android.mpa.mapping.MapPolyline;
 import com.here.android.mpa.mapping.MapProxyObject;
 import com.here.android.mpa.mapping.MapRoute;
@@ -88,13 +92,18 @@ import com.what3words.sdk.android.W3wLoadedListener;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 import java.util.List;
 
 import ducere.lechal.pod.beans.Place;
+import ducere.lechal.pod.ble.ActionsToService;
+import ducere.lechal.pod.ble.ServiceBroadcastActions;
+import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.constants.SharedPrefUtil;
 import ducere.lechal.pod.interfaces.OnBackPressed;
 import ducere.lechal.pod.interfaces.OnFragmentInteractionListener;
 import ducere.lechal.pod.interfaces.OnUpdateSearchLocation;
+import ducere.lechal.pod.podsdata.FitnessData;
 import ducere.lechal.pod.sqlite.PlaceUtility;
 import ducere.lechal.pod.utilities.NavigationFeedback;
 
@@ -124,14 +133,16 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
     LinearLayout llCurrentLoc, llSearch, llSearchBg,llTag;
     CardView llSave;
     RelativeLayout rlTransparent;
-    TextView tvLocationName, tvLocationAddress, tvW3w, tvEditLocation,tvNavigatingTo;
+    TextView tvLocationName, tvLocationAddress, tvW3w, tvEditLocation,tvNavigatingTo,tvSteps;
     ImageView ivBack, ivMockLocation, ivSwitchCurrentLoc;
     SharedPrefUtil prefUtil;
     EditText etTag;
     Place placeTag;
+    MapOverlay mapOverlay;
     boolean flag=true;
-
     long milli;
+    com.github.clans.fab.FloatingActionMenu fam;
+    com.github.clans.fab.FloatingActionButton fabGeo;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -183,6 +194,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 tvW3w = (TextView) view.findViewById(R.id.tvW3w);
                 tvEditLocation = (TextView) view.findViewById(R.id.tvEditLocation);
                 tvNavigatingTo = (TextView) view.findViewById(R.id.tvNavigatingTo);
+                tvSteps = (TextView) view.findViewById(R.id.tvSteps);
                 llCurrentLoc = (LinearLayout) view.findViewById(R.id.llCurrentLoc);
                 llSearch = (LinearLayout) view.findViewById(R.id.llSearch);
                 llSearchBg = (LinearLayout) view.findViewById(R.id.llSearchBg);
@@ -193,8 +205,11 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 llTag = (LinearLayout) view.findViewById(R.id.llTag);
                 llSave = (CardView) view.findViewById(R.id.llSave);
                 etTag = (EditText)view.findViewById(R.id.etTag);
+                fabGeo = (com.github.clans.fab.FloatingActionButton)view.findViewById(R.id.menu_trails);
+                fabGeo.setLabelVisibility(View.VISIBLE);
                 llSearchBg = (LinearLayout) view.findViewById(R.id.llSearchBg);
                     prefUtil = new SharedPrefUtil();
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
                     //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
@@ -215,6 +230,9 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                     initMapEngine();
                 }
                 initiateW3w();
+                if (SharedPrefUtil.getBoolean(getActivity(),SharedPrefUtil.IS_MOCK_ENABLE)){
+                    ivSwitchCurrentLoc.setVisibility(View.VISIBLE);
+                }
                 // Views Initialization
                 llCurrentLoc.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -246,15 +264,19 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 llSearch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(getActivity(), SearchActivity.class).putExtra("from", 0),
-                                ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            startActivity(new Intent(getActivity(), SearchActivity.class).putExtra("from", 0),
+                                    ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+                        }
                     }
                 });
                 ivMockLocation.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivityForResult(new Intent(getActivity(), SearchActivity.class).putExtra("from", 1), 101,
-                                ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            startActivityForResult(new Intent(getActivity(), SearchActivity.class).putExtra("from", 1), 101,
+                                    ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+                        }
                     }
                 });
                 ivSwitchCurrentLoc.setOnClickListener(new View.OnClickListener() {
@@ -279,7 +301,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                         }
                     }
                 });
-
+                tvSteps.setText(new PlaceUtility(getContext()).getFitness(getTodayDate()).getSteps()+"");
 
             } catch (InflateException e) {
 
@@ -287,6 +309,52 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
         return view;
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter filterToday = new IntentFilter(ServiceBroadcastActions.FITNESS_DATA);
+        filterToday.addAction(ServiceBroadcastActions.FITNESS_TODAY_DATA);
+        filterToday.addAction(ServiceBroadcastActions.PODS_CONNECTED);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filterToday);
+    }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            PlaceUtility placeUtility = new PlaceUtility(getActivity());
+            switch (action) {
+                case ServiceBroadcastActions.FITNESS_DATA:
+                    FitnessData serializableFit = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_DATA);
+                    if (serializableFit == null) {
+                        return;
+                    }
+                    tvSteps.setText(serializableFit.getSteps()+"");
+
+                    serializableFit.setDay(getTodayDate());
+                    placeUtility.updateFitnessWillDeleteAndInsert(serializableFit);
+                    break;
+                case ServiceBroadcastActions.FITNESS_TODAY_DATA:
+                    FitnessData serializable = (FitnessData) intent.getSerializableExtra(ServiceBroadcastActions.FITNESS_TODAY_DATA);
+                    if (serializable == null) {
+                        return;
+                    }
+                    tvSteps.setText(serializable.getSteps()+"");
+                    serializable.setDay(getTodayDate());
+                    placeUtility.updateFitnessWillDeleteAndInsert(serializable);
+                    break;
+                case ServiceBroadcastActions.PODS_CONNECTED:
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
+                    break;
+            }
+
+        }
+    };
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
@@ -306,7 +374,9 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             MainActivity.tabLayout.setVisibility(View.GONE);
             llSearchBg.setVisibility(View.VISIBLE);
             MainActivity.toolbar.setVisibility(View.GONE);
-
+            map.setCenter(positioningManager.getPosition().getCoordinate(),
+                    Map.Animation.NONE);
+            map.setZoomLevel(17);
 
             final Animation slideUp = AnimationUtils.loadAnimation(getContext(),
                     R.anim.slide_up);
@@ -341,7 +411,9 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
             ivBack.setImageResource(R.drawable.search_nav_white);
             tvEditLocation.setText("Enter destination");
-
+            map.setCenter(positioningManager.getPosition().getCoordinate(),
+                    Map.Animation.NONE);
+            map.setZoomLevel(25);
             ivMockLocation.setVisibility(View.GONE);
             viewVisible(rlTransparent);
 
@@ -406,7 +478,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                     map = mapFragment.getMap();
 
                     // Set the zoom level to the average between min and max
-                    map.setZoomLevel(20);
+                    map.setZoomLevel(25);
 
                     //set the map projection
                     map.setProjectionMode(Map.Projection.GLOBE);
@@ -518,7 +590,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                                 flag=false;
                             }
                     if (LechalApplication.getInstance().isNavigating()){
-                        NavigationFeedback feedback = new NavigationFeedback(geoPosition.getCoordinate(),getActivity());
+                        NavigationFeedback feedback = new NavigationFeedback(geoPosition,geoPosition.getCoordinate(),getActivity());
                         feedback.findDistanceRange();
                     }
 
@@ -536,6 +608,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         if (LechalApplication.getInstance().isNavigating()){
             tvNavigatingTo.setText("Navigating to "+LechalApplication.getInstance().getNavigate().getEndTitle());
         }else{
+          //  flag=true;
             tvNavigatingTo.setText("");
         }
     }
@@ -620,7 +693,8 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
             prefUtil.commitDouble(getActivity(),prefUtil.MOCK_LNG,(float)place.getGeo().getLongitude());
             prefUtil.commitString(getActivity(), prefUtil.MOCK_VICINITY, place.getVicinity());
             prefUtil.commitBoolean(getActivity(), prefUtil.IS_MOCK_ENABLE, true);
-
+            map.setCenter(new GeoCoordinate((float) place.getGeo().getLatitude(),(float) place.getGeo().getLongitude()),
+                    Map.Animation.LINEAR);
             setCurrentLocationTexts();
 
         }
@@ -654,6 +728,10 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 if(prefUtil.getBoolean(getActivity(),prefUtil.IS_MOCK_ENABLE)){
                     prefUtil.commitBoolean(getActivity(), prefUtil.IS_MOCK_ENABLE, false);
                     ivSwitchCurrentLoc.setVisibility(View.GONE);
+                    map.setCenter(positioningManager.getPosition().getCoordinate(),
+                            Map.Animation.LINEAR);
+                    map.setZoomLevel(25);
+
                     setCurrentLocationTexts();
                 }
                 dialog.dismiss();
@@ -677,6 +755,8 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
                 mapcontainer.removeAllMapObjects();
             if (mapmarker != null)
                 map.removeMapObject(mapmarker);
+            if (mapOverlay != null)
+                map.removeMapOverlay(mapOverlay);
             llTag.setVisibility(View.GONE);
             llSave.setVisibility(View.GONE);
 
@@ -698,7 +778,10 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
     // create the animator for this view (the start radius is zero)
         Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+                null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
+        }
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationCancel(Animator animation) {
@@ -729,9 +812,12 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
     // create the animation (the final radius is zero)
         Animator anim =
-                ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+                null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
+        }
 
-    // make the view invisible when the animation is done
+        // make the view invisible when the animation is done
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -804,10 +890,7 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
     void showPlaceMarker(final GeoCoordinate geo, final String title, final String address,final String phone   ) {
 
-        if (mapcontainer != null)
-            mapcontainer.removeAllMapObjects();
-        if (mapmarker != null)
-            map.removeMapObject(mapmarker);
+        clearMap();
         Image myImage = new com.here.android.mpa.common.Image();
         try {
             myImage.setImageResource(R.drawable.location_tag_gray);
@@ -817,18 +900,24 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
         mapmarker = new MapMarker(geo, myImage);
         mapcontainer = new MapContainer();
 
-        //progressDialog = new ProgressDialog(getActivity());
-        //   progressDialog.setMessage("Getting Address...");
-        //progressDialog.show();
+
         map.addMapObject(mapcontainer);
         mapcontainer.addMapObject(mapmarker);
+       /* LayoutInflater inflater = (LayoutInflater) getActivity().getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View itemView = inflater.inflate(R.layout.tag_overlay, null, false);
+
+        mapOverlay = new MapOverlay(itemView,geo);
+
+        map.addMapOverlay(mapOverlay);
+*/
         tvEditLocation.setText(title + ", " + address);
         llTag.setVisibility(View.VISIBLE);
         llSave.setVisibility(View.VISIBLE);
         etTag.setText(title);
         placeTag = new Place(title, address, 0, new ducere.lechal.pod.beans.GeoCoordinate(geo.getLatitude(),geo.getLongitude())) ;
         placeTag.setMockName(etTag.getText().toString());
-        placeTag.setType(0);
+        placeTag.setType(2);
         placeTag.setIsSynced(false);
     }
 
@@ -843,5 +932,20 @@ public class HomeFragment extends Fragment implements OnUpdateSearchLocation,OnB
 
 
     }
+    void clearMap() {
 
+        if (mapcontainer != null)
+            mapcontainer.removeAllMapObjects();
+        if (mapmarker != null && map != null)
+            map.removeMapObject(mapmarker);
+        if (mapOverlay != null && map != null)
+            map.removeMapOverlay(mapOverlay);
+    }
+    long getTodayDate(){
+        Calendar c = Calendar.getInstance();
+
+
+        String formattedDate = Constants.DATE_FORMAT_FITNESS_ID_DATE.format(c.getTime());
+        return Integer.parseInt(formattedDate);
+    }
 }

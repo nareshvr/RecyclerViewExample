@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:appp="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainContent"
     android:layout_width="match_parent"
@@ -20,7 +19,22 @@
             class="com.here.android.mpa.mapping.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
+        <LinearLayout
+            android:id="@+id/llClearWaypoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginBottom="120dp"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true">
+            <np.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear Waypoints"
+                style="@style/AppTheme.Lato_Bold"
+                android:layout_margin="20dp"
+                android:textColor="@color/text_gray"/>
+        </LinearLayout>
        <!-- Show search location-->
         <RelativeLayout
             android:id="@+id/rlResultLocation"
@@ -245,6 +259,7 @@
                             </LinearLayout>
                         </LinearLayout>
                         <ImageView
+                            android:id="@+id/routeMenu"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/ic_menu_dots"/>
@@ -336,6 +351,7 @@
 
                        </LinearLayout>
                         <ImageView
+                            android:id="@+id/ivNavDots"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:background="@drawable/ic_menu_dots"/>
@@ -403,12 +419,16 @@
                     android:visibility="gone"
                     android:gravity="center_vertical"
                     android:background="@color/white">
-                    <ImageView
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabPause"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16sp"
-                        android:background="@drawable/ic_menu_send"
-                        android:layout_gravity="center_vertical"/>
+                        app:fab_colorNormal="@color/black"
+                        app:backgroundTint="@color/black"
+                        app:fab_size="mini"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:src="@mipmap/icon_pause" />
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -588,8 +608,8 @@
             android:src="@drawable/ic_walk_white"
             fab:fab_label="Record a trail"
             fab:fab_size="normal"
-            fab:fab_colorNormal="@color/black"
-            fab:fab_colorPressed="@color/black" />
+            fab:fab_colorNormal="#01000000"
+            fab:fab_colorPressed="#01000000" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fabDrive"
@@ -598,8 +618,8 @@
             android:src = "@drawable/ic_car_circle"
             fab:fab_label="Start a workout"
             fab:fab_size="normal"
-            fab:fab_colorNormal="@color/black"
-            fab:fab_colorPressed="@color/black"/>
+            fab:fab_colorNormal="#01000000"
+            fab:fab_colorPressed="#01000000"/>
 
 
         <com.github.clans.fab.FloatingActionButton
@@ -609,8 +629,8 @@
             android:src="@drawable/ic_bus_white"
             fab:fab_label="Menu item 1"
             fab:fab_size="normal"
-            fab:fab_colorNormal="@color/black"
-            fab:fab_colorPressed="@color/black"/>
+            fab:fab_colorNormal="#01000000"
+            fab:fab_colorPressed="#01000000"/>
 
     </com.github.clans.fab.FloatingActionMenu>
     <RelativeLayout
@@ -620,6 +640,186 @@
         android:elevation="3dp">
 
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rlWaypoints"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F0000000"
+        android:visibility="gone"
+        android:elevation="5dp">
+        <ImageView
+            android:id="@+id/ivCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:background="@drawable/places_ic_clear"/>
+        <LinearLayout
+            android:id="@+id/llWaypoints"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/llRestaurant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/way_eat_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="restaurants"
+                        android:textColor="@color/white"
 
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/way_atm_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="atms"
+                        android:textColor="@color/white"
+
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/way_coffe_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="coffee shops"
+                        android:textColor="@color/white"
+
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:background="@mipmap/way_eat_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/white"
+
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/way_petrol_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="gas stations"
+                        android:textColor="@color/white"
+
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/way_shopping_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="   grocery  "
+                        android:textColor="@color/white"
+
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/way_hospital_white"/>
+                    <np.TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="pharmacy"
+                        android:textColor="@color/white"
+
+                        style="@style/AppTheme.Lato_Regular"/>
+                </LinearLayout>
+            </LinearLayout>
+    </LinearLayout>
+        <android.support.v7.widget.CardView
+            android:id="@+id/pod_right"
+            style="@style/text_card"
+            android:layout_below="@+id/llWaypoints"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/pod_right_text"
+                style="@style/text"
+                android:padding="20dp"
+                android:textColor="@color/colorPrimaryAlert"
+                android:text="Search for other places" />
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
 

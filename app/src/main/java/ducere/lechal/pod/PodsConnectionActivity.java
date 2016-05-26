@@ -261,11 +261,17 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
         public void onAnimationEnd(Animation animation) {
             if (!TextUtils.isEmpty(podsMacID)) {
                 // Pods already connected, Let the auto connect do the work
+                findViewById(R.id.splash_walk).setVisibility(View.GONE);
+
+                LocalBroadcastManager.getInstance(PodsConnectionActivity.this).unregisterReceiver(serviceActionsReceiver);
+
                 Intent intent = new Intent(ActionsToService.CONNECT_TO_DEVICE_WITH_MAC_ID);
                 intent.putExtra(BundleKeys.BLE_DEVICE, podsMacID);
                 LocalBroadcastManager.getInstance(PodsConnectionActivity.this).sendBroadcast(intent);
+
                 findViewById(R.id.splash_walk).setVisibility(View.GONE);
                 startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
+
                 finish();
             } else {
                 sendScanPodsAction();
@@ -345,6 +351,7 @@ public class PodsConnectionActivity extends AppCompatActivity implements GoogleA
                     BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BundleKeys.BLE_DEVICE);
                     SharedPrefUtil.setPodsMacid(PodsConnectionActivity.this, bluetoothDevice.getAddress());
                     finish();
+
                     startActivity(new Intent(PodsConnectionActivity.this, MainActivity.class));
                     break;
                 case ServiceBroadcastActions.PODS_DIS_CONNECTED:

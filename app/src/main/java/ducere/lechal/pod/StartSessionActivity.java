@@ -1,7 +1,6 @@
 package ducere.lechal.pod;
 
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,12 +19,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.MapEngine;
@@ -40,16 +36,15 @@ import com.here.android.mpa.mapping.MapTransitLayer;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.Convert;
 import ducere.lechal.pod.customViews.CircularSeekBar;
 import ducere.lechal.pod.customViews.PausableChronometer;
+import ducere.lechal.pod.dialoges.SaveSessionDialog;
 import ducere.lechal.pod.podsdata.FitnessData;
 import ducere.lechal.pod.podsdata.Session;
-import ducere.lechal.pod.sqlite.SaveSessionDialog;
-import ducere.lechal.pod.utilities.NavigationFeedback;
 import np.TextView;
+
 
 
 /**

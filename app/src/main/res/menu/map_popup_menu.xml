@@ -5,7 +5,7 @@
         android:id="@+id/editProfile"
         android:orderInCategory="100"
         android:title="@string/manage_maps"
-        android:icon="@drawable/contacts_action_white"
+        android:icon="@drawable/ic_menu_dots"
         android:visible="true"
         app:showAsAction="always" />
 

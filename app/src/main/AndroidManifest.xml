@@ -114,7 +114,9 @@
         <activity android:name=".NavigationSettingsActivity" />
         <activity android:name=".VoiceOptionActivity" />
         <activity android:name=".FitnessSettingsActivity" />
-        <activity android:name=".DownloadMapActivity" />
+        <activity
+            android:name=".DownloadMapActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".EditProfileActivity"
             android:screenOrientation="portrait" />
@@ -131,6 +133,11 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".IntensityActivity"></activity>
         <activity android:name=".ViewSavedSession"></activity>
+        <activity android:name=".DownloadMap"></activity>
+        <activity
+            android:name=".DownlaodMapNew"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <activity android:name=".ViewSavedSessionActivity"></activity>
     </application>
 
 </manifest>

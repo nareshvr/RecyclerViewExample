@@ -74,7 +74,7 @@ public class NavigationSettingsActivity extends AppCompatActivity implements Vie
                 clearhistory.show(getSupportFragmentManager(), "Position");
                 break;
             case R.id.llDownLoadMaps:
-                startActivity(new Intent(NavigationSettingsActivity.this, DownloadMapActivity.class));
+                startActivity(new Intent(NavigationSettingsActivity.this, DownlaodMapNew.class));
                 break;
 
         }

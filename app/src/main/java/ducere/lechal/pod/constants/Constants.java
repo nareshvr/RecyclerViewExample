@@ -35,6 +35,7 @@ public class Constants {
     public static final int DEFAULT_HEIGHT_UNITS = 0;//"Feet";
     public static final int DEFAULT_WEIGHT_UNITS = 0;
 
+    public static final String DEFAULT_GENDER="male";
 //    public static final String DOMAIN = "http://www.lechal.net/";
     public static final String DOMAIN = "http://ec2-52-27-57-49.us-west-2.compute.amazonaws.com/";
     public static final String USER = "user";

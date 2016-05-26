@@ -345,4 +345,40 @@ public class PlaceUtility {
         }
         return null;
     }
+
+    public List<Session> getAllSessions() {
+        List<Session> sessionData = new ArrayList<>();
+        SQLiteDatabase readableDatabase = getReadableDatabase();
+        Cursor cursor = readableDatabase.query(TablesColumns.SessionEntry.TABLE_NAME, null, null,null, null, null, null);
+        try {
+            //Session session = new Session();
+            if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+                do {
+                    Session session = new Session();
+                    session.setId(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry._ID)));
+                    session.setName(cursor.getString(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_NAME)));
+                    session.setActivityType(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_ACTIVITY_TYPE)));
+                    session.setGoalType(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_GOAL_TYPE)));
+                    session.setGoalValue(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_GOAL_VALUE)));
+                    session.setMilestoneFreq(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_MILESTONE_FREQ)));
+                    session.setSteps(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_STEPS)));
+                    session.setCalories(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_CALORIES)));
+                    session.setTime(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_TIME)));
+                    session.setDistance(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_DISTANCE)));
+                    session.setStartTime(cursor.getLong(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_START_TIME)));
+                    session.setEndTime(cursor.getLong(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_END_TIME)));
+                    session.setStatus(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_STATUS)));
+                    session.setSync(cursor.getInt(cursor.getColumnIndex(TablesColumns.SessionEntry.COLUMN_NAME_SYNC)) == 0);
+                    sessionData.add(session);
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            readableDatabase.close();
+        }
+        return sessionData;
+    }
 }

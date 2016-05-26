@@ -242,7 +242,7 @@
         app:layout_anchorGravity="bottom|right">
 
         <LinearLayout
-            android:id="@+id/llStartSession"
+            android:id="@+id/llProfileSave"
             style="@style/icon_text_layout">
 
             <ImageView

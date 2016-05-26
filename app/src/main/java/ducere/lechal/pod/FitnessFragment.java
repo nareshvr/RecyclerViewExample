@@ -11,9 +11,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,6 +32,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import ducere.lechal.pod.constants.Convert;
@@ -35,6 +41,7 @@ import ducere.lechal.pod.ble.ActionsToService;
 import ducere.lechal.pod.ble.ServiceBroadcastActions;
 import ducere.lechal.pod.constants.Constants;
 import ducere.lechal.pod.podsdata.FitnessData;
+import ducere.lechal.pod.podsdata.Session;
 import ducere.lechal.pod.sqlite.PlaceUtility;
 
 /**
@@ -55,6 +62,8 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
     int increment = 1;
     long steps;
     PlaceUtility placeUtility;
+    private RecyclerView recyclerView;
+    private SessionAdapter mAdapter;
 
     public FitnessFragment() {
         // Required empty public constructor
@@ -124,22 +133,17 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
 
         imgMenuPop = (ImageView) view.findViewById(R.id.imgMenupop);
         imgMenuPop.setOnClickListener(this);
+
         LinearLayout llStartSession = (LinearLayout) view.findViewById(R.id.llStartSession);
         llStartSession.setOnClickListener(this);
+
         updateViews(placeUtility.getFitness(getTodayDate()));
+
+        // prepareMovieData();
+
+
         return view;
     }
-
-   /* @Override
-    public void onResume() {
-        super.onResume();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }, 5000);
-    }*/
 
     @Override
     public void onStart() {
@@ -227,7 +231,6 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
         txtDate.setText(
                 new StringBuilder()
                         // Month is 0 based so add 1
-
                         .append(mDay).append(" ")
                         .append(mMonth).append(",")
                         .append(mYear).append(" "));
@@ -265,6 +268,9 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                         break;
                     case R.id.viewSavedSession:
                         startActivity(new Intent(getActivity(), ViewSavedSession.class));
+                        //   LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_TODAY_DATA));
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ActionsToService.FITNESS_START));
+                        startActivity(new Intent(getActivity(), ViewSavedSessionActivity.class));
                         break;
                 }
 
@@ -277,8 +283,7 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
 
     private void showSocailMedia() {
         // specify our test image location
-        Uri url = Uri.parse("android.resource://"
-                + getActivity().getPackageName() + "/" + R.drawable.ic_menu_camera);
+        Uri url = Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.ic_menu_camera);
 
         // set up an intent to share the image
         Intent share_intent = new Intent();
@@ -307,6 +312,13 @@ public class FitnessFragment extends Fragment implements View.OnClickListener {
                             }).create()).show();
         }
     }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+    }
+
 
 
 }

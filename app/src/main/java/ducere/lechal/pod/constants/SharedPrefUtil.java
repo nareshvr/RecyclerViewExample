@@ -16,6 +16,7 @@ public class SharedPrefUtil {
     public static final String IS_MOCK_ENABLE = "isMockEnable";
     private static final String IS_SWAPPED = "isSwapped";
     private static final String FOOTWEAR_TYPE = "footwearType";
+    private static final String GENDER_TYPE = "gender";
     private static final String INTENSITY_TYPE = "intensityType";
     public static final String CURRENT_LOCATION = "currentLocation";
     public static final String CURRENT_VICINITY = "currentVicinity";
@@ -25,8 +26,8 @@ public class SharedPrefUtil {
     public static final String MOCK_VICINITY = "mockVicinity";
     public static final String MOCK_LAT = "mockLat";
     public static final String MOCK_LNG = "mockLng";
-    public static final String HEIGHT_UNITS = "height units";
-    public static final String WEIGHT_UNITS = "weight units";
+    public static final String HEIGHT_UNITS = "heightUnits";
+    public static final String WEIGHT_UNITS = "weightUnits";
     private static final String USER = "user";
     private static final String USER_ID = "userID";
     public static final String VOICE_PREFERENCE = "voicePreference";
@@ -38,6 +39,11 @@ public class SharedPrefUtil {
     public static final String TUNNEL = "tunnel";
     public static final String SHUTTLE_TRAIN = "shuttle_train";
     public static final String CAR_POOL = "car_pool";
+    public static final String GENDER = "gender";
+    public static final String MAP_UNITS = "mapUnits";
+    public static final String DAY_NIGHT_TYPE = "dayNight";
+    public static final String ROUTE_PERFERENCE = "setRoutePerference";
+    public static final String SESSION_GOALS = "sessionGoals";
 
     static SharedPreferences getPref(Context context) {
         return context.getSharedPreferences("lechalPref", 0);
@@ -121,8 +127,32 @@ public class SharedPrefUtil {
         return getPref(context).getInt(FOOTWEAR_TYPE, -1);
     }
 
+    public static int getDayNight(Context context) {
+        return getPref(context).getInt(DAY_NIGHT_TYPE, -1);
+    }
+
+    public static int getMapUnits(Context context) {
+        return getPref(context).getInt(MAP_UNITS, -1);
+    }
+
+    public static int getGenderType(Context context) {
+        return getPref(context).getInt(GENDER_TYPE, -1);
+    }
+
     public static void setFootwearType(Context context, int index) {
         getPref(context).edit().putInt(FOOTWEAR_TYPE, index).apply();
+    }
+
+    public static void setDayNightType(Context context, int index) {
+        getPref(context).edit().putInt(DAY_NIGHT_TYPE, index).apply();
+    }
+
+    public static void setMapUnits(Context context, int index) {
+        getPref(context).edit().putInt(MAP_UNITS, index).apply();
+    }
+
+    public static void setGenderType(Context context, int index) {
+        getPref(context).edit().putInt(GENDER_TYPE, index).apply();
     }
 
     public static int getIntensityType(Context context) {
@@ -149,5 +179,31 @@ public class SharedPrefUtil {
 
     public static void setWeightUnits(Context context, int weight) {
         getPref(context).edit().putInt(WEIGHT_UNITS, weight).apply();
+    }
+
+    public static void setGender(Context context, String gender) {
+        getPref(context).edit().putString(GENDER, gender).apply();
+    }
+
+    public static String getGender(Context context) {
+        return getPref(context).getString(GENDER, Constants.DEFAULT_GENDER);
+    }
+
+    public static void setRoutePerference(Context context, int index) {
+        getPref(context).edit().putInt(ROUTE_PERFERENCE, index).apply();
+
+    }
+
+    public static int getRoutePerference(Context context) {
+        return getPref(context).getInt(ROUTE_PERFERENCE, -1);
+    }
+
+    public static void setSessionGoals(Context context, int goals) {
+        getPref(context).edit().putInt(SESSION_GOALS, goals).apply();
+
+    }
+
+    public static int getSessionGoals(Context context) {
+        return getPref(context).getInt(SESSION_GOALS, 1000);
     }
 }

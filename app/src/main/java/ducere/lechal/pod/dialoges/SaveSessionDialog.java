@@ -1,4 +1,4 @@
-package ducere.lechal.pod.sqlite;
+package ducere.lechal.pod.dialoges;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -16,6 +16,7 @@ import java.util.TimeZone;
 
 import ducere.lechal.pod.R;
 import ducere.lechal.pod.podsdata.Session;
+import ducere.lechal.pod.sqlite.PlaceUtility;
 
 
 public class SaveSessionDialog extends DialogFragment {
